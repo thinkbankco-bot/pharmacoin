@@ -1,6 +1,6 @@
 <!doctype html>
 <html lang="en" class="no-js"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<title>The Diary — Dr. Fauci’s own notes, with receipts — $PHARMA</title>
+<title>The Diary — Dr. Fauci’s own notes, 2001–2022, with receipts — $PHARMA</title>
 <meta name="description" content="Dr. Anthony Fauci's pandemic diary, released as a public record by the U.S. Senate in July 2026. Every quote verbatim, every card cites its PDF page. The Receipts Department read all 1,141 pages.">
 <meta property="og:title" content="The Diary — Dr. Fauci’s own notes, with receipts">
 <meta property="og:description" content="1,141 pages released by the Senate. We read all of it. The funniest, vainest and most revealing lines, verbatim, each with its page number.">
@@ -17,9 +17,9 @@
     <div>
       <div class="kicker">Case file · public record</div>
       <h2 class="title rv-words" style="font-size:clamp(2.6rem,6vw,5rem)">He kept <em>a diary.</em></h2>
-      <p class="lead rv">Dr. Anthony Fauci typed a journal through the pandemic. In July 2026 the U.S. Senate released 1,141 pages of it. <span class="rl" data-rl="Translation: we are quoting the man verbatim and printing the page number. Selection is the only editorial act here." data-st="v">PHARMA Holdings plc has reviewed the document with the seriousness it deserves.</span> Below: the lines that stop the scroll, the body count he logged by hand, the press hits he tallied, and every day, readable in full.</p>
+      <p class="lead rv">Dr. Anthony Fauci typed a journal for twenty years: a “Historical Record” from 2001 to 2015, then the pandemic diary. In July–August 2026 the U.S. Senate released 1,606 pages of it, plus a 136-page file on his prize money. <span class="rl" data-rl="Translation: we are quoting the man verbatim and printing the page number. Selection is the only editorial act here." data-st="v">PHARMA Holdings plc has reviewed the document with the seriousness it deserves.</span> Below: the lines that stop the scroll, the body count he logged by hand, the press hits he tallied, and every day, readable in full.</p>
       <div class="diary-stats rv">
-        <div><b id="stDays">—</b><span>days with an entry</span></div>
+        <div><b id="stDays">—</b><span>days with an entry · 2001–22</span></div>
         <div><b id="stWords">—</b><span>words, his own typing</span></div>
         <div><b id="stLogged">—</b><span>days opened with the case count</span></div>
         <div><b id="stPress">—</b><span>days with a “PRESS:” tally</span></div>
@@ -28,9 +28,9 @@
     </div>
     <div class="journal rv">
       <span class="lbl">PROPERTY OF A.S. FAUCI · DO NOT DUPLICATE</span>
-      <h1>Tony’s Diary<br><span style="font-weight:400;font-size:.7em">Package · 1,141 pp.</span></h1>
+      <h1>Tony’s Diary<br><span style="font-weight:400;font-size:.7em">Vols. I–II · 1,606 pp.</span></h1>
       <div class="typed" id="coverTyped"></div>
-      <div class="stamp">RELEASED · U.S. SENATE · JUL 2026</div>
+      <div class="stamp">RELEASED · U.S. SENATE · JUL–AUG 2026</div>
     </div>
   </div>
 </header>
@@ -53,9 +53,9 @@
 
 <section class="sec" style="padding-top:30px">
   <div class="wrap">
-    <div class="sec-head" style="margin-bottom:10px"><div><div class="kicker">Scoreboard</div><h2 class="title rv-words">Who shows up <em>in the diary.</em></h2><p class="lead rv">Plain word counts across all 1,141 pages, including the news articles he pasted in. Not a sentiment analysis. Just who he typed about.</p></div></div>
+    <div class="sec-head" style="margin-bottom:10px"><div><div class="kicker">Scoreboard</div><h2 class="title rv-words">Who shows up <em>in the diary.</em></h2><p class="lead rv">Plain word counts, including the news articles he pasted in. Not a sentiment analysis. Just who he typed about, in each volume.</p></div></div>
     <div class="score">
-      <div class="bars rv" id="bars"></div>
+      <div><div class="kicker" style="margin-bottom:8px">Vol. II · 2020–22</div><div class="bars rv" id="bars"></div><div class="kicker" style="margin:22px 0 8px">Vol. I · 2001–15</div><div class="bars rv" id="barsPrequel"></div></div>
       <div class="press rv"><h4>Press hits, self-reported</h4><div class="big" id="pressBig">—</div><p style="font-family:var(--mono);font-size:.7rem;color:var(--muted);margin:10px 0 0">Many entries carry a “PRESS:” line listing that day’s appearances. Outlets most often named in those lines:</p><ul id="pressList"></ul></div>
     </div>
   </div>
@@ -63,10 +63,20 @@
 
 <section class="sec" id="reader-sec" style="padding-top:30px">
   <div class="wrap">
-    <div class="sec-head" style="margin-bottom:10px"><div><div class="kicker">Read a day</div><h2 class="title rv-words">Pick a date. <em>Read the page.</em></h2><p class="lead rv">The full text for any day, exactly as extracted from the Senate PDF, with a link to check it against the original. Bar under each date = how much he wrote.</p></div><button class="btn" id="randomDay">Random day ↻</button></div>
+    <div class="sec-head" style="margin-bottom:10px"><div><div class="kicker">Read a day</div><h2 class="title rv-words">Pick a date. <em>Read the page.</em></h2><p class="lead rv">The full text for any day from 2001 to 2022, exactly as extracted from the Senate PDFs, with a link to check it against the original. Bar under each date = how much he wrote.</p></div><button class="btn" id="randomDay">Random day ↻</button></div>
     <div class="years" id="years"></div>
     <div class="daystrip" id="daystrip"></div>
     <div class="reader" id="reader"><div class="rh"></div><pre></pre><div class="note"></div></div>
+  </div>
+</section>
+
+<section class="sec" id="awards-sec" style="padding-top:30px">
+  <div class="wrap">
+    <div class="sec-head" style="margin-bottom:10px"><div><div class="kicker">The side hustle · prize paperwork</div><h2 class="title rv-words">Awards, with <em>dollar signs.</em></h2><p class="lead rv">The Senate also released 136 pages of prize nominations, NIH acceptance forms and staff emails about the money. <span class="rl" data-rl="Only prizes and dollar figures literally stated in the file. No totals we didn’t see written down. Federal employees can accept certain prizes with approval; that approval paperwork is what this is." data-st="v">PHARMA Holdings congratulates the Director on a distinguished career.</span></p></div></div>
+    <div class="press rv" style="margin-bottom:18px"><h4>Stated in the file</h4><div class="big" id="awSum">—</div></div>
+    <div class="aw-wrap rv"><table class="aw"><thead><tr><th>Prize</th><th>Year</th><th>Amount</th><th>Status</th><th>Cite</th></tr></thead><tbody id="awTable"></tbody></table></div>
+    <div class="cards" id="awCards" style="margin-top:22px"></div>
+    <ul class="aw-notes" id="awNotes"></ul>
   </div>
 </section>
 
@@ -74,7 +84,9 @@
   <div class="wrap">
     <div class="sec-head" style="margin-bottom:10px"><div><div class="kicker">Sources · Marjorie’s stamps</div><h2 class="title rv-words">Where this <em>comes from.</em></h2></div></div>
     <div class="src-grid">
-      <a href="https://www.paul.senate.gov/wp-content/uploads/2026/08/2026.07.24_Tonys-Diary-Package.pdf" target="_blank" rel="noopener"><span class="st v">VERIFIED</span><b>The PDF itself</b><small>paul.senate.gov · “Tony’s Diary Package” · 1,141 pp · every quote above links to its page</small></a>
+      <a href="https://www.paul.senate.gov/wp-content/uploads/2026/08/2026.07.24_Tonys-Diary-Package.pdf" target="_blank" rel="noopener"><span class="st v">VERIFIED</span><b>Vol. II · the pandemic diary PDF</b><small>paul.senate.gov · “Tony’s Diary Package” · 1,141 pp · every quote links to its page</small></a>
+      <a href="https://www.paul.senate.gov/wp-content/uploads/2026/08/2026.08.05_Diary-Prequel-_Redacted.pdf" target="_blank" rel="noopener"><span class="st v">VERIFIED</span><b>Vol. I · the “Historical Record” PDF</b><small>paul.senate.gov · “Diary Prequel” · 465 pp · 2001–2015 · redacted by the committee</small></a>
+      <a href="https://www.paul.senate.gov/wp-content/uploads/2026/07/7.24.2026_Fauci-Awards_FINAL_REDACTED.pdf" target="_blank" rel="noopener"><span class="st v">VERIFIED</span><b>The awards file PDF</b><small>paul.senate.gov · “Fauci’s Side Hustle” · 136 pp · nominations, NIH approvals, staff emails</small></a>
       <a href="https://www.paul.senate.gov/readingroom/" target="_blank" rel="noopener"><span class="st v">VERIFIED</span><b>Senate HSGAC Reading Room</b><small>release index · Chairman Rand Paul · July 2026 · also the Prequel (2001–2015), awards and CBP packages</small></a>
       <a href="https://www.npr.org/2026/07/27/nx-s1-5909531/rand-paul-anthony-fauci-coronavirus-diary-lab-leak-origin" target="_blank" rel="noopener"><span class="st v">VERIFIED</span><b>Coverage: NPR, CBS, The Hill</b><small>independent reporting on the release and what it contains</small></a>
       <a href="https://www.denvergazette.com/2026/07/31/how-did-faucis-diaries-make-it-public-no-one-will-say/" target="_blank" rel="noopener"><span class="st w">WEAK SIGNAL</span><b>How the diary surfaced</b><small>HHS says it came off government servers; the committee hasn’t said how it got it. We make no claim about why.</small></a>

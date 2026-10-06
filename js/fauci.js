@@ -5,7 +5,8 @@ document.addEventListener('DOMContentLoaded', () => {
   const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
   const reduced = matchMedia('(prefers-reduced-motion: reduce)').matches;
   const fmtD = d => new Date(d + 'T12:00:00').toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric', year: 'numeric' });
-  const pdfAt = p => `${F.meta.pdf}#page=${p}`;
+  const pdfAt = (p, k) => `${(F.meta.pkgs[k || 'pandemic'] || F.meta.pkgs.pandemic).pdf}#page=${p}`;
+  const PKGN = { pandemic: 'Diary 2020–22', prequel: 'Historical Record 2001–15' };
   const n = x => (+x).toLocaleString();
 
   /* hero stats + typed cover */
@@ -17,28 +18,30 @@ document.addEventListener('DOMContentLoaded', () => {
     step();
   }
   const cover = $('#coverTyped'); const first = F.days[0], last = F.days[F.days.length - 1];
-  typeInto(cover, `${fmtD(first[0])} – ${fmtD(last[0])}\n${F.meta.pdf_pages.toLocaleString()} pages. ${n(F.meta.days)} days. ${n(F.meta.words)} words, typed by the Director himself.\nReleased as a public record by the U.S. Senate, July 2026.\n\nWe read all of it. Marjorie pulled the receipts.`, 12);
+  const pq = F.meta.pkgs.prequel, pp = F.meta.pkgs.pandemic;
+  typeInto(cover, `${pq ? `Vol. I  Historical Record  ${pq.first.slice(0, 4)}–${pq.last.slice(0, 4)}  ·  ${n(pq.days)} days\n` : ''}Vol. II  Pandemic diary  ${pp.first.slice(0, 4)}–${pp.last.slice(0, 4)}  ·  ${n(pp.days)} days\n${F.meta.pdf_pages.toLocaleString()} pages. ${n(F.meta.words)} words, typed by the Director himself.\nReleased as a public record by the U.S. Senate, July–Aug 2026.\n\nWe read all of it. Marjorie pulled the receipts.`, 12);
 
   /* picks */
+  const ERAS = { prequel: '2001–15', pandemic: '2020–22' };
   const TAGS = ['all', 'vanity', 'celebrity', 'trump', 'pharma', 'masks', 'origins', 'admission', 'complaint', 'media', 'family', 'awards', 'food'];
   let filter = 'all', shown = 12, order = F.picks.slice(), shuffled = false;
-  const chips = $('#chips'); chips.innerHTML = TAGS.filter(t => t === 'all' || F.picks.some(p => p.tags.includes(t))).map(t => `<button data-t="${t}" class="${t === filter ? 'on' : ''}">${t}</button>`).join('') + `<button class="shuf" id="shuf">Shuffle ↻</button>`;
+  const chips = $('#chips'); chips.innerHTML = TAGS.filter(t => t === 'all' || F.picks.some(p => p.tags.includes(t))).map(t => `<button data-t="${t}" class="${t === filter ? 'on' : ''}">${t}</button>`).join('') + Object.keys(ERAS).filter(k => F.picks.some(p => p.k === k)).map(k => `<button data-t="era:${k}" style="border-style:dashed">${ERAS[k]}</button>`).join('') + `<button class="shuf" id="shuf">Shuffle ↻</button>`;
   chips.onclick = e => { const b = e.target.closest('button'); if (!b) return; if (b.id === 'shuf') { order = F.picks.slice().sort(() => Math.random() - .5); shuffled = true; shown = 12; render(); return; } filter = b.dataset.t; $$('#chips button').forEach(x => x.classList.toggle('on', x === b)); shown = 12; order = F.picks.slice(); shuffled = false; render(); };
-  const share = p => { const q = p.quote.length > 180 ? p.quote.slice(0, 177) + '…' : p.quote; const txt = `“${q}”\n— Dr. Fauci’s diary, ${fmtD(p.date)} (Senate release, PDF p. ${p.page})\n\nvia @PharmaCoinSol $PHARMA`; window.open('https://x.com/intent/post?text=' + encodeURIComponent(txt + '\n' + location.href.split('#')[0] + '#picks'), '_blank', 'noopener'); };
+  const share = p => { const q = p.quote.length > 180 ? p.quote.slice(0, 177) + '…' : p.quote; const txt = `“${q}”\n— Dr. Fauci’s ${p.k === 'prequel' ? 'Historical Record' : 'diary'}, ${fmtD(p.date)} (Senate release, PDF p. ${p.page})\n\nvia @PharmaCoinSol $PHARMA`; window.open('https://x.com/intent/post?text=' + encodeURIComponent(txt + '\n' + location.href.split('#')[0] + '#picks'), '_blank', 'noopener'); };
   function cardHTML(p, i, top) {
     const r = ((i * 37) % 5 - 2) * .5;
-    const inner = `<div class="dt"><span>${esc(fmtD(p.date))}</span><a href="${pdfAt(p.page)}" target="_blank" rel="noopener" title="Open the Senate PDF at this page">PDF p. ${p.page} ↗</a></div><div class="q" data-q="${esc(p.quote)}"></div>${p.context ? `<div class="ctx">${esc(p.context)}</div>` : ''}`;
+    const inner = `<div class="dt"><span>${esc(fmtD(p.date))}${p.k === 'prequel' ? ' · <i style="font-style:normal;color:#a86500">Vol. I</i>' : ''}</span><a href="${pdfAt(p.page, p.k)}" target="_blank" rel="noopener" title="Open the Senate PDF (${esc(PKGN[p.k] || '')}) at this page">PDF p. ${p.page} ↗</a></div><div class="q" data-q="${esc(p.quote)}"></div>${p.context ? `<div class="ctx">${esc(p.context)}</div>` : ''}`;
     const side = `<div class="why">${esc(p.why)} <span style="font-size:.8em">— M.P.</span></div><div class="foot"><span class="tags">${p.tags.map(t => `<span>${esc(t)}</span>`).join('')}</span><button data-share="${i}">Post it</button></div>`;
     return `<article class="card ${top ? 'top' : ''}" style="--r:${r}deg"><span class="pg">p. ${p.page}</span>${top ? `<div>${inner}</div><div class="side">${side}</div>` : inner + side}</article>`;
   }
   const typed = new WeakSet();
   const io = new IntersectionObserver(es => es.forEach(e => { if (!e.isIntersecting) return; const q = e.target; io.unobserve(q); if (typed.has(q) || !q.dataset.q) return; typed.add(q); typeInto(q, q.dataset.q, 9); }), { rootMargin: '0px 0px -10% 0px' });
   function render() {
-    const list = order.filter(p => filter === 'all' || p.tags.includes(filter));
+    const list = order.filter(p => filter === 'all' || (filter.startsWith('era:') ? p.k === filter.slice(4) : p.tags.includes(filter)));
     const el = $('#cards'); el.innerHTML = list.slice(0, shown).map((p, i) => cardHTML(p, i, i === 0 && filter === 'all' && !shuffled)).join('') || `<div class="card"><div class="q">Nothing filed under that yet. Marjorie is still reading.</div></div>`;
     $$('#cards .q').forEach(q => io.observe(q));
     el.querySelectorAll('[data-share]').forEach(b => b.onclick = () => share(list[+b.dataset.share]));
-    $('#moreWrap').style.display = list.length > shown ? '' : 'none'; $('#pickCount').textContent = `${list.length} receipts${filter === 'all' ? '' : ' · ' + filter}`;
+    $('#moreWrap').style.display = list.length > shown ? '' : 'none'; $('#pickCount').textContent = `${list.length} receipts${filter === 'all' ? '' : ' · ' + (filter.startsWith('era:') ? ERAS[filter.slice(4)] : filter)}`;
   }
   $('#more').onclick = () => { shown += 12; render(); }; render();
 
@@ -70,12 +73,26 @@ document.addEventListener('DOMContentLoaded', () => {
   const bars = $('#bars'); const mx = F.names[0].n;
   bars.innerHTML = F.names.filter(x => x.n > 0).slice(0, 16).map(x => `<div><span>${esc(x.name)}</span><i style="transform:scaleX(${x.n / mx})"></i><b>${n(x.n)}</b></div>`).join('');
   new IntersectionObserver(es => es.forEach(e => e.target.classList.toggle('in', e.isIntersecting)), { threshold: .2 }).observe(bars);
+  const bq = $('#barsPrequel'); if (bq && F.names_prequel) { const mq = F.names_prequel[0].n || 1; bq.innerHTML = F.names_prequel.filter(x => x.n > 0).slice(0, 16).map(x => `<div><span>${esc(x.name)}</span><i style="transform:scaleX(${x.n / mq})"></i><b>${n(x.n)}</b></div>`).join(''); new IntersectionObserver(es => es.forEach(e => e.target.classList.toggle('in', e.isIntersecting)), { threshold: .2 }).observe(bq); }
+  const A = F.awards; const asec = $('#awards-sec');
+  if (A && asec && A.ledger && A.ledger.length) {
+    const rows = A.ledger.slice().sort((a, b) => (b.amount_usd || 0) - (a.amount_usd || 0) || (b.year || 0) - (a.year || 0));
+    const acc = rows.filter(r => r.amount_usd && r.status === 'accepted'), stated = acc.reduce((s, r) => s + r.amount_usd, 0);
+    const other = rows.filter(r => r.amount_usd && r.status !== 'accepted');
+    $('#awSum').innerHTML = `$${Math.round(stated).toLocaleString()}<small> stated for prizes the file shows as accepted (${acc.map(r => esc(r.prize)).join(' + ')}). ${other.length ? `Another $${Math.round(other.reduce((s, r) => s + r.amount_usd, 0)).toLocaleString()} appears next to prizes whose cash was denied or whose outcome isn’t in the file; we don’t count it.` : ''} 40+ pages had no extractable text, so this is a floor, not a total.</small>`;
+    $('#awTable').innerHTML = rows.map(r => `<tr><td><b>${esc(r.prize)}</b><small>${esc(r.org || '')}</small></td><td>${r.year || '—'}</td><td class="amt">${r.amount_usd ? '$' + Math.round(r.amount_usd).toLocaleString() : '<span style="color:var(--dim)">not stated</span>'}${r.amount_note ? `<small>${esc(r.amount_note)}</small>` : ''}</td><td><span class="aw-st ${esc(r.status)}">${esc(r.status)}</span></td><td><a href="${A.pdf}#page=${r.page}" target="_blank" rel="noopener" title="${esc(r.quote || '')}">p. ${r.page} ↗</a></td></tr>`).join('');
+    const M = (A.moments || []).filter(m => m.score >= 7).sort((a, b) => b.score - a.score).slice(0, 9);
+    $('#awCards').innerHTML = M.map((m, i) => `<article class="card" style="--r:${((i * 37) % 5 - 2) * .5}deg"><span class="pg">p. ${m.page}</span><div class="dt"><span>Awards file</span><a href="${A.pdf}#page=${m.page}" target="_blank" rel="noopener">PDF p. ${m.page} ↗</a></div><div class="q" data-q="${esc(m.quote)}"></div>${m.context ? `<div class="ctx">${esc(m.context)}</div>` : ''}<div class="why">${esc(m.why)} <span style="font-size:.8em">— M.P.</span></div></article>`).join('');
+    $$('#awCards .q').forEach(q => io.observe(q));
+    if (A.notes && A.notes.length) $('#awNotes').innerHTML = A.notes.map(x => `<li>${esc(x)}</li>`).join('');
+  } else if (asec) asec.style.display = 'none';
   $('#pressBig').innerHTML = `${n(F.meta.press_days)}<small> days with a “PRESS:” line</small>`;
   $('#pressList').innerHTML = F.press.map(([o, c]) => `<li><span>${esc(o)}</span><b>${c}</b></li>`).join('');
 
   /* read a day */
   let entries = null, year = '2020';
-  const years = $('#years'); years.innerHTML = ['2020', '2021', '2022'].map(y => `<button data-y="${y}" class="${y === year ? 'on' : ''}">${y} · ${F.days.filter(d => d[0].startsWith(y)).length} days</button>`).join('');
+  const YEARS = [...new Set(F.days.map(d => d[0].slice(0, 4)))];
+  const years = $('#years'); years.innerHTML = YEARS.map(y => `<button data-y="${y}" class="${y === year ? 'on' : ''}" title="${F.days.filter(d => d[0].startsWith(y)).length} days">${y}<small style="display:block;font-size:.55rem;color:var(--dim)">${F.days.filter(d => d[0].startsWith(y)).length}d</small></button>`).join('');
   years.onclick = e => { const b = e.target.closest('button'); if (!b) return; year = b.dataset.y; $$('#years button').forEach(x => x.classList.toggle('on', x === b)); strip(); };
   const wmax = Math.max(...F.days.map(d => d[1]));
   function strip() { $('#daystrip').innerHTML = F.days.filter(d => d[0].startsWith(year)).map(d => `<button data-d="${d[0]}" style="--w:${Math.min(1, d[1] / wmax * 3)}" title="${d[1]} words · PDF p. ${d[2]}">${d[0].slice(5)}</button>`).join(''); }
@@ -83,9 +100,10 @@ document.addEventListener('DOMContentLoaded', () => {
   $('#daystrip').onclick = async e => { const b = e.target.closest('button'); if (!b) return; $$('#daystrip button').forEach(x => x.classList.toggle('on', x === b)); await openDay(b.dataset.d); };
   async function openDay(d) {
     const R = $('#reader'); R.classList.add('on'); R.querySelector('pre').textContent = 'pulling the page…';
-    if (!entries) { try { entries = await (await fetch('data/fauci_entries.json')).json(); } catch { R.querySelector('pre').textContent = 'Could not load the entries file.'; return; } }
-    const en = entries[d]; if (!en) { R.querySelector('pre').textContent = 'No entry that day.'; return; }
-    R.querySelector('.rh').innerHTML = `<b>${esc(fmtD(d))}</b><span>${n(en.w)} words · PDF pp. ${en.p[0]}–${en.p[1]}</span><a href="${pdfAt(en.p[0])}" target="_blank" rel="noopener">Check it against the PDF ↗</a>`;
+    const k = (F.days.find(x => x[0] === d) || [])[3] || 'pandemic'; entries = entries || {};
+    if (!entries[k]) { try { entries[k] = await (await fetch(`data/fauci_entries_${k}.json`)).json(); } catch { R.querySelector('pre').textContent = 'Could not load the entries file.'; return; } }
+    const en = entries[k][d]; if (!en) { R.querySelector('pre').textContent = 'No entry that day.'; return; }
+    R.querySelector('.rh').innerHTML = `<b>${esc(fmtD(d))}</b><span>${esc(PKGN[en.k] || '')} · ${n(en.w)} words · PDF pp. ${en.p[0]}–${en.p[1]}</span><a href="${pdfAt(en.p[0], en.k)}" target="_blank" rel="noopener">Check it against the PDF ↗</a>`;
     R.querySelector('pre').textContent = en.t;
     R.querySelector('.note').textContent = en.t.includes('PRESS:') ? 'He logged his own press hits that day. Of course he did. — M.P.' : /Global/.test(en.t.slice(0, 300)) ? 'Opened with the body count, as usual. — M.P.' : 'Verbatim, line breaks and typos as extracted. — M.P.';
     if (location.hash !== '#' + d) history.replaceState(null, '', '#reader'); R.scrollIntoView({ behavior: reduced ? 'auto' : 'smooth', block: 'start' });

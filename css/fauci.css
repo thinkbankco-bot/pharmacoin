@@ -1,7 +1,7 @@
 /* THE DIARY — Tony's chart. Typed paper, red pen, nothing paraphrased. */
 .diary-hero{position:relative;padding:130px 0 60px;overflow:hidden}
 .diary-grid{display:grid;grid-template-columns:minmax(0,1.1fr) minmax(0,.9fr);gap:40px;align-items:center}
-.journal{position:relative;background:var(--paper);color:#1d1a15;border-radius:6px 18px 18px 6px;padding:34px 34px 30px 46px;box-shadow:0 40px 100px rgba(0,0,0,.55),inset 0 0 0 1px rgba(29,26,21,.15);transform:rotate(1.2deg);font-family:var(--mono)}
+.journal{position:relative;background:var(--paper);color:#1d1a15;border-radius:6px 18px 18px 6px;padding:34px 34px 64px 46px;box-shadow:0 40px 100px rgba(0,0,0,.55),inset 0 0 0 1px rgba(29,26,21,.15);transform:rotate(1.2deg);font-family:var(--mono)}
 .journal::before{content:"";position:absolute;left:0;top:0;bottom:0;width:22px;background:repeating-linear-gradient(180deg,#1d1a15 0 14px,transparent 14px 30px);border-radius:6px 0 0 6px;opacity:.85}
 .journal .lbl{position:absolute;right:-14px;top:22px;background:#fff;border:1px solid rgba(29,26,21,.3);padding:6px 10px;font-size:.6rem;letter-spacing:.16em;transform:rotate(4deg);box-shadow:0 6px 20px rgba(0,0,0,.25)}
 .journal h1{font-family:var(--mono);font-weight:700;font-size:clamp(1.3rem,2.4vw,1.9rem);letter-spacing:.06em;line-height:1.15;margin:0 0 10px;text-transform:uppercase}
@@ -69,6 +69,21 @@
 .reader .rh a{color:#c4122f;text-decoration:none;font-weight:700}
 .reader pre{font-family:var(--mono);font-size:.84rem;line-height:1.65;white-space:pre-wrap;word-wrap:break-word;margin:0;max-height:60vh;overflow:auto}
 .reader .note{font-family:Caveat,cursive;color:#c4122f;font-size:1.1rem;margin-top:12px}
+/* awards */
+.aw-wrap{overflow:auto;border:1px solid var(--line);border-radius:14px;background:rgba(10,20,36,.6)}
+.aw{width:100%;border-collapse:collapse;font-family:var(--mono);font-size:.7rem;color:var(--muted);min-width:640px}
+.aw th{text-align:left;font-size:.56rem;letter-spacing:.16em;text-transform:uppercase;color:var(--dim);padding:12px 14px;border-bottom:1px solid var(--line)}
+.aw td{padding:10px 14px;border-bottom:1px solid rgba(117,154,199,.1);vertical-align:top}
+.aw td b{color:var(--ink);display:block;font-family:var(--sans);font-weight:800;letter-spacing:-.01em}
+.aw td small{display:block;color:var(--dim);font-size:.6rem;margin-top:2px}
+.aw td.amt{color:var(--ink);font-weight:600;white-space:nowrap}
+.aw a{color:#ff8a9b;text-decoration:none;font-weight:700;white-space:nowrap}
+.aw-st{display:inline-block;border:1px solid var(--line2);border-radius:4px;padding:2px 6px;font-size:.56rem;letter-spacing:.12em;text-transform:uppercase}
+.aw-st.accepted{color:#6ee7b7;border-color:rgba(110,231,183,.4)}.aw-st.declined,.aw-st.donated{color:var(--cyan);border-color:rgba(85,216,255,.4)}.aw-st.nominated{color:var(--amber);border-color:rgba(255,184,77,.4)}
+.aw-notes{margin:16px 0 0;padding:0 0 0 18px;font-family:Caveat,cursive;font-size:1.05rem;color:#ff8a9b;columns:2;column-gap:28px}
+.aw-notes li{margin-bottom:4px;break-inside:avoid}
+.years{flex-wrap:wrap}.years button{padding:6px 10px;line-height:1.1}
+@media (max-width:640px){.aw-notes{columns:1}}
 /* sources */
 .src-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px;margin-top:10px}
 .src-grid a{display:block;border:1px solid var(--line);border-radius:12px;padding:14px;text-decoration:none;color:var(--ink);background:rgba(10,20,36,.6)}
