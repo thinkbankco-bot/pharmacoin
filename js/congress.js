@@ -4,8 +4,12 @@ document.addEventListener('DOMContentLoaded', () => {
   const C = window.CONGRESS, X = window.CONGRESS_EXTRA || null;
   const ex = m => (X && X.members && X.members[m.bioguide]) || null;
   const onDrugCommittee = m => !!(ex(m) && (ex(m).committees || []).some(c => c.jurisdiction_flag));
+  const gavel = m => { const c = ex(m) && (ex(m).committees || []).find(c => c.jurisdiction_flag && /chair|ranking/i.test(c.role || '')); return c ? `${c.role}, ${c.name}` : ''; };
+  const median = a => { if (!a.length) return 0; const b = [...a].sort((x, y) => x - y), k = b.length >> 1; return b.length % 2 ? b[k] : (b[k - 1] + b[k]) / 2; };
+  const rankOf = m => { const L = C.members.filter(z => z.chamber === m.chamber && z.fec && z.fec.length).sort((a, b) => b.total - a.total); return { r: L.findIndex(z => z.bioguide === m.bioguide) + 1, n: L.length, med: median(L.map(z => z.total)) }; };
+  const ctxLine = m => { const k = rankOf(m); return k.r ? `#${k.r} of ${k.n} in the ${m.chamber === 'senate' ? 'Senate' : 'House'} · typical member: ${short(k.med)}` : 'no FEC campaign committee on file yet'; };
   let committeeOnly = false, voteId = '';
-  const VOTE_COL = { Yea: '#22c55e', Aye: '#22c55e', Nay: '#ef4444', No: '#ef4444' };
+  const VOTE_COL = { Yea: '#22c55e', Aye: '#22c55e', Nay: '#f59e0b', No: '#f59e0b' };
   const money = n => '$' + Math.round(n).toLocaleString();
   const short = n => n >= 1e6 ? '$' + (n / 1e6).toFixed(2) + 'M' : n >= 1e3 ? '$' + (n / 1e3).toFixed(1) + 'K' : '$' + Math.round(n);
   const hash = s => { let h = 2166136261; for (const c of s) { h ^= c.charCodeAt(0); h = Math.imul(h, 16777619); } return h >>> 0; };
@@ -14,7 +18,6 @@ document.addEventListener('DOMContentLoaded', () => {
   const where = m => `${m.party}-${m.state}${m.chamber === 'house' && m.district ? '-' + m.district : ''}`;
 
   if (!C || !C.members || !C.members.length) { $('#fpending').classList.remove('hidden'); $('#pacs').innerHTML = '<p class="fine">Loads with the data.</p>'; return; }
-  $('#cover').textContent = `FEC filings · ${C.coverage || C.cycles.join(' + ')}`;
   if (C.scope) $('#mScope').textContent = C.scope;
   $('#pacs').innerHTML = (C.pacs || []).map(p => `<a href="https://www.fec.gov/data/committee/${encodeURIComponent(p.id)}/" target="_blank" rel="noopener"><b>${esc(p.company)}</b><span>${esc(p.name)} · ${esc(p.id)}</span></a>`).join('');
 
@@ -24,7 +27,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const h = hash(m.bioguide || m.name), hair = h % 7, glasses = (h >> 3) % 4 === 0, tie = PARTY[m.party] || '#94a3b8';
     ctx.save(); ctx.translate(x, y);
     if (opts.dim) ctx.globalAlpha = .18;
-    if (opts.vote) { const vc = VOTE_COL[opts.vote] || '#64748b'; ctx.save(); ctx.globalAlpha *= .9; ctx.fillStyle = vc + '33'; ctx.strokeStyle = vc; ctx.lineWidth = 2; ctx.beginPath(); ctx.ellipse(0, -22 * u, 16 * u * Math.max(1, w * .75), 25 * u, 0, 0, 7); ctx.fill(); ctx.stroke(); ctx.restore(); }
+    if (opts.vote) { const vc = VOTE_COL[opts.vote] || '#64748b'; ctx.save(); ctx.globalAlpha *= .9; ctx.fillStyle = vc + '33'; ctx.strokeStyle = vc; ctx.lineWidth = 2; ctx.beginPath(); ctx.ellipse(0, -22 * u, 17 * u, 25 * u, 0, 0, 7); ctx.fill(); ctx.stroke(); ctx.restore(); }
     // shadow
     ctx.fillStyle = 'rgba(0,0,0,.35)'; ctx.beginPath(); ctx.ellipse(0, 0, 12 * u * w, 3 * u, 0, 0, 7); ctx.fill();
     // legs
@@ -37,6 +40,7 @@ document.addEventListener('DOMContentLoaded', () => {
     // money sticking out of the pocket (top third)
     if (opts.cash) { ctx.fillStyle = '#16a34a'; ctx.fillRect(bw * .35, bt + 6 * u, 3.4 * u, 5 * u); ctx.fillRect(bw * .35 + 2 * u, bt + 5 * u, 3.4 * u, 5 * u); }
     if (opts.pin) { ctx.fillStyle = '#d4a84b'; ctx.beginPath(); ctx.arc(-bw * .45, bt + 5 * u, 2.6 * u, 0, 7); ctx.fill(); ctx.fillStyle = '#1a1204'; ctx.font = `900 ${3 * u}px Inter, Arial`; ctx.textAlign = 'center'; ctx.fillText('Rx', -bw * .45, bt + 6.1 * u); }
+    if (opts.gavel) { ctx.save(); ctx.translate(bw * .95, bt - 2 * u); ctx.rotate(-.6); ctx.fillStyle = '#8b5a2b'; ctx.fillRect(-.8 * u, 0, 1.6 * u, 9 * u); ctx.fillStyle = '#5b3a1a'; ctx.fillRect(-3.4 * u, -2.4 * u, 6.8 * u, 3.4 * u); ctx.restore(); }
     // hands
     ctx.fillStyle = SKIN; ctx.beginPath(); ctx.arc(-bw * 1.02, -11 * u, 2.3 * u, 0, 7); ctx.arc(bw * 1.02, -11 * u, 2.3 * u, 0, 7); ctx.fill();
     // head
@@ -64,7 +68,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
   /* ---------- Chamber layout ---------- */
   const cv = $('#floor'), ctx = cv.getContext('2d');
-  let chamber = 'senate', seats = [], scale = 1, offX = 0, query = '';
+  let chamber = 'senate', seats = [], scale = 1, offX = 0, offY = 0, query = '';
   const list = () => C.members.filter(m => m.chamber === chamber);
   function build() {
     const L = list(), n = L.length, max = Math.max(1, ...L.map(m => m.total));
@@ -79,7 +83,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const top10 = new Set([...L].sort((a, b) => b.total - a.total).slice(0, 10).filter(m => m.total > 0).map(m => m.bioguide));
     for (const g of groups) {
       const chunk = pos.slice(k, k + g.length).sort((p, q) => p.r - q.r); k += g.length;
-      g.forEach((m, i) => { const p = chunk[i]; const f = Math.sqrt(m.total / max); seats.push({ m, x: p.x, y: p.y, u: (chamber === 'senate' ? 1.8 : 1.0) * (0.9 + p.r / 2600), w: .78 + 4.4 * f, top: top10.has(m.bioguide), cash: f > .55, zero: m.total === 0, box: null }); });
+      g.forEach((m, i) => { const p = chunk[i]; const f = Math.pow(m.total / max, .62); seats.push({ m, x: p.x, y: p.y, u: (chamber === 'senate' ? 1.8 : 1.0) * (0.9 + p.r / 2600), w: .72 + 5.2 * f, top: top10.has(m.bioguide), cash: f > .55, zero: m.total === 0 && !!(m.fec && m.fec.length), box: null }); });
     }
     seats.sort((a, b) => a.y - b.y);
     const took = L.filter(m => m.total > 0).length;
@@ -91,11 +95,13 @@ document.addEventListener('DOMContentLoaded', () => {
   }
   function resize() {
     const w = cv.clientWidth, h = cv.clientHeight, dpr = Math.min(devicePixelRatio || 1, 2);
-    cv.width = w * dpr; cv.height = h * dpr; scale = h / 900; offX = (w / scale - 1600) / 2;
-    ctx.setTransform(dpr * scale, 0, 0, dpr * scale, dpr * scale * offX, 0); draw();
+    cv.width = w * dpr; cv.height = h * dpr;
+    const fitW = w / 1560, fitH = h / 900; scale = Math.min(fitW, fitH);
+    offX = (w / scale - 1600) / 2; offY = fitW < fitH ? h / scale - 900 : 0;
+    ctx.setTransform(dpr * scale, 0, 0, dpr * scale, dpr * scale * offX, dpr * scale * offY); draw();
   }
   function room() {
-    const g = ctx.createLinearGradient(0, 0, 0, 900); g.addColorStop(0, '#0b1222'); g.addColorStop(1, '#141d33'); ctx.fillStyle = g; ctx.fillRect(-offX, 0, 1600 + offX * 2, 900);
+    const g = ctx.createLinearGradient(0, 0, 0, 900); g.addColorStop(0, '#0b1222'); g.addColorStop(1, '#141d33'); ctx.fillStyle = g; ctx.fillRect(-offX, -offY, 1600 + offX * 2, 900 + offY);
     // carpet arcs
     for (let i = 0; i < 12; i++) { ctx.strokeStyle = i % 2 ? 'rgba(59,130,246,.06)' : 'rgba(239,68,68,.05)'; ctx.lineWidth = 26; ctx.beginPath(); ctx.ellipse(800, 905, 200 + i * 52, (200 + i * 52) * .86, 0, Math.PI, 2 * Math.PI); ctx.stroke(); }
     // back wall columns + gallery
@@ -113,7 +119,7 @@ document.addEventListener('DOMContentLoaded', () => {
     for (const s of seats) {
       const hit = q && (s.m.name.toLowerCase().includes(q) || s.m.state.toLowerCase() === q || where(s.m).toLowerCase().includes(q));
       const cm = onDrugCommittee(s.m), v = voteId && ex(s.m) ? (ex(s.m).votes || {})[voteId] : null;
-      s.box = member(ctx, s.x, s.y, s.u, s.m, s.w, { top: s.top, cash: s.cash, zero: s.zero, pin: cm, vote: voteId ? (v || 'Not in office') : null, dim: (q && !hit) || (committeeOnly && !cm) || (voteId && (!v || v === 'Not in office')), hl: hit });
+      s.box = member(ctx, s.x, s.y, s.u, s.m, s.w, { top: s.top, cash: s.cash, zero: s.zero, pin: cm, gavel: !!gavel(s.m), vote: voteId ? (v || 'Not in office') : null, dim: (q && !hit) || (committeeOnly && !cm) || (voteId && (!v || v === 'Not in office')), hl: hit });
     }
     $('#fcount').textContent = q ? `${seats.filter(s => s.m.name.toLowerCase().includes(q) || s.m.state.toLowerCase() === q || where(s.m).toLowerCase().includes(q)).length} match` : `${seats.length} members`;
   }
@@ -121,24 +127,50 @@ document.addEventListener('DOMContentLoaded', () => {
   /* ---------- Lists ---------- */
   function portrait(m, top) {
     const c = document.createElement('canvas'); c.width = 160; c.height = 170; const x = c.getContext('2d');
-    member(x, 80, 160, 2.5, m, .78 + 4.4 * Math.sqrt(m.total / Math.max(1, ...list().map(z => z.total))), { top, cash: top });
+    member(x, 80, 160, 2.3, m, .72 + 5.2 * Math.pow(m.total / Math.max(1, ...list().map(z => z.total)), .62), { top, cash: top });
     return c;
   }
+  function findings(L) {
+    const el = $('#findings'); if (!el) return;
+    const F = L.filter(m => m.fec && m.fec.length), byT = [...F].sort((a, b) => b.total - a.total), tot = F.reduce((s, m) => s + m.total, 0);
+    const med = median(F.map(m => m.total)), one = byT[0], ch = chamber === 'senate' ? 'Senate' : 'House', cards = [];
+    if (one) cards.push([`#1 in the ${ch}`, `${esc(one.name)} (${where(one)}) took ${money(one.total)}${one.chamber === 'senate' && (one.fec || []).some(id => id[0] === 'H') ? ' (incl. earlier House campaigns)' : ''}`, `${med > 0 ? Math.round(one.total / med) + '× the typical member (' + short(med) + ')' : 'the typical member took $0'}${gavel(one) ? ' · ' + esc(gavel(one)) : ''}`]);
+    if (X) {
+      const cm = F.filter(onDrugCommittee), non = F.filter(m => !onDrugCommittee(m)), mc = median(cm.map(m => m.total)), mn = median(non.map(m => m.total)), t20 = byT.slice(0, 20).filter(onDrugCommittee).length;
+      if (mc > 1.5 * mn) cards.push(['The money follows the gavel', `${t20} of the top 20 sit on a drug-law committee`, `Typical member on those committees: ${short(mc)}. Everyone else: ${short(mn)}.`]);
+      else cards.push(['Committees vs. money', `In the ${ch}, a drug-law committee seat doesn’t predict the money`, `Typical member on those committees: ${short(mc)}. Everyone else: ${short(mn)}.`]);
+    }
+    const t10 = byT.slice(0, 10).reduce((s, m) => s + m.total, 0);
+    if (tot) cards.push(['Concentration', `The top 10 got ${Math.round(t10 / tot * 100)}% of it`, `${short(tot)} went to the ${ch} from these PACs in total.`]);
+    const pd = median(F.filter(m => m.party === 'D').map(m => m.total)), pr = median(F.filter(m => m.party === 'R').map(m => m.total));
+    cards.push(['By party', `Typical Democrat ${short(pd)} · typical Republican ${short(pr)}`, 'Medians, so a few big takers don’t skew it.']);
+    el.innerHTML = cards.map(([k, h, sub]) => `<div class="finding"><span>${k}</span><b>${h}</b><small>${sub}</small></div>`).join('') + `<p class="fine findings-note">Computed live from the FEC data on this page. Typical = median. Correlation, not causation.</p>`;
+  }
   function renderLists(L, top10) {
+    findings(L);
     const top = [...L].sort((a, b) => b.total - a.total).slice(0, 10);
     const cz = $('#caucus'); cz.innerHTML = '';
     top.forEach((m, i) => { const a = document.createElement('button'); a.className = 'cat'; a.innerHTML = `<span class="cat-rank">#${i + 1}</span><span class="cat-art"></span><b>${esc(m.name)}</b><span class="cat-w" style="color:${PARTY[m.party]}">${where(m)}</span><span class="cat-amt">${money(m.total)}</span>`; $('.cat-art', a).append(portrait(m, top10.has(m.bioguide))); a.onclick = () => open(m); cz.append(a); });
-    const zs = L.filter(m => m.total === 0).sort((a, b) => a.state.localeCompare(b.state));
-    $('#zero').innerHTML = zs.length ? zs.map(m => `<button class="zchip" data-b="${esc(m.bioguide)}"><i style="background:${PARTY[m.party]}"></i>${esc(m.name)} <span>${where(m)}</span></button>`).join('') : '<p class="fine">Nobody in this chamber is in the $0 Club for the period covered.</p>';
+    const noCmte = m => !(m.fec && m.fec.length);
+    const zs = L.filter(m => m.total === 0 && !noCmte(m)).sort((a, b) => a.state.localeCompare(b.state));
+    const nc = L.filter(m => noCmte(m));
+    $('#zero').innerHTML = (zs.length ? zs.map(m => `<button class="zchip" data-b="${esc(m.bioguide)}"><i style="background:${PARTY[m.party]}"></i>${esc(m.name)} <span>${where(m)}</span></button>`).join('') : '<p class="fine">Nobody in this chamber is in the $0 Club for the period covered.</p>')
+      + (nc.length ? `<p class="fine" style="flex-basis:100%;margin:18px 0 6px">Not counted in the $0 Club: no campaign committee on file with the FEC yet (newly appointed or sworn in), so there was nothing to take or turn down.</p>` + nc.map(m => `<button class="zchip nc" data-b="${esc(m.bioguide)}"><i style="background:${PARTY[m.party]}"></i>${esc(m.name)} <span>${where(m)} · no FEC committee yet</span></button>`).join('') : '');
     $$('.zchip').forEach(b => b.onclick = () => open(C.members.find(m => m.bioguide === b.dataset.b)));
   }
 
   /* ---------- Interaction ---------- */
   const tip = $('#ftip');
-  const pick = ev => { const rc = cv.getBoundingClientRect(), mx = (ev.clientX - rc.left) / scale - offX, my = (ev.clientY - rc.top) / scale; for (let i = seats.length - 1; i >= 0; i--) { const b = seats[i].box; if (b && mx >= b.x0 && mx <= b.x1 && my >= b.y0 && my <= b.y1) return seats[i]; } return null; };
+  const pick = ev => {
+    const rc = cv.getBoundingClientRect(), mx = (ev.clientX - rc.left) / scale - offX, my = (ev.clientY - rc.top) / scale - offY;
+    for (let i = seats.length - 1; i >= 0; i--) { const b = seats[i].box; if (b && mx >= b.x0 && mx <= b.x1 && my >= b.y0 && my <= b.y1) return seats[i]; }
+    let best = null, bd = (22 / scale) ** 2;
+    for (const st of seats) { const b = st.box; if (!b) continue; const cx = (b.x0 + b.x1) / 2, cy = (b.y0 + b.y1) / 2, d = (cx - mx) ** 2 + (cy - my) ** 2; if (d < bd) { bd = d; best = st; } }
+    return best;
+  };
   function showTip(s, ev) {
     const m = s.m;
-    tip.innerHTML = `<b>${esc(m.name)}</b><small style="color:${PARTY[m.party]}">${PNAME[m.party] || m.party} · ${where(m)}</small><div class="ft-amt">${money(m.total)}</div><div class="ft-sub">from pharma PACs · ${m.n || 0} contributions</div>${(m.top || []).slice(0, 3).map(t => `<div class="ft-row"><span>${esc(t.company)}</span><b>${short(t.amount)}</b></div>`).join('')}${onDrugCommittee(m) ? '<div class="ft-sub" style="color:#d4a84b;margin-top:6px">Rx pin: sits on a committee that writes drug-pricing law</div>' : ''}${voteId && ex(m) ? `<div class="ft-row"><span>${esc((X.votes.find(v => v.id === voteId) || {}).title || '')}</span><b style="color:${VOTE_COL[(ex(m).votes || {})[voteId]] || '#94a3b8'}">${esc((ex(m).votes || {})[voteId] || 'Not in office')}</b></div>` : ''}<div class="ft-sub" style="margin-top:6px">Click for the full record</div>`;
+    tip.innerHTML = `<b>${esc(m.name)}</b><small style="color:${PARTY[m.party]}">${PNAME[m.party] || m.party} · ${where(m)}</small>${m.chamber === 'senate' && (m.fec || []).some(id => id[0] === 'H') ? '<div class="ft-sub">includes House-campaign money</div>' : ''}<div class="ft-amt">${money(m.total)}</div><div class="ft-sub">from pharma PACs · ${m.n || 0} contributions</div><div class="ft-sub" style="color:#cbd5e1">${ctxLine(m)}</div>${gavel(m) ? `<div class="ft-sub" style="color:#d4a84b">Gavel: ${esc(gavel(m))}</div>` : ''}${(m.top || []).slice(0, 3).map(t => `<div class="ft-row"><span>${esc(t.company)}</span><b>${short(t.amount)}</b></div>`).join('')}${onDrugCommittee(m) ? '<div class="ft-sub" style="color:#d4a84b;margin-top:6px">Rx pin: sits on a committee that writes drug-pricing law</div>' : ''}${voteId && ex(m) ? `<div class="ft-row"><span>${esc((X.votes.find(v => v.id === voteId) || {}).title || '')}</span><b style="color:${VOTE_COL[(ex(m).votes || {})[voteId]] || '#94a3b8'}">${esc((ex(m).votes || {})[voteId] || 'Not in office')}</b></div>` : ''}<div class="ft-sub" style="margin-top:6px">Click for the full record</div>`;
     const rc = $('#chamber').getBoundingClientRect(); tip.classList.remove('hidden');
     let x = ev.clientX - rc.left + 14, y = ev.clientY - rc.top + 14;
     if (x + tip.offsetWidth > rc.width) x -= tip.offsetWidth + 28; if (y + tip.offsetHeight > rc.height) y = rc.height - tip.offsetHeight - 8;
@@ -156,12 +188,12 @@ document.addEventListener('DOMContentLoaded', () => {
       <div class="mem-top">
         <div class="mem-ph"><img src="https://unitedstates.github.io/images/congress/225x275/${encodeURIComponent(m.bioguide)}.jpg" alt="Official portrait of ${esc(m.name)}" onerror="if(!this.dataset.f){this.dataset.f=1;this.src='https://bioguide.congress.gov/bioguide/photo/${encodeURIComponent(m.bioguide[0])}/${encodeURIComponent(m.bioguide)}.jpg'}else{this.remove()}" referrerpolicy="no-referrer"></div>
         <div><div class="pi-kick">PUBLIC RECORD · ${m.chamber === 'senate' ? 'U.S. SENATE' : 'U.S. HOUSE'}</div><h2 id="mName">${esc(m.name)}</h2><div class="pi-meta" style="color:${PARTY[m.party]}">${PNAME[m.party] || m.party} · ${where(m)}</div>
-        <div class="mem-total">${money(m.total)}<small>direct contributions from pharmaceutical-company PACs · ${esc(C.coverage || '')}</small></div></div>
+        <div class="mem-rank">${ctxLine(m)}${gavel(m) ? ' · <b>Gavel: ' + esc(gavel(m)) + '</b>' : ''}</div><div class="mem-total">${money(m.total)}<small>from drug-company PACs, 2023–2026 (FEC)${m.chamber === 'senate' && (m.fec || []).some(id => id[0] === 'H') ? ' · includes money to their earlier House campaigns' : ''}${!(m.fec && m.fec.length) ? ' · no FEC campaign committee on file yet' : ''}</small></div></div>
       </div>
       <div class="mem-grid"><div><h4>By cycle</h4><div class="mem-kv">${cyc || '<p>None recorded.</p>'}</div></div>
         <div><h4>Top contributing PACs (by company)</h4><div class="mem-kv">${(m.top || []).map(t => `<div><span>${esc(t.company)}</span><b>${money(t.amount)}</b></div>`).join('') || '<p>None recorded. $0 Club.</p>'}</div></div></div>
-      ${ex(m) ? `<div class="mem-grid"><div><h4>Committees ${ex(m).since ? '· in this chamber since ' + esc(ex(m).since) : ''}</h4><div class="mem-kv">${(ex(m).committees || []).map(c => `<div><span>${esc(c.name)}</span><b>${c.jurisdiction_flag ? '<span style="color:#a16207">writes drug law</span>' : ''}</b></div>`).join('') || '<p>None listed.</p>'}</div></div>
-        <div><h4>Drug-pricing votes</h4><div class="mem-kv">${(X.votes || []).filter(v => v.chamber === m.chamber).map(v => { const r = (ex(m).votes || {})[v.id] || 'Not in office'; return `<div title="${esc(v.what)}"><span><a href="${esc(v.url)}" target="_blank" rel="noopener" style="color:inherit">${esc(v.title)}</a><br><small style="color:#6b7280">${esc(v.date)} · ${esc(v.what)}</small></span><b style="color:${r === 'Yea' || r === 'Aye' ? '#15803d' : r === 'Nay' || r === 'No' ? '#b91c1c' : '#6b7280'}">${esc(r)}</b></div>`; }).join('') || '<p>No tracked votes in this chamber.</p>'}</div></div></div>` : ''}
+      ${ex(m) ? `<div class="mem-grid"><div><h4>Committees ${ex(m).since ? '· in this chamber since ' + esc(ex(m).since) : ''}</h4><div class="mem-kv">${(ex(m).committees || []).map(c => `<div><span>${esc(c.name)}${c.role ? ` <b style="color:#15181d">(${esc(c.role)})</b>` : ''}</span><b>${c.jurisdiction_flag ? '<span style="color:#a16207">writes drug law</span>' : ''}</b></div>`).join('') || '<p>None listed.</p>'}</div></div>
+        <div><h4>Drug-pricing votes</h4><div class="mem-kv">${(X.votes || []).filter(v => v.chamber === m.chamber).map(v => { const r = (ex(m).votes || {})[v.id] || 'Not in office'; return `<div title="${esc(v.what)}"><span><a href="${esc(v.url)}" target="_blank" rel="noopener" style="color:inherit">${esc(v.title)}</a><br><small style="color:#6b7280">${esc(v.date)} · ${esc(v.what)}</small></span><b style="color:${r === 'Yea' || r === 'Aye' ? '#15803d' : r === 'Nay' || r === 'No' ? '#b45309' : '#6b7280'}">${esc(r)}</b></div>`; }).join('') || '<p>No tracked votes in this chamber.</p>'}</div></div></div>` : ''}
       <p class="mem-note"><b>Context:</b> PAC contributions are legal and publicly disclosed. A contribution is not a bribe and doesn’t prove anything about a vote. This counts only direct contributions from the drug-company PACs listed on this page; it excludes individual employee donations, lobbying, super PACs and leadership PACs.</p>
       <div class="pi-foot"><span>SOURCE: FEDERAL ELECTION COMMISSION</span><span class="actions" style="gap:8px">${(m.fec || []).slice(0, 2).map(id => `<a class="btn" href="https://www.fec.gov/data/candidate/${encodeURIComponent(id)}/" target="_blank" rel="noopener">FEC record ${esc(id)} ↗</a>`).join('')}</span></div>`;
     $('.pi-x', dlg).onclick = () => dlg.close();
@@ -175,11 +207,11 @@ document.addEventListener('DOMContentLoaded', () => {
     const votes = (X.votes || []).filter(v => v.chamber === chamber);
     fb.innerHTML = `<button class="chip ${committeeOnly ? 'on' : ''}" id="fCom">Rx pin: drug-law committees</button>
       <label class="vote-pick">Color by vote <select id="fVote"><option value="">— none —</option>${votes.map(v => `<option value="${esc(v.id)}" ${v.id === voteId ? 'selected' : ''}>${esc(v.date.slice(0, 4))} · ${esc(v.title)}</option>`).join('')}</select></label>
-      <span class="vote-key"><i style="background:#22c55e"></i>Yea <i style="background:#ef4444"></i>Nay <i style="background:#64748b"></i>other</span>
+      <span class="vote-key"><i style="background:#22c55e"></i>Yea <i style="background:#f59e0b"></i>Nay <i style="background:#64748b"></i>other</span>
       <span class="fine" id="fVoteWhat"></span>`;
     $('#fCom').onclick = () => { committeeOnly = !committeeOnly; filterBar(); draw(); };
-    $('#fVote').onchange = e => { voteId = e.target.value; const v = votes.find(z => z.id === voteId); $('#fVoteWhat').textContent = v ? v.what + ' · result: ' + v.result : ''; draw(); };
-    const v = votes.find(z => z.id === voteId); if (v) $('#fVoteWhat').textContent = v.what + ' · result: ' + v.result;
+    $('#fVote').onchange = e => { voteId = e.target.value; const v = votes.find(z => z.id === voteId); $('#fVoteWhat').innerHTML = v ? esc(v.what) + ' · result: ' + esc(v.result) + ' <b style="color:#d4a84b">Heads up: these rings mostly track party. Money and votes sitting side by side is not proof one caused the other.</b>' : ''; draw(); };
+    const v = votes.find(z => z.id === voteId); if (v) $('#fVoteWhat').innerHTML = esc(v.what) + ' · result: ' + esc(v.result) + ' <b style="color:#d4a84b">Heads up: these rings mostly track party.</b>';
   }
   /* Your delegation */
   const states = [...new Set(C.members.map(m => m.state))].sort();
@@ -189,7 +221,7 @@ document.addEventListener('DOMContentLoaded', () => {
     if (!st) { out.innerHTML = ''; return; }
     const ms = C.members.filter(m => m.state === st).sort((a, b) => (a.chamber === b.chamber ? b.total - a.total : a.chamber === 'senate' ? -1 : 1));
     out.innerHTML = ms.map(m => { const xm = ex(m); const vs = xm && X ? (X.votes || []).filter(v => v.chamber === m.chamber).map(v => (xm.votes || {})[v.id]).filter(r => r === 'Yea' || r === 'Nay').length : 0;
-      return `<button class="dcard" data-b="${esc(m.bioguide)}"><span class="dc-ch">${m.chamber === 'senate' ? 'Senator' : 'Rep · ' + (m.district ? 'District ' + m.district : 'At-large')}</span><b>${esc(m.name)}</b><span style="color:${PARTY[m.party]}">${PNAME[m.party] || m.party}</span><span class="dc-amt">${money(m.total)}</span><span class="dc-sub">${onDrugCommittee(m) ? 'Rx pin · drug-law committee · ' : ''}${vs} tracked votes</span></button>`; }).join('');
+      return `<button class="dcard" data-b="${esc(m.bioguide)}"><span class="dc-ch">${m.chamber === 'senate' ? 'Senator' : 'Rep · ' + (m.district ? 'District ' + m.district : 'At-large')}</span><b>${esc(m.name)}</b><span style="color:${PARTY[m.party]}">${PNAME[m.party] || m.party}</span><span class="dc-amt">${money(m.total)}</span><span class="dc-sub" style="color:#cbd5e1">${ctxLine(m)}</span>${gavel(m) ? `<span class="dc-sub" style="color:#d4a84b">Gavel: ${esc(gavel(m))}</span>` : ''}<span class="dc-sub">${onDrugCommittee(m) ? 'Rx pin · drug-law committee · ' : ''}${vs} tracked votes</span></button>`; }).join('');
     $$('.dcard').forEach(c => c.onclick = () => open(C.members.find(m => m.bioguide === c.dataset.b)));
   };
   $$('[data-ch]').forEach(b => b.onclick = () => { chamber = b.dataset.ch; voteId = ''; $$('[data-ch]').forEach(x => x.classList.toggle('on', x === b)); build(); filterBar(); });
