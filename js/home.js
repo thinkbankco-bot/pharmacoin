@@ -6,13 +6,13 @@ document.addEventListener('DOMContentLoaded', () => {
 
   /* Today's dose number (Dose #1 = Oct 5, 2026 UTC) */
   const doseNo = Math.max(0, Math.floor((Date.now() - Date.UTC(2026, 9, 5)) / 864e5)) + 1;
-  $('#heroDose').textContent = `Daily Dose #${doseNo}`; $('#ctaDose').textContent = doseNo; $('#faxNo').textContent = `DOSE #${doseNo}`;
+  if ($('#heroDose')) $('#heroDose').textContent = `Daily Dose #${doseNo}`; if ($('#ctaDose')) $('#ctaDose').textContent = doseNo; if ($('#faxNo')) $('#faxNo').textContent = `DOSE #${doseNo}`;
   const now = new Date(); $('#filled').textContent = `${String(now.getMonth() + 1).padStart(2, '0')}/${String(now.getDate()).padStart(2, '0')}/${String(now.getFullYear()).slice(2)}`;
 
   /* Ticker */
   const money = R.filter(r => r.amount_usd).sort((a, b) => b.amount_usd - a.amount_usd);
   const items = money.slice(0, 18).map(r => `<span class="ticker-item"><b>${esc(r.company.split(',')[0])}</b> ${esc(r.year)} <span class="amt">${fmtMoney(r.amount_usd)}</span> ${esc(PH.CAT[r.category] || r.category)}</span>`).join('');
-  $('#ticker').innerHTML = items + items;
+  if ($('#ticker')) $('#ticker').innerHTML = items + items;
 
   /* Formulary shelf */
   const F = window.FORMULARY || [];
@@ -23,7 +23,7 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   /* Settlement stack: biggest receipts, ordered by year */
-  const stackSet = money.slice(0, 8).sort((a, b) => a.year - b.year);
+  const stackSet = money.slice(0, 6).sort((a, b) => a.year - b.year);
   const stack = $('#stack');
   stack.innerHTML = stackSet.map(r => receiptHTML(r)).join('');
   const cards = $$('.receipt', stack);
@@ -48,7 +48,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const sum = stackSet.slice(0, n).reduce((s, r) => s + r.amount_usd, 0);
     animateTo(sum);
     runCount.textContent = n;
-    runCo.textContent = n ? `last: ${stackSet[n - 1].company.split(',')[0]}` : 'scroll to print';
+    runCo.textContent = n ? `last: ${stackSet[n - 1].company.split(',')[0]}${stackSet[n - 1].company.includes(',') ? ' et al.' : ''}` : 'scroll to print';
     meter.style.width = (sum / stackTotal * 100) + '%';
   });
 
@@ -61,7 +61,7 @@ document.addEventListener('DOMContentLoaded', () => {
   /* Mission bar: progress to being fined like Pfizer (2009, $2.3B) */
   document.addEventListener('ph:mcap', e => {
     const d = e.detail;
-    if (!d || !d.mcap) { $('#missionPct').textContent = 'chart offline'; return; }
+    if (!$('#missionPct')) return; if (!d || !d.mcap) { $('#missionPct').textContent = 'chart offline'; return; }
     const pct = d.mcap / 2.3e9 * 100;
     $('#missionPct').textContent = pct.toFixed(pct < .01 ? 4 : 2) + '%';
     requestAnimationFrame(() => $('#missionBar').style.width = Math.max(pct, .4) + '%');

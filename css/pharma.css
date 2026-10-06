@@ -182,7 +182,7 @@ img,svg{display:block;max-width:100%}
 .compare div{display:flex;justify-content:space-between;font-family:var(--mono);font-size:.72rem;color:var(--muted);border-top:1px solid var(--line);padding-top:10px}
 .compare b{color:var(--ink);font-weight:600}
 .stack{display:flex;flex-direction:column;align-items:center;gap:0;padding-bottom:12vh}
-.stack .receipt{position:sticky;margin-bottom:30vh;transition:transform .4s var(--ease)}
+.stack .receipt{position:sticky;margin-bottom:16vh;transition:transform .4s var(--ease)}
 .stack .receipt:last-child{margin-bottom:0}
 
 /* ---------- PAPER BAND (light) ---------- */
@@ -362,7 +362,7 @@ body.side-effects .hero h1{filter:hue-rotate(140deg)}
   .foot-grid{grid-template-columns:1fr 1fr}
   .claim{grid-template-columns:1fr;gap:10px}
   .sticky-side{position:relative;top:0}
-  .dim-line.v{display:none}
+  .dim-line.v{display:none}.dim-line.h{display:none}
   .sec{padding:84px 0}
   .buy{padding:30px 22px}
 }
