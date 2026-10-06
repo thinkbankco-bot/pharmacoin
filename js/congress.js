@@ -242,4 +242,14 @@ document.addEventListener('DOMContentLoaded', () => {
   $('#fq').addEventListener('input', e => { query = e.target.value; draw(); });
   addEventListener('resize', resize);
   resize(); sizeBar(); build(); filterBar();
+  /* The Lobby */
+  (() => {
+    const L = window.LOBBYING; if (!L || !$('#lobbyStats')) return;
+    const y = L.industry_total || {}, mk = L.industry_total_makers_only || {};
+    $('#lobbyStats').innerHTML = [['2023', y['2023']], ['2024', y['2024']], ['2025', y['2025']], ['2026 (H1)', y['2026']]].map(([k, v]) => `<div class="stat"><div class="n">$${Math.round((v || 0) / 1e6)}M</div><div class="l">${k} lobbying</div><div class="s">drugmakers only: $${Math.round((mk[k.slice(0, 4)] || 0) / 1e6)}M</div></div>`).join('')
+      + `<div class="stat"><div class="n amber">${L.industry_revolving}<small style="font-size:.4em;color:var(--muted)"> / ${L.industry_lobbyists}</small></div><div class="l">lobbyists with a former government job</div><div class="s">2025 · at least ${Math.round(L.industry_revolving / L.industry_lobbyists * 100)}%</div></div>`;
+    const top = [...L.companies].sort((a, b) => (b.by_year['2025'] || 0) - (a.by_year['2025'] || 0)).slice(0, 12), max = top[0].by_year['2025'] || 1;
+    $('#lobbyBars').innerHTML = top.map(c => `<div class="lb-row"><span>${esc(c.company)}</span><i style="width:${(c.by_year['2025'] || 0) / max * 100}%"></i><b>${short(c.by_year['2025'] || 0)}</b><em>${c.lobbyists} lobbyists · ${c.revolving} ex-gov</em></div>`).join('');
+    $('#lobbyBills').innerHTML = (L.top_bills || []).slice(0, 8).map(b => `<a class="lb-bill" href="${esc(b.url || '#')}" target="_blank" rel="noopener"><b>${esc(/^An act to provide for reconciliation/i.test(b.title || '') && b.bill === 'H.R. 1' ? 'One Big Beautiful Bill Act' : (b.title || b.bill))}</b><span>${esc(b.bill)}${b.congress ? ' · ' + b.congress + 'th Congress' : ''}${b.law ? ' · ' + esc(b.law) : ''}</span><em>${b.filings} reports · ${b.companies || '?'} companies</em></a>`).join('');
+  })();
 });

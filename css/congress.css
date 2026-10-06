@@ -94,3 +94,21 @@
 .floor-size .sz-l{font-family:var(--mono);font-size:.66rem;letter-spacing:.12em;color:var(--muted);text-transform:uppercase;margin-right:4px}
 .floor-size button{border:1px solid var(--line2);background:none;color:var(--muted);border-radius:999px;padding:8px 14px;font-family:var(--sans);font-weight:700;font-size:.8rem;cursor:pointer}
 .floor-size button.on{background:#d4a84b;border-color:#d4a84b;color:#1a1204}
+
+.lobby-stats{display:grid;grid-template-columns:repeat(5,1fr);border:1px solid var(--line);border-radius:18px;overflow:hidden;margin-bottom:18px}
+.lobby-stats .stat{border-right:1px solid var(--line)}.lobby-stats .stat:last-child{border-right:0}
+.lobby-grid{display:grid;grid-template-columns:1.1fr .9fr;gap:16px}
+.lb-row{display:grid;grid-template-columns:150px 1fr 70px;gap:10px;align-items:center;padding:6px 0;border-top:1px solid rgba(117,154,199,.1);font-size:.86rem}
+.lb-row span{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.lb-row i{height:8px;border-radius:6px;background:linear-gradient(90deg,#b98b2c,#ffdf8f)}
+.lb-row b{text-align:right;font-family:var(--mono);font-weight:600}
+.lb-row em{grid-column:2/4;font-style:normal;font-family:var(--mono);font-size:.62rem;color:var(--dim);margin-top:-4px}
+.lb-bill{display:block;text-decoration:none;padding:9px 0;border-top:1px solid rgba(117,154,199,.1)}
+.lb-bill b{display:block;font-size:.92rem}
+.lb-bill span,.lb-bill em{display:block;font-family:var(--mono);font-size:.62rem;color:var(--muted);font-style:normal}
+.lb-bill em{color:#d4a84b}
+@media (max-width:980px){.lobby-stats{grid-template-columns:1fr 1fr}.lobby-stats .stat{border-bottom:1px solid var(--line)}.lobby-grid{grid-template-columns:1fr}}
+@media (max-width:560px){.lb-row{grid-template-columns:110px 1fr 60px}}
+.lobby-stats .stat .n{font-size:clamp(1.6rem,2.6vw,2.4rem)}
+.lb-bill b{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.lobby-grid{grid-template-columns:minmax(0,1.1fr) minmax(0,.9fr)}.lobby-grid>*{min-width:0}@media (max-width:980px){.lobby-grid{grid-template-columns:minmax(0,1fr)}}
