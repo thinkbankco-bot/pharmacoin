@@ -16,6 +16,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
   /* Formulary shelf */
   const F = window.FORMULARY || [];
+  const WORDS = ['Zero', 'One', 'Two', 'Three', 'Four', 'Five', 'Six', 'Seven', 'Eight', 'Nine', 'Ten', 'Eleven', 'Twelve', 'Thirteen', 'Fourteen', 'Fifteen', 'Sixteen', 'Seventeen', 'Eighteen', 'Nineteen', 'Twenty'];
+  if ($('#shelfCount')) $('#shelfCount').textContent = WORDS[F.length] || String(F.length);
   if (window.PHX && $('#homeShelf')) {
     $('#homeShelf').innerHTML = F.slice(0, 10).map((d, i) => `<a class="sku" href="formulary.html#${d.id}" style="--c:${d.color};text-decoration:none">
       <span class="sku-ndc">NDC 0420-${String(i + 1).padStart(3, '0')}</span><span class="sku-art">${PHX.art(d)}</span>

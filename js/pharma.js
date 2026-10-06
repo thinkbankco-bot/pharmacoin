@@ -17,7 +17,7 @@ const PH = (() => {
 
   const PAGES = [
     ['index.html', 'Home'], ['congress.html', 'The Floor', 'hot'], ['fauci.html', 'The Diary', 'new'], ['arena.html', 'Boss Raid'], ['dose.html', 'Daily Dose'],
-    ['formulary.html', 'Formulary'], ['archive.html', 'Receipts'], ['prescribers.html', 'Prescribers'],
+    ['formulary.html', 'Pharmussy'], ['archive.html', 'Receipts'], ['prescribers.html', 'Prescribers'],
   ];
 
   /* One shared scroll scheduler: every scroll-driven effect runs once per frame */
@@ -45,7 +45,7 @@ const PH = (() => {
       <div><a class="brand" href="index.html"><span class="brand-mask">${MASK}</span><span>$PHARMA</span></a>
       <p class="fine" style="margin-top:16px">PHARMA Holdings plc is not a real pharmaceutical company, which is the nicest thing anyone has said about it. Satirical evidence desk. Real sources, sarcastic string. Not medical advice. Not investment advice. Not saying the calendar did it. If you are sick, call a doctor, not a memecoin.</p></div>
       <div><h4>The Lab</h4><a href="dose.html">Daily Dose</a><a href="archive.html">Receipt Archive</a><a href="plague.html">Plague Desk</a><a href="hantavirus.html">Hanta Calendar</a><a href="polio.html">Polio Trail</a></div>
-      <div><h4>The Company</h4><a href="formulary.html">The Formulary</a><a href="arena.html">Boss Raid</a><a href="congress.html">The Floor</a><a href="prescribers.html">Top Prescribers</a><a href="index.html#letter">Investor Relations</a><a href="casino.html">PharmaCasino</a><a href="boss-fight.html">Discontinued Products</a></div>
+      <div><h4>The Company</h4><a href="formulary.html">The Pharmussy</a><a href="arena.html">Boss Raid</a><a href="congress.html">The Floor</a><a href="prescribers.html">Top Prescribers</a><a href="index.html#letter">Investor Relations</a><a href="casino.html">PharmaCasino</a><a href="boss-fight.html">Discontinued Products</a></div>
       <div><h4>Chart</h4><a href="${CONFIG.buy}" target="_blank" rel="noopener">Buy $PHARMA</a><a href="${CONFIG.dex}" target="_blank" rel="noopener">DexScreener</a><a href="${CONFIG.x}" target="_blank" rel="noopener">X: @PharmaCoinSol</a><a href="methodology.html">How we don't get sued</a></div>
       </div><div class="foot-word" aria-hidden="true">$PHARMA</div></div>`;
     document.body.append(foot);

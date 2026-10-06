@@ -79,7 +79,7 @@ document.addEventListener('DOMContentLoaded', () => {
              <h4>2 DOSAGE AND ADMINISTRATION</h4><p>${esc(d.dose)}</p>
              <h4>4 CONTRAINDICATIONS</h4><ul>${d.contra.map(x => `<li>${esc(x)}</li>`).join('')}</ul>
              <h4>6 ADVERSE REACTIONS</h4><ul>${d.se.map(x => `<li>${esc(x)}</li>`).join('')}</ul>
-             <h4>16 HOW SUPPLIED</h4><p>On Solana, in a Guy Fawkes mask, by people who read footnotes. Not available at any pharmacy, thank God.</p></div>
+             <h4>HOW SUPPLIED</h4><p>On Solana, in a Guy Fawkes mask, by people who read footnotes. Not available at any pharmacy, thank God.</p></div>
         <div><h4>14 CLINICAL HISTORY <span class="realtag">REAL</span></h4><p>${esc(d.hist)}</p>
              ${r ? receiptHTML(r) : ''}</div>
       </div>
