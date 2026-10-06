@@ -1,0 +1,82 @@
+<!doctype html>
+<html lang="en" class="no-js"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Boss Raid — $PHARMA</title>
+<meta name="description" content="Floor 40. Every $PHARMA bullposter is a masked raider. Every boss is a real Big Pharma fine, and our market cap is the damage.">
+<meta property="og:title" content="$PHARMA Boss Raid — Big Pharma, Final Boss">
+<meta property="og:description" content="Every holder who posts joins the raid. Post more, level up. The boss has a lot of HP.">
+<meta property="og:url" content="https://thinkbankco-bot.github.io/pharmacoin/arena.html">
+<meta property="og:image" content="https://thinkbankco-bot.github.io/pharmacoin/assets/og.png"><meta name="twitter:card" content="summary_large_image">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:ital,wght@0,400;0,500;0,700;0,800;0,900;1,800;1,900&family=IBM+Plex+Mono:wght@400;500;600;700&family=Caveat:wght@600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/pharma.css"><link rel="stylesheet" href="css/pages.css"><link rel="stylesheet" href="css/phase1.css"><link rel="stylesheet" href="css/arena.css">
+</head><body>
+
+<section class="raid">
+  <div class="wrap">
+    <div class="raid-top">
+      <div>
+        <div class="eyebrow"><span class="dot"></span> Floor 40 · the Boardroom · <span id="raidMode">live raid</span></div>
+        <h1 class="raid-title">Boss <em>Raid.</em></h1>
+      </div>
+      <p class="raid-sub">Thirty floors of real drugmakers, smallest market cap to largest. Each boss’s HP is its market cap; the damage is $PHARMA’s. Companies with receipts on file get the evil statue. Everyone who posts joins the raid. <span class="rl" data-rl="Market caps are a dated snapshot from SEC share counts × last close. Scoreboard, not a prediction.">Big Pharma remains confident in its legal position.</span></p>
+    </div>
+
+    <div class="hud">
+      <div class="hud-boss">
+        <div class="hud-name"><b id="bossName">BOSS 01</b><span><i id="bossSub"></i> · <i id="phaseName">Phase 1: Smug</i></span></div>
+        <div class="hp"><i id="hpFill"></i><span id="hpText">HP —</span></div>
+      </div>
+      <div class="hud-stats">
+        <div><b id="hRaiders">0</b><span>raiders</span><small id="hScripts" hidden></small></div>
+        <div><b id="hDamage">—</b><span>damage (mcap)</span></div>
+        <div><b id="hFlipped">0/17</b><span>bosses flipped</span></div>
+      </div>
+    </div>
+
+    <div class="stage" id="stage">
+      <canvas id="arena" aria-label="Boss raid: masked raiders attacking Big Pharma"></canvas>
+      <div class="preview-flag hidden" id="previewFlag">PREVIEW · simulated raiders · real holders appear after the first X sweep</div>
+      <div class="tip hidden" id="tip"></div>
+      <div class="boss-quote" id="bossQuote"></div>
+    </div>
+    <div class="ladder-strip" id="ladderStrip" aria-label="The boss ladder"></div>
+    <div class="dossier" id="dossier"></div>
+    <p class="stage-note">Hover a raider for their stats. Click to open their X profile. Showing the top <span id="shownN">0</span> raiders<span id="moreN"></span>.</p>
+  </div>
+</section>
+
+<section class="sec" style="padding-top:40px">
+  <div class="wrap">
+    <div class="sec-head"><div><div class="kicker">Class ladder</div><h2 class="title rv-words">Post more. <em>Get promoted.</em></h2><p class="lead rv">Your raider levels up with your Impact score from the <a href="prescribers.html" style="color:var(--cyan)">Decile Report</a>. Same anti-farming rules: square-root engagement, 3 scripts a day, copy-paste scores zero.</p></div></div>
+    <div class="ladder-grid" id="classes"></div>
+  </div>
+</section>
+
+<section class="sec dark-band">
+  <div class="wrap split">
+    <div>
+      <div class="kicker">Combat rules</div>
+      <h2 class="title rv-words">How the boss <em>loses HP.</em></h2>
+      <div class="ladder" style="margin-top:26px">
+        <div class="rung rv"><div><h4>Every boss is a real drugmaker’s market cap</h4><p>From microcaps to the giants, sorted smallest first. Share counts come from SEC filings and prices from the last close, with the snapshot date on every plaque.</p></div></div>
+        <div class="rung rv"><div><h4>HP = their market cap. Damage = ours.</h4><p>When $PHARMA’s live market cap passes a company’s, that floor is flipped and the next boss rises. Raiders level up from posting; posting is how the raid grows.</p></div></div>
+        <div class="rung rv"><div><h4>Evil statue = receipts on file</h4><p>Only companies with settlements or pleas in our archive get horns and the “No Wrongdoing Admitted” stamp. Companies with no record are neutral scoreboard markers. Not an accusation, not a price prediction, not financial advice.</p></div></div>
+      </div>
+    </div>
+    <aside class="sticky-side">
+      <div class="panel">
+        <h3>House rules</h3>
+        <p>Public posts only, refreshed by sweep. No prizes, no tokens, no wagers. The boss is an institution, not a person or a company you can name; Marjorie insists.</p>
+        <div class="callout w"><b>Want out of the raid?</b> Ask in the community and your raider retires at the next sweep.</div>
+        <div class="actions" style="margin-top:16px"><a class="btn primary" href="prescribers.html">Decile Report <span class="arr">→</span></a></div>
+      </div>
+    </aside>
+  </div>
+</section>
+
+<script src="js/pharma.js"></script>
+<script src="data/receipts.js"></script>
+<script src="data/targets.js"></script>
+<script src="data/prescribers.js"></script>
+<script src="js/arena.js"></script>
+</body></html>

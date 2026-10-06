@@ -1,0 +1,78 @@
+<!doctype html>
+<html lang="en" class="no-js"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Receipt Archive — $PHARMA</title>
+<meta name="description" content="Searchable archive of pharmaceutical settlements, guilty pleas, withdrawals and pricing cases. Every receipt sourced.">
+<meta property="og:url" content="https://thinkbankco-bot.github.io/pharmacoin/archive.html">
+<meta property="og:image" content="https://thinkbankco-bot.github.io/pharmacoin/assets/og.png"><meta name="twitter:card" content="summary_large_image">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:ital,wght@0,400;0,500;0,700;0,800;0,900;1,800;1,900&family=IBM+Plex+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/pharma.css"><link rel="stylesheet" href="css/pages.css">
+</head><body>
+
+<header class="phero">
+  <div class="plane plane-grid" data-rate=".12" style="position:absolute;inset:0"></div>
+  <div class="wrap" style="position:relative">
+    <span class="case-no">Archive 000-RX</span>
+    <div class="eyebrow"><span class="dot"></span> Public record · searchable · every receipt sourced</div>
+    <h1 class="rv-words">The receipt <em>pile.</em></h1>
+    <p class="sub rv">Settlements, guilty pleas, safety scandals, price games and opioid-era deals. Search it like a cursed shopping history.</p>
+    <div class="stats rv" id="aStats"></div>
+  </div>
+</header>
+
+<section class="sec" style="padding-top:60px">
+  <div class="wrap">
+    <div class="search rv"><input id="q" type="search" placeholder="Search a company, drug, year… try “opioid”, “Pfizer”, “insulin”" aria-label="Search receipts"><span class="count" id="count"></span></div>
+    <div class="filters" id="cats"></div>
+    <div class="filters" style="margin-top:-12px">
+      <button class="chip on" data-sort="year">Newest first</button>
+      <button class="chip" data-sort="old">Oldest first</button>
+      <button class="chip" data-sort="amt">Biggest first</button>
+      <button class="chip" data-sort="rand">Shuffle</button>
+    </div>
+    <div class="receipt-wall" id="wall"></div>
+    <p class="empty hidden" id="empty">No receipts found. This is suspiciously convenient.</p>
+    <p class="fine" style="max-width:760px;margin:40px auto 0;text-align:center">Amounts are as announced. Some are “up to” figures paid over many years, and some deals overlap (the 2020 Purdue resolution and the 2025 Purdue–Sackler deal both draw on the same bankruptcy). Totals on this site are raw sums, not net cash. Spotted an error? That’s a bug. <a href="methodology.html" style="color:var(--cyan)">How to report it →</a></p>
+  </div>
+</section>
+
+<script src="js/pharma.js"></script>
+<script src="data/receipts.js"></script>
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+  const { $, $$, esc, fmtMoney, receiptHTML } = PH;
+  const R = (window.RECEIPTS || []).slice();
+  const LBL = { all: 'All', opioids: 'Opioids', criminal: 'Criminal', settlement: 'Settlements', pricing: 'Pricing', marketing: 'Off-label', withdrawal: 'Safety scandals', 'data-hiding': 'Data handling', 'vaccine-history': 'Vaccine history', lobbying: 'Lobbying' };
+  const priced = R.filter(r => r.amount_usd);
+  const companies = new Set(R.map(r => r.company.split(/[,(/]/)[0].trim()));
+  const yrs = R.map(r => r.year).filter(Number);
+  $('#aStats').innerHTML = [
+    [R.length, 'Receipts', 'all VERIFIED, all linked', ''],
+    [priced.reduce((s, r) => s + r.amount_usd, 0), 'Raw sum', 'some deals overlap', 'red', 'money'],
+    [companies.size, 'Customers', 'companies & families', 'amber'],
+    [Math.max(...yrs) - Math.min(...yrs), 'Years of receipts', `${Math.min(...yrs)}–${Math.max(...yrs)}`, ''],
+  ].map(([n, l, s, c, f]) => `<div class="stat"><div class="n ${c}" data-count="${n}" ${f ? 'data-fmt="money"' : ''}>${f ? fmtMoney(n) : n}</div><div class="l">${l}</div><div class="s">${s}</div></div>`).join('');
+  const counts = R.reduce((m, r) => (m[r.category] = (m[r.category] || 0) + 1, m), {});
+  const cats = ['all', ...Object.keys(LBL).filter(k => counts[k])];
+  $('#cats').innerHTML = cats.map(k => `<button class="chip ${k === 'all' ? 'on' : ''}" data-cat="${k}">${LBL[k]} <span style="opacity:.6">${k === 'all' ? R.length : counts[k]}</span></button>`).join('');
+  let cat = 'all', sort = 'year';
+  const params = new URLSearchParams(location.search);
+  if (params.get('q')) $('#q').value = params.get('q');
+  function render() {
+    const q = $('#q').value.toLowerCase().trim();
+    let list = R.filter(r => (cat === 'all' || r.category === cat) && (!q || [r.company, r.title, r.fact, r.year, r.quip, r.source_name, r.category].join(' ').toLowerCase().includes(q)));
+    if (sort === 'year') list.sort((a, b) => b.year - a.year);
+    if (sort === 'old') list.sort((a, b) => a.year - b.year);
+    if (sort === 'amt') list.sort((a, b) => (b.amount_usd || 0) - (a.amount_usd || 0));
+    if (sort === 'rand') list.sort(() => Math.random() - .5);
+    $('#wall').innerHTML = list.map(r => receiptHTML(r)).join('');
+    $('#count').textContent = `${list.length} receipt${list.length === 1 ? '' : 's'} · ${fmtMoney(list.reduce((s, r) => s + (r.amount_usd || 0), 0))}`;
+    $('#empty').classList.toggle('hidden', list.length > 0);
+  }
+  $('#q').addEventListener('input', render);
+  $$('[data-cat]').forEach(b => b.onclick = () => { cat = b.dataset.cat; $$('[data-cat]').forEach(x => x.classList.toggle('on', x === b)); render(); });
+  $$('[data-sort]').forEach(b => b.onclick = () => { sort = b.dataset.sort; $$('[data-sort]').forEach(x => x.classList.toggle('on', x === b)); render(); });
+  render();
+});
+</script>
+</body></html>

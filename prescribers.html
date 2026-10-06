@@ -1,0 +1,77 @@
+<!doctype html>
+<html lang="en" class="no-js"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Top Prescribers — $PHARMA</title>
+<meta name="description" content="The Decile Report: $PHARMA's top bullposters on X, ranked the way pharma sales reps rank doctors.">
+<meta property="og:title" content="Top Prescribers — the $PHARMA Decile Report">
+<meta property="og:description" content="Pharma reps rank doctors into deciles by prescribing volume. We rank holders by bullposts. Nobody gets lunch.">
+<meta property="og:url" content="https://thinkbankco-bot.github.io/pharmacoin/prescribers.html">
+<meta property="og:image" content="https://thinkbankco-bot.github.io/pharmacoin/assets/og.png"><meta name="twitter:card" content="summary_large_image">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:ital,wght@0,400;0,500;0,700;0,800;0,900;1,800;1,900&family=IBM+Plex+Mono:wght@400;500;600;700&family=Caveat:wght@600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/pharma.css"><link rel="stylesheet" href="css/pages.css"><link rel="stylesheet" href="css/phase1.css"><link rel="stylesheet" href="css/prescribers.css">
+</head><body>
+
+<header class="phero">
+  <div class="plane plane-grid" data-rate=".12" style="position:absolute;inset:0"></div>
+  <div class="wrap" style="position:relative">
+    <span class="case-no">SFE Report · Confidential</span>
+    <div class="eyebrow"><span class="dot"></span> Sales force effectiveness · the Decile Report · <span id="genAt">sweep pending</span></div>
+    <h1 class="rv-words">Top <em>Prescribers.</em></h1>
+    <p class="sub rv"><span class="rl" data-rl="In the real industry, sales reps rank doctors into “deciles” by how much they prescribe, then target the top deciles with lunches and speaker fees. Here you get ranked for bullposting, and nobody gets lunch.">PHARMA Holdings proudly recognizes the healthcare professionals who drive outstanding prescription volume.</span> Every public post about $PHARMA is a script. The more people fill it, the higher your decile.</p>
+    <div class="stats rv" id="pStats"></div>
+  </div>
+</header>
+
+<section class="sec" style="padding-top:60px" id="boardSec">
+  <div class="wrap">
+    <div id="empty" class="pending hidden">
+      <div class="stamp w" style="font-size:.9rem">First sweep pending</div>
+      <h2 class="title" style="margin-top:22px">The Receipts Department is <em>counting.</em></h2>
+      <p class="lead">The board fills in after the first X sweep. Want to be on it? Post about $PHARMA. Original posts only, because copy-paste scores zero.</p>
+    </div>
+    <div id="board" class="hidden">
+      <div class="potm-wrap">
+        <article class="potm rv" id="potm"></article>
+        <div class="podium" id="podium"></div>
+      </div>
+      <div class="sec-head" style="margin-top:70px"><div><div class="kicker">The Decile Report</div><h2 class="title rv-words">Every prescriber, <em>ranked.</em></h2></div>
+        <div class="search" style="min-width:min(380px,100%)"><input id="pq" type="search" placeholder="Find a prescriber…" aria-label="Find a prescriber"><span class="count" id="pCount"></span></div></div>
+      <div class="dtable" id="dtable"></div>
+    </div>
+  </div>
+</section>
+
+<section class="sec dark-band" id="sotwSec" hidden>
+  <div class="wrap split">
+    <div><div class="kicker">Script of the week</div><h2 class="title rv-words">The most-filled <em>prescription.</em></h2><p class="lead">The single best $PHARMA post of the last 7 days, by engagement.</p></div>
+    <div id="sotw"></div>
+  </div>
+</section>
+
+<section class="sec">
+  <div class="wrap split">
+    <div>
+      <div class="kicker">Methodology</div>
+      <h2 class="title rv-words">How the decile <em>gets made.</em></h2>
+      <div class="ladder" style="margin-top:26px">
+        <div class="rung rv"><div><h4>Every public post that names $PHARMA is a script</h4><p>We sweep X search for “$PHARMA”, “pharmacoin” and the contract address. Plain retweets don’t count. Write something.</p></div></div>
+        <div class="rung rv"><div><h4>Impact = 1 + √(engagement)</h4><p>Likes, reposts, quotes, replies and views. The square root means one viral post can’t buy the crown, and showing up matters.</p></div></div>
+        <div class="rung rv"><div><h4>Max 3 scripts a day count</h4><p>Reply-spam doesn’t scale. Your three best posts each day count; the rest are just enthusiasm.</p></div></div>
+        <div class="rung rv"><div><h4>Copy-paste scores zero</h4><p>If the same text shows up from three or more accounts, it scores nothing. Bot rings get a 0, the same as their contribution.</p></div></div>
+      </div>
+    </div>
+    <aside class="sticky-side">
+      <div class="panel">
+        <h3>House rules</h3>
+        <p>Decile 10 means top 10% of prescribers by impact. Refills means distinct days you posted. Reach is the total views on your scripts.</p>
+        <p>The board is public posts only, refreshed by sweep, not live. No rewards, no tokens, no prizes. The only bonus is that Marjorie knows your name.</p>
+        <div class="callout w"><b>Want off the board?</b> Ask in the community and you’re delisted at the next sweep, no questions. We rank posts, not people.</div>
+      </div>
+    </aside>
+  </div>
+</section>
+
+<script src="js/pharma.js"></script>
+<script src="data/prescribers.js"></script>
+<script src="js/prescribers.js"></script>
+</body></html>

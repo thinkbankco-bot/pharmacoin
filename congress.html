@@ -1,0 +1,90 @@
+<!doctype html>
+<html lang="en" class="no-js"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>The Floor — $PHARMA</title>
+<meta name="description" content="Every member of Congress, drawn to scale. The scale is pharmaceutical-company PAC money, from official FEC filings.">
+<meta property="og:title" content="The Floor — Congress, drawn to scale (pharma PAC money)">
+<meta property="og:description" content="The more drug-company PAC money a member took, the bigger they get. Every number from FEC filings. Click anyone for the receipts.">
+<meta property="og:url" content="https://thinkbankco-bot.github.io/pharmacoin/congress.html">
+<meta property="og:image" content="https://thinkbankco-bot.github.io/pharmacoin/assets/og.png"><meta name="twitter:card" content="summary_large_image">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:ital,wght@0,400;0,500;0,700;0,800;0,900;1,800;1,900&family=IBM+Plex+Mono:wght@400;500;600;700&family=Caveat:wght@600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/pharma.css"><link rel="stylesheet" href="css/pages.css"><link rel="stylesheet" href="css/phase1.css"><link rel="stylesheet" href="css/congress.css">
+</head><body>
+
+<section class="floor-hero">
+  <div class="wrap">
+    <div class="floor-top">
+      <div>
+        <div class="eyebrow"><span class="dot"></span> The Floor · <span id="cover">FEC filings</span></div>
+        <h1 class="raid-title">The <em>Floor.</em></h1>
+      </div>
+      <p class="raid-sub">Every member of Congress, drawn to scale. The scale is how much money drug-company PACs gave them. <span class="rl" data-rl="Exactly what's counted: direct contributions from pharmaceutical-manufacturer PACs to each member's campaign, per FEC filings. Legal, disclosed, and not a bribe. Click anyone for the receipts.">PHARMA Holdings plc is proud to support democracy.</span></p>
+    </div>
+
+    <div class="floor-bar">
+      <div class="seg" role="tablist"><button class="on" data-ch="senate">Senate</button><button data-ch="house">House</button></div>
+      <div class="search floor-search"><input id="fq" type="search" placeholder="Find a member or state (e.g. “TX”)…" aria-label="Find a member"><span class="count" id="fcount"></span></div>
+      <div class="floor-stats"><div><b id="sTotal">—</b><span>to this chamber</span></div><div><b id="sTook">—</b><span>took pharma PAC money</span></div><div><b id="sZero">—</b><span>took $0</span></div></div>
+    </div>
+
+    <div class="floor-filters" id="ffilters"></div>
+    <div class="chamber" id="chamber">
+      <canvas id="floor" aria-label="Cartoon chamber of Congress; member size scales with pharmaceutical PAC contributions"></canvas>
+      <div class="tip hidden" id="ftip"></div>
+      <div class="pending-floor hidden" id="fpending"><div class="stamp w">Data pending</div><p>The FEC sweep hasn’t been published yet. The Floor fills in when it is.</p></div>
+      <div class="legend"><span><i class="lg d"></i>Democrat</span><span><i class="lg r"></i>Republican</span><span><i class="lg i"></i>Independent</span><span class="lg-sz">Bigger = more pharma PAC money · top hat = top 10</span></div>
+    </div>
+    <p class="stage-note">Hover a member for the numbers. Click for the full record.</p>
+  </div>
+</section>
+
+<section class="sec" style="padding-top:40px;padding-bottom:20px">
+  <div class="wrap">
+    <div class="sec-head"><div><div class="kicker">Your delegation</div><h2 class="title rv-words">Check <em>your people.</em></h2><p class="lead rv">Pick your state. Two senators, every House member, the pharma PAC money, the committees, the votes.</p></div>
+      <select id="dState" class="state-pick" aria-label="Pick your state"></select></div>
+    <div class="dlist" id="dList"></div>
+  </div>
+</section>
+
+<section class="sec" style="padding-top:40px">
+  <div class="wrap">
+    <div class="sec-head"><div><div class="kicker">The Fat Cat Caucus</div><h2 class="title rv-words">Top ten, <em>by the filings.</em></h2><p class="lead rv">The ten members of this chamber with the most direct contributions from pharmaceutical-company PACs in the period covered.</p></div></div>
+    <div class="caucus" id="caucus"></div>
+  </div>
+</section>
+
+<section class="sec dark-band">
+  <div class="wrap">
+    <div class="sec-head"><div><div class="kicker">The $0 Club</div><h2 class="title rv-words">Took nothing. <em>Noted.</em></h2><p class="lead rv">Members of this chamber with zero direct contributions from the pharmaceutical PACs we track. Fairness is part of the receipts.</p></div></div>
+    <div class="zero" id="zero"></div>
+  </div>
+</section>
+
+<section class="sec">
+  <div class="wrap split">
+    <div>
+      <div class="kicker">Methodology</div>
+      <h2 class="title rv-words">What we counted, <em>exactly.</em></h2>
+      <div class="ladder" style="margin-top:26px">
+        <div class="rung rv"><div><h4>Source: the FEC</h4><p id="mScope">Official Federal Election Commission bulk filings: contributions from committees to candidates.</p></div></div>
+        <div class="rung rv"><div><h4>Which PACs</h4><p>Political action committees connected to pharmaceutical and biotech drug manufacturers and their trade groups. Not insurers, PBMs, pharmacies, distributors, hospitals or device makers. The full list is below so you can audit it.</p></div></div>
+        <div class="rung rv"><div><h4>What it doesn’t include</h4><p>Donations from individual employees, lobbying spend, super PACs, leadership PACs and dark money. The real number of industry dollars around a member is usually larger than what’s drawn here.</p></div></div>
+        <div class="rung rv"><div><h4>What it doesn’t mean</h4><p>PAC contributions are legal and publicly disclosed. A contribution is not a bribe and doesn’t prove anything about a vote. It’s a receipt. Read it, then read the votes.</p></div></div>
+      </div>
+    </div>
+    <aside class="sticky-side">
+      <div class="panel">
+        <h3>PACs included</h3>
+        <div class="pac-list" id="pacs"><p class="fine">Loads with the data.</p></div>
+      </div>
+    </aside>
+  </div>
+</section>
+
+<dialog class="mono-dlg" id="mdlg" aria-labelledby="mName"><div class="mem" id="mem"></div></dialog>
+
+<script src="js/pharma.js"></script>
+<script src="data/congress.js"></script>
+<script src="data/congress_extra.js"></script>
+<script src="js/congress.js"></script>
+</body></html>

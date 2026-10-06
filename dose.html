@@ -1,0 +1,75 @@
+<!doctype html>
+<html lang="en" class="no-js"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Daily Dose — $PHARMA</title>
+<meta name="description" content="Wordle for corporate crime. One redacted pharma press release a day. Guess the company. Guess the bill.">
+<meta property="og:title" content="$PHARMA Daily Dose">
+<meta property="og:description" content="One redacted press release a day. Guess the company. Guess the bill. Keep your Refills streak alive.">
+<meta property="og:url" content="https://thinkbankco-bot.github.io/pharmacoin/dose.html">
+<meta property="og:image" content="https://thinkbankco-bot.github.io/pharmacoin/assets/og.png"><meta name="twitter:card" content="summary_large_image">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:ital,wght@0,400;0,500;0,700;0,800;0,900;1,800;1,900&family=IBM+Plex+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/pharma.css"><link rel="stylesheet" href="css/pages.css"><link rel="stylesheet" href="css/phase1.css">
+</head><body>
+
+<header class="phero dose-hero">
+  <div class="wrap" style="position:relative">
+    <div class="eyebrow"><span class="dot"></span> <span id="doseNo">Daily Dose #1</span> · new dose every day at 00:00 UTC</div>
+    <h1 class="rv-words">Daily <em>Dose.</em></h1>
+    <p class="sub rv">Wordle for corporate crime. One redacted press release a day, the same for everyone. Guess the company in six pills. Then guess the bill.</p>
+    <div class="dose-stats rv">
+      <div><b id="sRefills">0</b><span>Your refills (streak)</span></div>
+      <div><b id="sBest">0</b><span>Best streak</span></div>
+      <div><b id="sPlayed">0</b><span>Your doses taken</span></div>
+      <div><b id="sWin">0%</b><span>Diagnosed</span></div>
+    </div>
+  </div>
+</header>
+
+<section class="sec" style="padding-top:40px">
+  <div class="wrap dose-grid">
+    <div class="dg-fax">
+      <article class="fax" id="fax">
+        <div class="fax-head"><span>FOR IMMEDIATE RELEASE</span><span id="faxMode">TODAY’S DOSE</span></div>
+        <div class="fax-sub">Reconstructed from the public record by the $PHARMA Receipts Department · redactions by Marjorie</div>
+        <h2 class="fax-title" id="faxTitle"></h2>
+        <div class="fax-body" id="faxBody"></div>
+        <div class="fax-foot"><span id="faxSrc">SOURCE: ████████</span><span class="stamp v hidden" id="faxStamp">VERIFIED</span></div>
+      </article>
+    </div>
+    <div class="hints" id="hints"></div>
+
+    <aside class="dose-play dg-play">
+      <div class="panel">
+        <div class="kicker" id="phaseLabel">Round 1 · Which company?</div>
+        <div class="pills" id="pills"></div>
+        <form id="guessForm" class="guess" autocomplete="off">
+          <input id="guess" list="companies" placeholder="Type a company…" aria-label="Guess the company">
+          <datalist id="companies"></datalist>
+          <button class="btn primary" type="submit">Dose</button>
+        </form>
+        <div id="round2" class="hidden">
+          <p style="margin:6px 0 12px;color:var(--ink);font-weight:700">Round 2 · What was the bill?</p>
+          <div class="bills" id="bills"></div>
+        </div>
+        <div id="result" class="hidden">
+          <h3 id="resTitle"></h3>
+          <p id="resBody" style="margin-top:0"></p>
+          <pre class="share-grid" id="shareGrid"></pre>
+          <div class="actions" style="gap:8px"><button class="btn primary" id="shareBtn">Copy result</button><a class="btn" id="srcBtn" target="_blank" rel="noopener">Read the source ↗</a></div>
+          <p class="next-dose">Next dose in <b id="countdown">--:--:--</b></p>
+          <button class="btn" id="practice" style="width:100%;margin-top:6px">Practice dose (doesn’t count)</button>
+        </div>
+      </div>
+      <p class="fine" style="margin-top:14px">Every puzzle is a real receipt from the <a href="archive.html" style="color:var(--cyan)">archive</a>. Redactions hide text; they never change it. No wager, no prize, no price. Missing a day means you missed a dose. Ask your doctor if Daily Dose is right for you.</p>
+    </aside>
+  </div>
+</section>
+
+<section class="sec" style="padding-top:0" id="receiptWrap" hidden>
+  <div class="wrap"><div class="kicker">The receipt</div><div id="doseReceipt" style="margin-top:20px;display:flex;justify-content:center"></div></div>
+</section>
+
+<script src="js/pharma.js"></script>
+<script src="data/receipts.js"></script>
+<script src="js/dose.js"></script>
+</body></html>

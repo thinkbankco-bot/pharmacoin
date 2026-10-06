@@ -1,0 +1,80 @@
+<!doctype html>
+<html lang="en" class="no-js"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>PharmaCasino — $PHARMA</title>
+<meta name="description" content="Side Effect Slots: fake gambling, real receipts. You don't wager money. You wager your trust in the healthcare system.">
+<meta property="og:title" content="PharmaCasino — Side Effect Slots">
+<meta property="og:description" content="Pull the lever. Win a real DOJ receipt. Lose your trust every time.">
+<meta property="og:url" content="https://thinkbankco-bot.github.io/pharmacoin/casino.html">
+<meta property="og:image" content="https://thinkbankco-bot.github.io/pharmacoin/assets/og.png"><meta name="twitter:card" content="summary_large_image">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:ital,wght@0,400;0,500;0,700;0,800;0,900;1,800;1,900&family=IBM+Plex+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/pharma.css"><link rel="stylesheet" href="css/pages.css">
+</head><body>
+
+<header class="phero casino-hero" style="border:0;padding-bottom:30px">
+  <div class="wrap" style="text-align:center">
+    <div class="eyebrow" style="margin:0 auto"><span class="dot"></span> Fake gambling · real receipts · no wager · no prize</div>
+    <h1 class="rv-words" style="margin-left:auto;margin-right:auto">Pharma<em>Casino</em></h1>
+    <p class="sub rv" style="margin:0 auto">You don’t wager money. You wager your trust in the healthcare system. <b style="color:var(--ink)">You lose every time.</b></p>
+  </div>
+</header>
+
+<section style="padding:10px 0 60px">
+  <div class="wrap">
+    <div class="machine rv">
+      <div class="marquee-bulbs" id="bulbs" aria-hidden="true"></div>
+      <h2 class="machine-title">Side Effect Slots</h2>
+      <div class="machine-sub">Every spin pays out one real, sourced receipt</div>
+      <div class="reels" id="reels">
+        <div><div class="reel"><div class="reel-strip"></div></div><div class="reel-cap">Customer</div></div>
+        <div><div class="reel"><div class="reel-strip"></div></div><div class="reel-cap">Offense</div></div>
+        <div><div class="reel"><div class="reel-strip"></div></div><div class="reel-cap">Payout</div></div>
+      </div>
+      <div class="lever-row">
+        <span class="credits">Trust remaining: <b id="trust">100%</b></span>
+        <button class="btn spin-btn" id="spin">Pull the lever</button>
+        <button class="credits" id="sound" style="cursor:pointer;background:none">Sound: <b>off</b></button>
+      </div>
+      <p class="mono" style="text-align:center;font-size:.64rem;letter-spacing:.14em;color:#8a7650;margin:14px 0 0;text-transform:uppercase">Space bar also pulls the lever</p>
+    </div>
+
+    <div class="payout" id="payout" aria-live="polite">
+      <div class="verdict">
+        <div class="combo" id="combo">Insert trust to begin</div>
+        <h3 id="vTitle">The house always wins.</h3>
+        <p id="vBody">Pull the lever. The reels land on a real settlement, guilty plea, withdrawal or pricing case from the archive. Every payout has a source. None of them pays you.</p>
+        <div class="actions" id="vActions" style="display:none"><button class="btn primary" id="save">Save receipt PNG</button><a class="btn" id="vSrc" target="_blank" rel="noopener">Open source ↗</a><button class="btn" id="again">Spin again</button></div>
+        <div id="history" class="filters" style="margin-top:22px"></div>
+      </div>
+      <div id="slip"></div>
+    </div>
+  </div>
+</section>
+
+<section class="sec dark-band">
+  <div class="wrap">
+    <div class="sec-head"><div><div class="kicker">Paytable</div><h2 class="title rv-words">What the house <em>pays out.</em></h2><p class="lead rv">Combos are based on the real receipt you land. The payout is the receipt. That’s it. That’s the prize.</p></div></div>
+    <div class="paytable">
+      <div class="pt-cell rv"><b>Ten-Figure Jackpot</b><span>receipt ≥ $1B · lights go off</span></div>
+      <div class="pt-cell rv"><b>Nine-Figure Hit</b><span>$100M – $999M</span></div>
+      <div class="pt-cell rv"><b>Rounding Error</b><span>under $100M · still somebody’s life</span></div>
+      <div class="pt-cell rv"><b>Priceless</b><span>no dollar figure · history, withdrawals, convictions</span></div>
+    </div>
+    <div class="panel rv" style="margin-top:20px">
+      <h3>House rules</h3>
+      <div class="house-rules">
+        01 · Free to play. No wallet, no token, no deposit, no prize. This is a slot machine for footnotes.<br>
+        02 · Every receipt links to a primary source (DOJ, FDA, SEC, state AGs, courts, major reporting).<br>
+        03 · Amounts are as announced. Some are “up to” figures paid over years; some deals overlap. Raw, not net.<br>
+        04 · “Allegedly” means the company did not admit it. We keep the word because lawyers exist and so do facts.<br>
+        05 · If you’re here because you actually have a gambling problem: 1-800-GAMBLER. If you’re here because of a pharma problem: hi.
+      </div>
+    </div>
+  </div>
+</section>
+
+<canvas id="card" width="1080" height="1350" style="display:none"></canvas>
+<script src="js/pharma.js"></script>
+<script src="data/receipts.js"></script>
+<script src="js/casino.js"></script>
+</body></html>
