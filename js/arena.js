@@ -24,6 +24,12 @@ document.addEventListener('DOMContentLoaded', () => {
   let raiders, preview = false;
   if (D && D.board && D.board.length) {
     raiders = D.board.map(r => ({ ...r }));
+  } else if (!/[?&]preview\b/.test(location.search)) {
+    raiders = [];
+    $('#previewFlag').textContent = 'The raid opens after the first X sweep · tap to see a preview';
+    $('#previewFlag').classList.remove('hidden'); $('#previewFlag').classList.add('as-link');
+    $('#previewFlag').onclick = () => { location.search = '?preview'; };
+    $('#raidMode').textContent = 'awaiting first sweep';
   } else {
     preview = true;
     raiders = Array.from({ length: 64 }, (_, i) => {

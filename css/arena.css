@@ -88,3 +88,5 @@
 .flip-banner b{font-size:2.2rem;letter-spacing:-.05em}
 .flip-banner small{font-family:var(--mono);color:var(--muted)}
 @media (max-width:760px){.dz-head{grid-template-columns:1fr}.dz-stats div{flex:1;min-width:0}}
+.preview-flag.as-link{cursor:pointer;pointer-events:auto}
+.preview-flag.as-link:hover{background:rgba(40,24,6,.95)}

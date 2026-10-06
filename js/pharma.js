@@ -5,6 +5,7 @@ const PH = (() => {
     pair: '3PffTrmfWe23GTNH6XNERGzzUkLDiPTejJpH9DK3R28u',
     buy: 'https://phantom.com/tokens/solana/HtrvP4fG9KiFqFeu4f32RuZiwG3nmYwPkPZ61nAbpump',
     dex: 'https://dexscreener.com/solana/3PffTrmfWe23GTNH6XNERGzzUkLDiPTejJpH9DK3R28u',
+    x: 'https://x.com/PharmaCoinSol',
   };
   const reduced = matchMedia('(prefers-reduced-motion: reduce)').matches;
   const touch = matchMedia('(hover: none)').matches;
@@ -45,7 +46,7 @@ const PH = (() => {
       <p class="fine" style="margin-top:16px">PHARMA Holdings plc is not a real pharmaceutical company, which is the nicest thing anyone has said about it. Satirical evidence desk. Real sources, sarcastic string. Not medical advice. Not investment advice. Not saying the calendar did it. If you are sick, call a doctor, not a memecoin.</p></div>
       <div><h4>The Lab</h4><a href="dose.html">Daily Dose</a><a href="archive.html">Receipt Archive</a><a href="plague.html">Plague Desk</a><a href="hantavirus.html">Hanta Calendar</a><a href="polio.html">Polio Trail</a></div>
       <div><h4>The Company</h4><a href="formulary.html">The Formulary</a><a href="arena.html">Boss Raid</a><a href="congress.html">The Floor</a><a href="prescribers.html">Top Prescribers</a><a href="index.html#letter">Investor Relations</a><a href="casino.html">PharmaCasino</a><a href="boss-fight.html">Discontinued Products</a></div>
-      <div><h4>Chart</h4><a href="${CONFIG.buy}" target="_blank" rel="noopener">Buy $PHARMA</a><a href="${CONFIG.dex}" target="_blank" rel="noopener">DexScreener</a><a href="methodology.html">How we don't get sued</a></div>
+      <div><h4>Chart</h4><a href="${CONFIG.buy}" target="_blank" rel="noopener">Buy $PHARMA</a><a href="${CONFIG.dex}" target="_blank" rel="noopener">DexScreener</a><a href="${CONFIG.x}" target="_blank" rel="noopener">X: @PharmaCoinSol</a><a href="methodology.html">How we don't get sued</a></div>
       </div><div class="foot-word" aria-hidden="true">$PHARMA</div></div>`;
     document.body.append(foot);
     const t = document.createElement('div'); t.className = 'toast'; document.body.append(t);
