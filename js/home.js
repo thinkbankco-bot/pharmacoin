@@ -16,10 +16,12 @@ document.addEventListener('DOMContentLoaded', () => {
 
   /* Formulary shelf */
   const F = window.FORMULARY || [];
-  const WORDS = ['Zero', 'One', 'Two', 'Three', 'Four', 'Five', 'Six', 'Seven', 'Eight', 'Nine', 'Ten', 'Eleven', 'Twelve', 'Thirteen', 'Fourteen', 'Fifteen', 'Sixteen', 'Seventeen', 'Eighteen', 'Nineteen', 'Twenty'];
+  const WORDS = ['Zero', 'One', 'Two', 'Three', 'Four', 'Five', 'Six', 'Seven', 'Eight', 'Nine', 'Ten', 'Eleven', 'Twelve', 'Thirteen', 'Fourteen', 'Fifteen', 'Sixteen', 'Seventeen', 'Eighteen', 'Nineteen', 'Twenty', 'Twenty-one', 'Twenty-two', 'Twenty-three', 'Twenty-four', 'Twenty-five', 'Twenty-six', 'Twenty-seven', 'Twenty-eight', 'Twenty-nine', 'Thirty'];
   if ($('#shelfCount')) $('#shelfCount').textContent = WORDS[F.length] || String(F.length);
   if (window.PHX && $('#homeShelf')) {
-    $('#homeShelf').innerHTML = F.slice(0, 10).map((d, i) => `<a class="sku" href="formulary.html#${d.id}" style="--c:${d.color};text-decoration:none">
+    const NEWART = ['cuckcillin', 'jeetalis', 'scamnesia', 'gaslightra', 'copium-mist', 'foma', 'rugburn', 'raids', 'proof-of-stool', 'dadderall'];
+    const shelf = [...NEWART.map(id => F.find(d => d.id === id)).filter(Boolean), ...F.filter(d => !NEWART.includes(d.id))].slice(0, 10);
+    $('#homeShelf').innerHTML = shelf.map((d, i) => `<a class="sku" href="formulary.html#${d.id}" style="--c:${d.color};text-decoration:none">
       <span class="sku-ndc">NDC 0420-${String(i + 1).padStart(3, '0')}</span><span class="sku-art">${PHX.art(d)}</span>
       <span class="sku-name">${esc(d.name)}<sup>®</sup></span><span class="sku-gen">(${esc(d.pron)})</span><span class="sku-tag">${esc(d.tag)}</span></a>`).join('');
   }

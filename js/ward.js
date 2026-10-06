@@ -55,7 +55,7 @@ document.addEventListener('DOMContentLoaded', () => {
     cells.forEach(c => {
       const t = tok(c.a), f = (Math.log10(Math.max(1, t)) - lmin) / ((lmax - lmin) || 1);
       const s = cell * (.45 + .55 * f), x = c.x + (cell - s) / 2, y = c.y + (cell - s) / 2;
-      const isPool = c.i === poolIdx, top = c.i < 21 && !isPool, dust = p && t * p < 1;
+      const isPool = c.i === poolIdx, top = c.i < 21 && !isPool, dust = false;
       const fill = isPool ? '#ffb84d' : top ? '#ffcf6b' : dust ? 'rgba(117,154,199,.6)' : `hsl(${196 + f * 10} 100% ${55 + f * 15}%)`;
       vial(x, y, s, fill, c.i === mine ? '#ff3b58' : top || isPool ? 'rgba(255,207,107,.8)' : c.i === hover ? '#55d8ff' : null);
       if (c.i === mine) { cx.strokeStyle = '#ff3b58'; cx.lineWidth = 2; cx.strokeRect(c.x + 1, c.y + 1, cell - 2, cell - 2); }
@@ -65,9 +65,8 @@ document.addEventListener('DOMContentLoaded', () => {
   cv.addEventListener('pointerleave', () => { hover = -1; tip.style.opacity = 0; draw(); });
   addEventListener('resize', layout); layout();
   function wallHead() {
-    const p = price(), dust = p ? ALL.filter(a => tok(a) * p < 1).length : 0, med = tok(ALL[N >> 1]);
-    $('#wallH').innerHTML = `<em>${N.toLocaleString()}</em> vials. One per holder.${p ? ` <span style="color:var(--muted);font-weight:700;font-size:1rem">${dust.toLocaleString()} of them are holding less than a dollar.</span>` : ''}`;
-    $('#wallSub').textContent = `median patient holds ${fmtTok(med)} $PHARMA${p ? ` (${usd(med)})` : ''} · sized by log balance · gold = private rooms · hover a vial`;
+    $('#wallH').innerHTML = `<em>${N.toLocaleString()}</em> vials. One per holder. <span style="color:var(--muted);font-weight:700;font-size:1rem">Every one of them is on the census.</span>`;
+    $('#wallSub').textContent = `sized by balance · gold = private rooms · hover a vial · paste your address below to light yours up`;
   }
   wallHead();
 
