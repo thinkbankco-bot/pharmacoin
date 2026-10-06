@@ -112,9 +112,4 @@ window.FORMULARY = [
     contra: ['Beneficial Steves'], se: ['May cause fewer backyard opinions', 'Reduced exposure to leaf-blower stories', 'Do not discontinue suddenly. They remember.'],
     box: 'Reduces unwanted Gregs without harming beneficial Steves.™ A calmer home is a brighter tomorrow.', rx: 'astrazeneca-2010-seroquel',
     hist: 'Sedating the household is a real marketing history: AstraZeneca paid $520 million in 2010 over how it promoted Seroquel.' },
-  { id: 'griftadin', name: 'Griftadin', generic: 'hustle bitartrate', pron: 'GRIFT-uh-din', cls: 'Edge Replacement Therapy', color: '#a3e635', form: 'capsule', dose: 'Take with a confident thumbnail and a course you are selling',
-    tag: 'For when you’ve got no edge but still need that bread.', ind: ['Chronic lack of trading skill', 'Compulsive promo-code addiction'],
-    contra: ['Paying doctors to attend “speaker programs” at steakhouses'], se: ['Delusions of alpha', 'Inability to disclose sponsorships'],
-    box: 'Griftadin is for influencers. Allegedly paying doctors over $100M to “speak” at high-end restaurants ended in a $678M settlement.', rx: 'novartis-2020-speaker-programs',
-    hist: 'Sham speaker programs at high-end restaurants. $678M.' },
 ];
