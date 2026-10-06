@@ -122,6 +122,10 @@ const PH = (() => {
     resize(); addEventListener('resize', resize);
     for (let i = 0; i < N; i++) pills.push({ x: Math.random() * W, y: Math.random() * H, a: Math.random() * Math.PI, va: (Math.random() - .5) * .004, vx: (Math.random() - .5) * .18, vy: -.05 - Math.random() * .16, s: 6 + Math.random() * 12, red: Math.random() < .28, o: .18 + Math.random() * .42 });
     if (!touch) addEventListener('pointermove', e => { const r = canvas.getBoundingClientRect(); tx = e.clientX - r.left; ty = e.clientY - r.top; }, { passive: true });
+    // real trades burst the pills: blue for buys, red for sells (event from waiting.js)
+    addEventListener('ph:trade', e => { const t = e.detail || {}; if (t.bot) return; const n = Math.min(60, 10 + Math.round(12 * Math.log10(1 + (t.usd || 0))));
+      for (let i = 0; i < n; i++) { const a = Math.random() * Math.PI * 2, sp = 1 + Math.random() * 3.5; pills.push({ x: W * (t.kind === 'buy' ? .3 : .7), y: H * .55, a: Math.random() * 3, va: (Math.random() - .5) * .2, vx: Math.cos(a) * sp, vy: Math.sin(a) * sp, s: 5 + Math.random() * 10, red: t.kind !== 'buy', o: .9, life: 1 }); }
+      start(); });
     let raf = 0;
     const start = () => { if (visible && !document.hidden && !raf && ctx.roundRect) raf = requestAnimationFrame(draw); };
     new IntersectionObserver(([e]) => { visible = e.isIntersecting; start(); }).observe(canvas);
@@ -134,6 +138,7 @@ const PH = (() => {
       ctx.clearRect(0, 0, W, H);
       for (const p of pills) {
         if (!reduced) { p.x += p.vx; p.y += p.vy; p.a += p.va; }
+        if (p.life !== undefined) { p.vx *= .97; p.vy *= .97; p.life -= .006; p.o = Math.max(0, p.life * .9); if (p.life <= 0) { pills.splice(pills.indexOf(p), 1); continue; } }
         const dx = mx - p.x, dy = my - p.y, d = Math.hypot(dx, dy);
         if (d < 220) { p.x -= dx / d * .6; p.y -= dy / d * .6; p.a += .01; }
         if (p.y < -30) { p.y = H + 30; p.x = Math.random() * W; } if (p.x < -30) p.x = W + 30; if (p.x > W + 30) p.x = -30;

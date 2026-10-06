@@ -3,9 +3,9 @@ document.addEventListener('DOMContentLoaded', () => {
   const { $, $$, esc, reduced } = PH;
   const C = window.CONGRESS, X = window.CONGRESS_EXTRA || null, E = window.CONGRESS_EMP || null;
   let MODE = E ? 'combined' : 'pac';
-  const MODE_LABEL = { combined: 'drug-company PACs + employees', pac: 'drug-company PACs', emp: 'drugmaker employees' };
-  if (C && C.members) C.members.forEach(m => { m.pac = m.total; const e = E && E.members && E.members[m.bioguide]; m.emp = e ? e.total : 0; m.empTop = e ? e.top || [] : []; m.empBy = e ? e.by_cycle || {} : {}; });
-  const applyMode = () => { if (C && C.members) { C.members.forEach(m => m.total = MODE === 'pac' ? m.pac : MODE === 'emp' ? m.emp : m.pac + m.emp); C.members.sort((a, b) => b.total - a.total); } };
+  const MODE_LABEL = { combined: 'drug-company PACs + their leadership PACs + employees', pac: 'drug-company PACs (direct)', emp: 'drugmaker employees', lpac: 'drug-company PACs → their leadership PAC' };
+  if (C && C.members) C.members.forEach(m => { m.pac = m.total; const e = E && E.members && E.members[m.bioguide]; m.emp = e ? e.total : 0; m.lpac = m.lpac_total || 0; m.empTop = e ? e.top || [] : []; m.empBy = e ? e.by_cycle || {} : {}; });
+  const applyMode = () => { if (C && C.members) { C.members.forEach(m => m.total = MODE === 'pac' ? m.pac : MODE === 'emp' ? m.emp : MODE === 'lpac' ? m.lpac : m.pac + m.emp + m.lpac); C.members.sort((a, b) => b.total - a.total); } };
   applyMode();
   const ex = m => (X && X.members && X.members[m.bioguide]) || null;
   const houseEra = m => m.chamber === 'senate' && (m.fec || []).some(id => id[0] === 'H') && ex(m) && +ex(m).since >= 2025;
@@ -113,7 +113,7 @@ document.addEventListener('DOMContentLoaded', () => {
     // back wall columns + gallery
     ctx.fillStyle = 'rgba(148,163,184,.08)'; for (let x = 40; x < 1600; x += 120) ctx.fillRect(x, 0, 26, 150);
     ctx.fillStyle = 'rgba(212,175,55,.5)'; ctx.font = '900 30px Inter, Arial'; ctx.textAlign = 'center'; ctx.fillText(chamber === 'senate' ? 'THE SENATE' : 'THE HOUSE', 800, 70);
-    ctx.font = '600 13px "IBM Plex Mono", monospace'; ctx.fillStyle = 'rgba(212,175,55,.45)'; ctx.fillText(`SIZE = ${MODE_LABEL[MODE].toUpperCase()} · 2023–2026 · FEC`, 800, 96);
+    ctx.font = '600 13px "IBM Plex Mono", monospace'; ctx.fillStyle = 'rgba(212,175,55,.45)'; ctx.fillText(`SIZE = ${MODE_LABEL[MODE].toUpperCase()} · 2021–2026 · FEC`, 800, 96);
     // dais
     ctx.fillStyle = '#3a2a1a'; ctx.beginPath(); ctx.roundRect(640, 820, 320, 80, 10); ctx.fill(); ctx.fillStyle = '#5b4128'; ctx.fillRect(660, 834, 280, 10);
     ctx.fillStyle = '#d4a84b'; ctx.font = '800 14px "IBM Plex Mono", monospace'; ctx.fillText('THE ROSTRUM', 800, 875);
@@ -176,7 +176,7 @@ document.addEventListener('DOMContentLoaded', () => {
   };
   function showTip(s, ev) {
     const m = s.m;
-    tip.innerHTML = `<b>${esc(m.name)}</b><small style="color:${PARTY[m.party]}">${PNAME[m.party] || m.party} · ${where(m)}</small>${houseEra(m) ? '<div class="ft-sub">includes House-campaign money</div>' : ''}<div class="ft-amt">${money(m.total)}</div><div class="ft-sub">from ${MODE_LABEL[MODE]}</div>${E ? `<div class="ft-row"><span>PACs</span><b>${short(m.pac)}</b></div><div class="ft-row"><span>Employees</span><b>${short(m.emp)}</b></div>` : ''}<div class="ft-sub" style="color:#cbd5e1">${ctxLine(m)}</div>${gavel(m) ? `<div class="ft-sub" style="color:#d4a84b">Gavel: ${esc(gavel(m))}</div>` : ''}${(m.top || []).slice(0, 3).map(t => `<div class="ft-row"><span>${esc(t.company)}</span><b>${short(t.amount)}</b></div>`).join('')}${onDrugCommittee(m) ? '<div class="ft-sub" style="color:#d4a84b;margin-top:6px">Rx pin: sits on a committee that writes drug-pricing law</div>' : ''}${voteId && ex(m) ? `<div class="ft-row"><span>${esc((X.votes.find(v => v.id === voteId) || {}).title || '')}</span><b style="color:${VOTE_COL[(ex(m).votes || {})[voteId]] || '#94a3b8'}">${esc((ex(m).votes || {})[voteId] || 'Not in office')}</b></div>` : ''}<div class="ft-sub" style="margin-top:6px">Click for the full record</div>`;
+    tip.innerHTML = `<b>${esc(m.name)}</b><small style="color:${PARTY[m.party]}">${PNAME[m.party] || m.party} · ${where(m)}</small>${houseEra(m) ? '<div class="ft-sub">includes House-campaign money</div>' : ''}<div class="ft-amt">${money(m.total)}</div><div class="ft-sub">from ${MODE_LABEL[MODE]}</div>${E ? `<div class="ft-row"><span>Direct PAC</span><b>${short(m.pac)}</b></div><div class="ft-row"><span>Leadership PAC</span><b>${short(m.lpac)}</b></div><div class="ft-row"><span>Employees</span><b>${short(m.emp)}</b></div>` : ''}<div class="ft-sub" style="color:#cbd5e1">${ctxLine(m)}</div>${gavel(m) ? `<div class="ft-sub" style="color:#d4a84b">Gavel: ${esc(gavel(m))}</div>` : ''}${(m.top || []).slice(0, 3).map(t => `<div class="ft-row"><span>${esc(t.company)}</span><b>${short(t.amount)}</b></div>`).join('')}${onDrugCommittee(m) ? '<div class="ft-sub" style="color:#d4a84b;margin-top:6px">Rx pin: sits on a committee that writes drug-pricing law</div>' : ''}${voteId && ex(m) ? `<div class="ft-row"><span>${esc((X.votes.find(v => v.id === voteId) || {}).title || '')}</span><b style="color:${VOTE_COL[(ex(m).votes || {})[voteId]] || '#94a3b8'}">${esc((ex(m).votes || {})[voteId] || 'Not in office')}</b></div>` : ''}<div class="ft-sub" style="margin-top:6px">Click for the full record</div>`;
     const rc = $('#chamber').getBoundingClientRect(); tip.classList.remove('hidden');
     let x = ev.clientX - rc.left + 14, y = ev.clientY - rc.top + 14;
     if (x + tip.offsetWidth > rc.width) x -= tip.offsetWidth + 28; if (y + tip.offsetHeight > rc.height) y = rc.height - tip.offsetHeight - 8;
@@ -194,10 +194,10 @@ document.addEventListener('DOMContentLoaded', () => {
       <div class="mem-top">
         <div class="mem-ph"><img src="https://unitedstates.github.io/images/congress/225x275/${encodeURIComponent(m.bioguide)}.jpg" alt="Official portrait of ${esc(m.name)}" onerror="if(!this.dataset.f){this.dataset.f=1;this.src='https://bioguide.congress.gov/bioguide/photo/${encodeURIComponent(m.bioguide[0])}/${encodeURIComponent(m.bioguide)}.jpg'}else{this.remove()}" referrerpolicy="no-referrer"></div>
         <div><div class="pi-kick">PUBLIC RECORD · ${m.chamber === 'senate' ? 'U.S. SENATE' : 'U.S. HOUSE'}</div><h2 id="mName">${esc(m.name)}</h2><div class="pi-meta" style="color:${PARTY[m.party]}">${PNAME[m.party] || m.party} · ${where(m)}</div>
-        <div class="mem-rank">${ctxLine(m)}${gavel(m) ? ' · <b>Gavel: ' + esc(gavel(m)) + '</b>' : ''}</div><div class="mem-total">${money(m.total)}<small>from ${MODE_LABEL[MODE]}, 2023–2026 (FEC)${houseEra(m) ? ' · includes money to their earlier House campaigns' : ''}${!(m.fec && m.fec.length) ? ' · no FEC campaign committee on file yet' : ''}</small></div></div>
+        <div class="mem-rank">${ctxLine(m)}${gavel(m) ? ' · <b>Gavel: ' + esc(gavel(m)) + '</b>' : ''}</div><div class="mem-total">${money(m.total)}<small>from ${MODE_LABEL[MODE]}, 2021–2026 (FEC)${houseEra(m) ? ' · includes money to their earlier House campaigns' : ''}${!(m.fec && m.fec.length) ? ' · no FEC campaign committee on file yet' : ''}</small></div></div>
       </div>
       <div class="mem-grid"><div><h4>PAC money by cycle</h4><div class="mem-kv">${cyc || '<p>None recorded.</p>'}</div></div>
-        ${E ? `<div><h4>The split</h4><div class="mem-kv"><div><span>Drug-company PACs</span><b>${money(m.pac)}</b></div><div><span>Drugmaker employees (itemized $200+)</span><b>${money(m.emp)}</b></div><div><span><b>Combined</b></span><b>${money(m.pac + m.emp)}</b></div></div>
+        ${E ? `<div><h4>The split</h4><div class="mem-kv"><div><span>Drug-company PACs, direct (2021–26)</span><b>${money(m.pac)}</b></div><div><span>Drug-company PACs → ${esc(m.lpac_name || 'their leadership PAC')}</span><b>${money(m.lpac)}</b></div><div><span>Drugmaker employees, $200+ (2023–26)</span><b>${money(m.emp)}</b></div><div><span><b>Combined</b></span><b>${money(m.pac + m.emp + m.lpac)}</b></div></div>
           <h4>Top employers of individual donors</h4><div class="mem-kv">${(m.empTop || []).map(t => `<div><span>${esc(t.company)} employees</span><b>${money(t.amount)}</b></div>`).join('') || '<p>None itemized.</p>'}</div></div>` : ''}
         <div><h4>Top contributing PACs (by company)</h4><div class="mem-kv">${(m.top || []).map(t => `<div><span>${esc(t.company)}</span><b>${money(t.amount)}</b></div>`).join('') || '<p>None recorded. $0 Club.</p>'}</div></div></div>
       ${ex(m) ? `<div class="mem-grid"><div><h4>Committees ${ex(m).since ? '· in this chamber since ' + esc(ex(m).since) : ''}</h4><div class="mem-kv">${(ex(m).committees || []).map(c => `<div><span>${esc(c.name)}${c.role ? ` <b style="color:#15181d">(${esc(c.role)})</b>` : ''}</span><b>${c.jurisdiction_flag ? '<span style="color:#a16207">writes drug law</span>' : ''}</b></div>`).join('') || '<p>None listed.</p>'}</div></div>
@@ -212,7 +212,7 @@ document.addEventListener('DOMContentLoaded', () => {
   function sizeBar() {
     const sb = $('#fsize'); if (!sb) return;
     if (!E) { sb.hidden = true; return; }
-    sb.innerHTML = `<span class="sz-l">Size by</span>${['combined', 'pac', 'emp'].map(k => `<button class="${MODE === k ? 'on' : ''}" data-mode="${k}">${{ combined: 'Combined', pac: 'PAC money', emp: 'Employee money' }[k]}</button>`).join('')}`;
+    sb.innerHTML = `<span class="sz-l">Size by</span>${['combined', 'pac', 'lpac', 'emp'].map(k => `<button class="${MODE === k ? 'on' : ''}" data-mode="${k}">${{ combined: 'Combined', pac: 'Direct PAC', lpac: 'Leadership PAC', emp: 'Employees' }[k]}</button>`).join('')}`;
     $$('[data-mode]').forEach(b => b.onclick = () => { MODE = b.dataset.mode; applyMode(); sizeBar(); build(); });
   }
   function filterBar() {

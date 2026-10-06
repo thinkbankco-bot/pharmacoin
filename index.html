@@ -9,7 +9,7 @@
 <meta name="theme-color" content="#050914">
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:ital,wght@0,400;0,500;0,700;0,800;0,900;1,800;1,900&family=IBM+Plex+Mono:wght@400;500;600;700&family=Caveat:wght@600;700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="css/pharma.css"><link rel="stylesheet" href="css/pages.css"><link rel="stylesheet" href="css/phase1.css">
+<link rel="stylesheet" href="css/pharma.css"><link rel="stylesheet" href="css/pages.css"><link rel="stylesheet" href="css/phase1.css"><link rel="stylesheet" href="css/waiting.css">
 </head><body>
 
 <!-- HERO -->
@@ -52,6 +52,30 @@
 </header>
 
 <div class="ticker" aria-label="Receipt ticker"><div class="ticker-track" id="ticker"></div></div>
+
+<!-- THE WAITING ROOM (live buyers) -->
+<section class="sec" id="waiting" style="padding-top:70px;padding-bottom:40px">
+  <div class="wrap">
+    <div class="sec-head" style="margin-bottom:26px"><div><div class="kicker">Live from the pharmacy counter</div><h2 class="title rv-words">The Waiting <em>Room.</em></h2><p class="lead rv">Every real $PHARMA trade gets called up like a patient. Buyers are admitted, sellers are discharged, bots get “automated refills.” Tap any patient for the real transaction.</p></div></div>
+    <div class="wr">
+      <div class="wr-board" id="wrBoard">
+        <div class="wr-top"><span><i id="wrDot"></i><span id="wrState">opening the front desk…</span></span><span>PHARMA HOLDINGS · DISPENSARY</span></div>
+        <div class="wr-now">NOW SERVING</div>
+        <div class="wr-num" id="wrNum"><span class="ch">#</span><span class="ch">-</span><span class="ch">-</span><span class="ch">-</span><span class="ch">-</span></div>
+        <div class="wr-patient" id="wrPatient">PATIENT ····</div>
+        <div class="wr-dx" id="wrDx">Dx: pending</div>
+        <div class="wr-rxl" id="wrRx">Rx: awaiting the next real trade</div>
+        <div class="wr-foot"><span>Ticket = last 4 digits of the trade’s Solana block · real trades only · ~30s delay</span><button id="wrSound">Chime: off</button></div>
+        <div class="wr-code" id="wrCode">CODE BLUE · WHALE ON THE FLOOR</div>
+      </div>
+      <div class="wr-log">
+        <div class="wr-logh"><span>Intake log</span><span>diagnoses are jokes · trades are real</span></div>
+        <div id="wrLog"></div>
+        <div class="wr-stats" id="wrStats"></div>
+      </div>
+    </div>
+  </div>
+</section>
 
 <!-- DAILY DOSE CTA -->
 <section class="sec">
@@ -206,4 +230,5 @@
 <script src="data/formulary.js"></script>
 <script src="js/formulary.js"></script>
 <script src="js/home.js"></script>
+<script src="js/waiting.js"></script>
 </body></html>
