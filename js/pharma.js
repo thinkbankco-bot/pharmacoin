@@ -28,11 +28,11 @@ const PH = (() => {
   function onScroll(fn) { scrollFns.push(fn); kick(); }
 
   function chrome() {
-    if (!document.querySelector('link[rel=icon]')) { const l = document.createElement('link'); l.rel = 'icon'; l.href = 'assets/brand/favicon-32.png'; document.head.append(l); }
+    if (!document.querySelector('link[rel=icon]')) { const l = document.createElement('link'); l.rel = 'icon'; l.href = "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ccircle cx='50' cy='50' r='48' fill='%2355d8ff'/%3E%3Ctext x='50' y='68' font-size='52' text-anchor='middle' font-family='Arial' font-weight='900' fill='%23050914'%3ERx%3C/text%3E%3C/svg%3E"; document.head.append(l); }
     const here = location.pathname.split('/').pop() || 'index.html';
     const nav = document.createElement('nav');
     nav.className = 'nav';
-    nav.innerHTML = `<div class="nav-inner"><a class="brand" href="index.html"><span class="brand-mask"><img src="assets/brand/caduceus-96.png" alt=""></span><span>PHARMACOIN</span></a>
+    nav.innerHTML = `<div class="nav-inner"><a class="brand" href="index.html"><span class="brand-mask">${MASK}</span><span>$PHARMA</span></a>
       <div class="nav-links">${PAGES.slice(1).map(([h, t, c]) => `<a href="${h}" class="${c || ''}" ${h === here ? 'aria-current="page"' : ''}>${t}</a>`).join('')}</div>
       <a class="mcap-chip" href="${CONFIG.dex}" target="_blank" rel="noopener">MCAP <b data-mcap>—</b></a>
       <button class="burger" aria-label="Menu"><span></span><span></span><span></span></button></div>`;
@@ -42,12 +42,12 @@ const PH = (() => {
 
     const foot = document.createElement('footer');
     foot.innerHTML = `<div class="wrap"><div class="foot-grid">
-      <div><a class="brand" href="index.html"><span class="brand-mask"><img src="assets/brand/caduceus-96.png" alt=""></span><span>PHARMACOIN</span></a>
+      <div><a class="brand" href="index.html"><span class="brand-mask">${MASK}</span><span>$PHARMA</span></a>
       <p class="fine" style="margin-top:16px">PHARMA Holdings plc is not a real pharmaceutical company, which is the nicest thing anyone has said about it. Satirical evidence desk. Real sources, sarcastic string. Not medical advice. Not investment advice. Not saying the calendar did it. If you are sick, call a doctor, not a memecoin.</p></div>
       <div><h4>The Lab</h4><a href="dose.html">Daily Dose</a><a href="archive.html">Receipt Archive</a><a href="plague.html">Plague Desk</a><a href="hantavirus.html">Hanta Calendar</a><a href="polio.html">Polio Trail</a></div>
       <div><h4>The Company</h4><a href="formulary.html">The Formulary</a><a href="arena.html">Boss Raid</a><a href="congress.html">The Floor</a><a href="prescribers.html">Top Prescribers</a><a href="index.html#letter">Investor Relations</a><a href="casino.html">PharmaCasino</a><a href="boss-fight.html">Discontinued Products</a></div>
       <div><h4>Chart</h4><a href="${CONFIG.buy}" target="_blank" rel="noopener">Buy $PHARMA</a><a href="${CONFIG.dex}" target="_blank" rel="noopener">DexScreener</a><a href="${CONFIG.x}" target="_blank" rel="noopener">X: @PharmaCoinSol</a><a href="methodology.html">How we don't get sued</a></div>
-      </div><div class="foot-word" aria-hidden="true">PHARMACOIN</div></div>`;
+      </div><div class="foot-word" aria-hidden="true">$PHARMA</div></div>`;
     document.body.append(foot);
     const t = document.createElement('div'); t.className = 'toast'; document.body.append(t);
   }
@@ -222,9 +222,9 @@ const PH = (() => {
     let pref = null; try { pref = localStorage.getItem('ph_redline'); } catch {}
     let on = pref === 'on';
     const btn = document.createElement('button'); btn.className = 'rl-toggle';
-    const paint = () => { document.body.classList.toggle('redline-on', on); btn.innerHTML = `<b>Corrections</b><span>${on ? 'ON' : 'OFF'}</span>`; btn.setAttribute('aria-pressed', on); };
+    const paint = () => { document.body.classList.toggle('redline-on', on); btn.innerHTML = `<b>Receipts Dept. edits</b><span>${on ? 'ON' : 'OFF'}</span>`; btn.setAttribute('aria-pressed', on); };
     btn.onclick = () => { on = !on; try { localStorage.setItem('ph_redline', on ? 'on' : 'off'); } catch {} paint(); toast(on ? 'Marjorie has entered the chat.' : 'Edits hidden. Corporate thanks you for your trust.'); };
-    const host = $('.nav-inner .mcap-chip'); host ? host.before(btn) : document.body.append(btn); paint();
+    document.body.append(btn); paint();
     if (pref === null) setTimeout(() => { on = true; paint(); }, reduced ? 0 : 1600);
   }
 
@@ -249,8 +249,6 @@ const PH = (() => {
     field($('canvas.field'));
     console.log('%c$PHARMA', 'font:900 28px Inter;color:#55d8ff', '\nYou opened the console. That is how it starts. Type "sideeffects" anywhere on the page.');
   }
-  const XSVG = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M18.9 2H22l-7.6 8.7L23 22h-6.8l-5.3-6.9L4.8 22H1.7l8.1-9.3L1 2h7l4.8 6.3L18.9 2Zm-1.2 18h1.7L6.4 3.9H4.6L17.7 20Z"/></svg>';
-  const xShare = (text, url) => `<a class="btn xshare" href="https://x.com/intent/post?text=${encodeURIComponent(text)}&url=${encodeURIComponent(url || location.href)}" target="_blank" rel="noopener">${XSVG} Post</a>`;
-  return { xShare, CONFIG, MASK, $, $$, esc, toast, countUp, fmtMoney, receiptHTML, init, reduced, touch, onScroll, CAT };
+  return { CONFIG, MASK, $, $$, esc, toast, countUp, fmtMoney, receiptHTML, init, reduced, touch, onScroll, CAT };
 })();
 document.addEventListener('DOMContentLoaded', PH.init);

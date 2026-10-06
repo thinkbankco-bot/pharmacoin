@@ -190,7 +190,7 @@ document.addEventListener('DOMContentLoaded', () => {
   function boss(ctx, t, hit) {
     const b = BOSSES[S.idx]; if (!b) return;
     const dmg = 1 - S.pct, bob = reduced ? 0 : Math.sin(t * 1.1) * 2, shake = hit > 0 ? (Math.random() - .5) * 5 * hit : 0;
-    const sc = { micro: .74, small: .84, mid: .94, giant: 1.02, fine: 1 }[b.tier] || .9;
+    const sc = { micro: .78, small: .92, mid: 1.05, giant: 1.2, fine: 1.14 }[b.tier] || 1;
     ctx.save(); ctx.translate(800 + shake, 470); ctx.scale(1.14, 1.14);
     // pedestal + plaque
     ctx.fillStyle = '#1a2231'; ctx.fillRect(-190, 0, 380, 76);
@@ -202,58 +202,54 @@ document.addEventListener('DOMContentLoaded', () => {
     ctx.font = '600 11px "IBM Plex Mono", monospace'; ctx.fillText(MODE === 'mcap' ? `MARKET CAP ${usd(b.value)} · ${b.evil ? b.receipts.length + ' RECEIPT' + (b.receipts.length > 1 ? 'S' : '') + ' ON FILE' : 'NO RECEIPTS ON FILE'}` : `${b.ticker} · ${usd(b.value)} FINE`, 0, 52);
     ctx.translate(0, bob); ctx.scale(sc, sc);
     if (hit > .05) ctx.filter = `brightness(${1 + hit * .5})`;
-    // ---- bronze executive bust on a plinth (faceless: an institution, not a person) ----
-    const glow = .7 + .3 * Math.sin(t * 2.4);
-    // plinth column
-    let g2 = ctx.createLinearGradient(-90, 0, 90, 0); g2.addColorStop(0, '#0b1426'); g2.addColorStop(.5, '#1b2a44'); g2.addColorStop(1, '#0b1426');
-    ctx.fillStyle = g2; ctx.fillRect(-92, -78, 184, 78);
-    ctx.fillStyle = '#26364f'; ctx.fillRect(-104, -90, 208, 14);
-    ctx.fillStyle = 'rgba(95,225,255,.18)'; ctx.fillRect(-104, -90, 208, 1.5);
-    // shoulders + suit (bronze)
-    const torso = new Path2D();
-    torso.moveTo(-150, -92); torso.bezierCurveTo(-150, -170, -110, -196, -58, -206); torso.lineTo(58, -206);
-    torso.bezierCurveTo(110, -196, 150, -170, 150, -92); torso.closePath();
-    ctx.fillStyle = bronze(ctx, -150, -210, 150, -92); ctx.fill(torso);
-    ctx.save(); ctx.clip(torso);
-    // lapels + shirt + tie
-    ctx.fillStyle = 'rgba(30,16,4,.35)';
-    ctx.beginPath(); ctx.moveTo(-58, -206); ctx.lineTo(-18, -120); ctx.lineTo(-62, -92); ctx.lineTo(-110, -92); ctx.closePath(); ctx.fill();
-    ctx.beginPath(); ctx.moveTo(58, -206); ctx.lineTo(18, -120); ctx.lineTo(62, -92); ctx.lineTo(110, -92); ctx.closePath(); ctx.fill();
-    ctx.fillStyle = bronze(ctx, -30, -210, 30, -92); ctx.beginPath(); ctx.moveTo(-40, -206); ctx.lineTo(40, -206); ctx.lineTo(0, -110); ctx.closePath(); ctx.fill();
-    ctx.fillStyle = '#3a220c'; ctx.beginPath(); ctx.moveTo(0, -200); ctx.lineTo(9, -186); ctx.lineTo(6, -112); ctx.lineTo(0, -100); ctx.lineTo(-6, -112); ctx.lineTo(-9, -186); ctx.closePath(); ctx.fill();
-    // patina + highlight
-    ctx.fillStyle = 'rgba(64,156,134,.10)'; for (const [x, y, rx, ry] of [[-112, -110, 34, 18], [96, -150, 22, 30]]) { ctx.beginPath(); ctx.ellipse(x, y, rx, ry, .4, 0, 7); ctx.fill(); }
-    ctx.fillStyle = 'rgba(255,224,176,.18)'; ctx.beginPath(); ctx.ellipse(-80, -168, 46, 10, -.35, 0, 7); ctx.fill();
-    ctx.restore();
-    // lapel pin: caduceus-gold dot for evil, plain for neutral
-    ctx.fillStyle = b.evil ? '#e6c878' : '#7a5a2c'; ctx.beginPath(); ctx.arc(-70, -168, 5, 0, 7); ctx.fill();
-    // neck
-    ctx.fillStyle = bronze(ctx, -30, -250, 30, -200); ctx.beginPath(); ctx.roundRect(-30, -252, 60, 52, 10); ctx.fill();
-    // head: smooth, faceless bronze egg (an institution has no face)
-    const head = new Path2D(); head.ellipse(0, -318, 62, 78, 0, 0, Math.PI * 2);
-    ctx.fillStyle = bronze(ctx, -62, -396, 62, -240); ctx.fill(head);
-    ctx.save(); ctx.clip(head);
-    ctx.fillStyle = 'rgba(30,16,4,.28)'; ctx.beginPath(); ctx.ellipse(28, -300, 58, 84, 0, 0, 7); ctx.fill();
-    ctx.fillStyle = 'rgba(255,230,190,.28)'; ctx.beginPath(); ctx.ellipse(-26, -352, 16, 30, -.3, 0, 7); ctx.fill();
+    // legs + feet
+    ctx.fillStyle = bronze(ctx, -60, -50, 60, 0); ctx.beginPath(); ctx.roundRect(-58, -52, 40, 52, 12); ctx.roundRect(18, -52, 40, 52, 12); ctx.fill();
+    ctx.fillStyle = '#3a220c'; ctx.beginPath(); ctx.roundRect(-68, -12, 58, 14, 7); ctx.roundRect(10, -12, 58, 14, 7); ctx.fill();
+    // arms: left drags a money bag, right raises the stamp
+    const raise = reduced ? 0 : Math.sin(t * 1.4) * 8;
+    ctx.strokeStyle = bronze(ctx, -180, -260, 180, -60); ctx.lineCap = 'round'; ctx.lineWidth = 38;
+    ctx.beginPath(); ctx.moveTo(-78, -225); ctx.quadraticCurveTo(-150, -175, -142, -104); ctx.stroke();
+    ctx.beginPath(); ctx.moveTo(78, -225); ctx.quadraticCurveTo(152, -250, 152, -300 + raise); ctx.stroke();
+    ctx.fillStyle = bronze(ctx, -200, -130, -90, -20); ctx.beginPath(); ctx.ellipse(-146, -60, 48, 44, 0, 0, 7); ctx.fill(); ctx.beginPath(); ctx.roundRect(-164, -116, 36, 18, 6); ctx.fill();
+    ctx.fillStyle = '#3a220c'; ctx.font = '900 42px Inter, Arial'; ctx.fillText('$', -146, -45);
+    if (b.evil) {
+      ctx.fillStyle = '#26160a'; ctx.fillRect(144, -364 + raise, 16, 52);
+      ctx.fillStyle = bronze(ctx, 96, -320, 208, -286); ctx.beginPath(); ctx.roundRect(96, -318 + raise, 112, 36, 6); ctx.fill();
+      ctx.fillStyle = '#26160a'; ctx.font = '800 9px "IBM Plex Mono", monospace'; ctx.fillText('NO WRONGDOING', 152, -302 + raise); ctx.fillText('ADMITTED', 152, -291 + raise);
+    } else {
+      ctx.fillStyle = bronze(ctx, 120, -330, 190, -250); ctx.beginPath(); ctx.roundRect(122, -350 + raise, 64, 84, 5); ctx.fill();
+      ctx.fillStyle = '#26160a'; ctx.font = '800 9px "IBM Plex Mono", monospace'; ctx.fillText('Q3', 154, -322 + raise); ctx.fillText('TARGETS', 154, -310 + raise); ctx.fillRect(134, -300 + raise, 40, 2); ctx.fillRect(134, -292 + raise, 32, 2);
+    }
+    // horns (little capsules), evil only
+    if (b.evil) for (const sx of [-1, 1]) { ctx.save(); ctx.translate(sx * 52, -330); ctx.rotate(sx * .5); ctx.fillStyle = bronze(ctx, -9, -30, 9, 0); ctx.beginPath(); ctx.roundRect(-9, -34, 18, 40, 9); ctx.fill(); ctx.restore(); }
+    // body: an upright capsule
+    const body = new Path2D(); body.roundRect(-86, -336, 172, 300, 86);
+    ctx.fillStyle = bronze(ctx, -86, -336, 86, -40); ctx.fill(body);
+    ctx.save(); ctx.clip(body);
+    ctx.fillStyle = 'rgba(35,18,4,.30)'; ctx.fillRect(-86, -186, 172, 160);
+    ctx.fillStyle = 'rgba(64,156,134,.24)'; for (const [x, y, rx, ry] of [[-62, -118, 30, 52], [58, -262, 18, 40], [-24, -58, 44, 16], [40, -96, 20, 26]]) { ctx.beginPath(); ctx.ellipse(x, y, rx, ry, .3, 0, 7); ctx.fill(); }
+    ctx.fillStyle = 'rgba(255,224,176,.22)'; ctx.beginPath(); ctx.roundRect(-64, -316, 18, 130, 9); ctx.fill();
     // cracks grow with damage
     const n = dmg <= 0 ? 0 : Math.max(1, Math.ceil(Math.sqrt(dmg) * CRACKS.length));
-    ctx.strokeStyle = '#140a02'; ctx.lineWidth = 2.2; ctx.lineJoin = 'round';
-    for (const c of CRACKS.slice(0, n)) { ctx.beginPath(); c.forEach(([x, y], k) => { const X = x * .7, Y = -318 + (y + 190) * .55; k ? ctx.lineTo(X, Y) : ctx.moveTo(X, Y); }); ctx.stroke(); }
+    ctx.strokeStyle = '#140a02'; ctx.lineWidth = 2.6; ctx.lineJoin = 'round';
+    for (const c of CRACKS.slice(0, n)) { ctx.beginPath(); c.forEach(([x, y], k) => k ? ctx.lineTo(x, y) : ctx.moveTo(x, y)); ctx.stroke(); }
     ctx.restore();
-    // brow line + eyes: evil = thin red glow; neutral = blank
-    ctx.strokeStyle = 'rgba(30,16,4,.55)'; ctx.lineWidth = 3; ctx.beginPath(); ctx.moveTo(-40, -334); ctx.quadraticCurveTo(0, -342, 40, -334); ctx.stroke();
-    if (b.evil) {
-      ctx.save(); ctx.shadowColor = '#ff3b4a'; ctx.shadowBlur = 18 * glow; ctx.fillStyle = `rgba(255,70,84,${.75 + .25 * glow})`;
-      ctx.beginPath(); ctx.ellipse(-22, -318, 13, 3.2, .12, 0, 7); ctx.ellipse(22, -318, 13, 3.2, -.12, 0, 7); ctx.fill(); ctx.restore();
+    ctx.strokeStyle = '#3a220c'; ctx.lineWidth = 4; ctx.beginPath(); ctx.moveTo(-86, -186); ctx.lineTo(86, -186); ctx.stroke();
+    ctx.fillStyle = 'rgba(35,18,4,.5)'; ctx.font = '900 italic 46px Inter, Arial'; ctx.fillText('Rx', 0, -88);
+    // face: brow, glowing eyes, toothy grin
+    ctx.fillStyle = '#26160a';
+    if (!b.evil) { // neutral face: plain eyes, flat mouth
+      ctx.fillStyle = '#f6e3c6'; ctx.beginPath(); ctx.ellipse(-30, -240, 13, 15, 0, 0, 7); ctx.ellipse(30, -240, 13, 15, 0, 0, 7); ctx.fill();
+      ctx.fillStyle = '#26160a'; ctx.beginPath(); ctx.arc(-28, -238, 5, 0, 7); ctx.arc(28, -238, 5, 0, 7); ctx.fill(); ctx.fillRect(-24, -200, 48, 5);
     } else {
-      ctx.fillStyle = 'rgba(30,16,4,.35)'; ctx.beginPath(); ctx.ellipse(-22, -318, 11, 2.4, 0, 0, 7); ctx.ellipse(22, -318, 11, 2.4, 0, 0, 7); ctx.fill();
+    ctx.beginPath(); ctx.moveTo(-62, -278); ctx.lineTo(-10, -258); ctx.lineTo(-10, -248); ctx.lineTo(-62, -264); ctx.closePath(); ctx.fill();
+    ctx.beginPath(); ctx.moveTo(62, -278); ctx.lineTo(10, -258); ctx.lineTo(10, -248); ctx.lineTo(62, -264); ctx.closePath(); ctx.fill();
+    const glow = .7 + .3 * Math.sin(t * 3);
+    ctx.save(); ctx.shadowColor = '#ff3b58'; ctx.shadowBlur = 16 * glow; ctx.fillStyle = '#ff3b58';
+    ctx.beginPath(); ctx.ellipse(-34, -238, 16, 6, .18, 0, 7); ctx.ellipse(34, -238, 16, 6, -.18, 0, 7); ctx.fill(); ctx.restore();
+    ctx.fillStyle = '#26160a'; ctx.beginPath(); ctx.moveTo(-52, -212); ctx.quadraticCurveTo(0, -168, 52, -212); ctx.quadraticCurveTo(0, -192, -52, -212); ctx.fill();
+    ctx.fillStyle = '#e8ad66'; for (let k = -4; k <= 4; k++) { const x = k * 10, y = -203 + Math.abs(k) * -1.2; ctx.beginPath(); ctx.moveTo(x - 4, y); ctx.lineTo(x + 4, y); ctx.lineTo(x, y + 8); ctx.closePath(); ctx.fill(); }
     }
-    // engraved stamp on the base of the bust
-    ctx.fillStyle = 'rgba(30,16,4,.7)'; ctx.font = '700 10px "Geist Mono", monospace'; ctx.textAlign = 'center';
-    ctx.fillText(b.evil ? 'NO WRONGDOING ADMITTED' : 'NO RECEIPTS ON FILE', 0, -100);
-    // rim light from the room (Rx blue)
-    ctx.save(); ctx.globalCompositeOperation = 'lighter'; ctx.strokeStyle = 'rgba(95,225,255,.22)'; ctx.lineWidth = 2;
-    ctx.beginPath(); ctx.ellipse(0, -318, 62, 78, 0, -Math.PI * .9, -Math.PI * .35); ctx.stroke(); ctx.restore();
     ctx.filter = 'none';
     // phase effects
     if (S.phase >= 2) for (const sx of [-1, 1]) for (let i = 0; i < 2; i++) { const lx = sx * (240 + i * 46); ctx.fillStyle = '#0f172a'; ctx.fillRect(lx - 12, -96, 24, 70); ctx.beginPath(); ctx.arc(lx, -108, 12, 0, 7); ctx.fill(); ctx.fillStyle = '#6b4a2b'; ctx.fillRect(lx + sx * 10, -52, 18, 14); }
@@ -272,9 +268,9 @@ document.addEventListener('DOMContentLoaded', () => {
     ctx.fillStyle = 'rgba(117,154,199,.12)'; for (let x = 0; x <= 1600; x += 160) ctx.fillRect(x, 0, 3, 470); ctx.fillRect(0, 150, 1600, 3);
     // neon sign (behind boss)
     const on = reduced || Math.sin(t * 7) > -0.92 || Math.random() > .3;
-    ctx.save(); ctx.font = '500 84px Archivo, Arial'; ctx.letterSpacing = '18px'; ctx.textAlign = 'center';
-    ctx.shadowColor = '#5fe1ff'; ctx.shadowBlur = on ? 34 : 4; ctx.fillStyle = on ? '#bdf2ff' : '#16364f'; ctx.fillText('PHARMA HOLDINGS', 800, 128); ctx.restore();
-    ctx.font = '600 15px "IBM Plex Mono", monospace'; ctx.fillStyle = 'rgba(143,166,196,.6)'; ctx.textAlign = 'center'; ctx.fillText('THE BOARDROOM · AUTHORIZED SHAREHOLDERS ONLY', 800, 160);
+    ctx.save(); ctx.font = '900 italic 96px Inter, Arial'; ctx.textAlign = 'center';
+    ctx.shadowColor = '#ff3b58'; ctx.shadowBlur = on ? 30 : 4; ctx.fillStyle = on ? '#ff5a72' : '#5a1726'; ctx.fillText('BIG PHARMA', 800, 128); ctx.restore();
+    ctx.font = '600 15px "IBM Plex Mono", monospace'; ctx.fillStyle = 'rgba(255,90,114,.55)'; ctx.textAlign = 'center'; ctx.fillText('THE BOARDROOM · AUTHORIZED SHAREHOLDERS ONLY', 800, 160);
     // floor
     const f = ctx.createLinearGradient(0, 470, 0, 900); f.addColorStop(0, '#0b1323'); f.addColorStop(1, '#050913'); ctx.fillStyle = f; ctx.fillRect(0, 470, 1600, 430);
     ctx.save(); ctx.beginPath(); ctx.rect(0, 470, 1600, 430); ctx.clip(); ctx.strokeStyle = 'rgba(85,216,255,.08)'; ctx.lineWidth = 1.5;
@@ -282,7 +278,7 @@ document.addEventListener('DOMContentLoaded', () => {
     for (let k = 1; k < 10; k++) { const yy = 470 + 430 * Math.pow(k / 10, 1.8); ctx.beginPath(); ctx.moveTo(0, yy); ctx.lineTo(1600, yy); ctx.stroke(); }
     ctx.restore();
     // red carpet to the throne
-    ctx.fillStyle = 'rgba(12,151,216,.16)'; ctx.beginPath(); ctx.moveTo(740, 482); ctx.lineTo(860, 482); ctx.lineTo(1010, 900); ctx.lineTo(590, 900); ctx.closePath(); ctx.fill();
+    ctx.fillStyle = 'rgba(200,29,58,.28)'; ctx.beginPath(); ctx.moveTo(740, 482); ctx.lineTo(860, 482); ctx.lineTo(1010, 900); ctx.lineTo(590, 900); ctx.closePath(); ctx.fill();
   }
 
   /* ---------- Layout ---------- */
