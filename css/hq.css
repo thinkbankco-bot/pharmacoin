@@ -214,3 +214,26 @@ footer h4{font-family:var(--mono);color:var(--dim)}
 .hq-grid>div:first-child{max-width:640px}
 @media (min-width:981px){.live-panel{align-self:end}}
 @media (max-width:980px){.hq-hero{padding-top:300px}.hq-hero canvas#capsule{height:330px;bottom:auto}}
+
+/* ---------- Boss Raid + Floor HUDs in the Dispensary palette ---------- */
+.raid,.floor-hero{background:radial-gradient(900px 420px at 50% 0%,rgba(12,151,216,.14),transparent 62%)}
+.hud,.floor-bar,.floor-size,.floor-filters{border-color:var(--line)!important;background:linear-gradient(180deg,rgba(150,200,255,.06),rgba(150,200,255,.02))!important}
+.stage,.chamber{border-color:var(--line)!important}
+.hud-name b{color:#fff;font-family:var(--display);font-stretch:118%;font-weight:500;letter-spacing:.02em}
+.hud-name span{color:var(--muted)}
+.hp{background:rgba(150,200,255,.06);border-color:var(--line2);border-radius:4px}
+.hp i{background:linear-gradient(90deg,#8a6a2a,#c8a24a 60%,#e6c878);box-shadow:0 0 16px rgba(200,162,74,.35)}
+.hud-stats div,.floor-stats div,.dz-stats div{border-color:var(--line)!important}
+.lad{background:var(--glass)!important;border-color:var(--line)!important}
+.lad b{color:var(--gold2)}.lad span{color:var(--ink)}.lad i{color:var(--muted)}
+.lad.now{border-color:var(--gold)!important;box-shadow:0 0 0 1px var(--gold),0 0 24px rgba(200,162,74,.25)!important}
+.lad.evil b{color:#ff9aa3}
+.dossier{border-color:var(--line)!important}
+.dossier h3 small{color:var(--gold2)}
+.seg button.on,.floor-size button.on{background:var(--gold);border-color:var(--gold);color:#140e02}
+.raid-title em,.floor-hero .raid-title em{color:var(--bloom)}
+.preview-flag{background:rgba(0,10,31,.85);border-color:var(--line2);color:var(--muted)}
+.boss-quote{background:rgba(240,246,255,.94);font-family:var(--serif);font-style:italic;font-weight:400;font-size:1.05rem}
+.finding{border-color:var(--line)!important}
+.finding span{color:var(--gold2)}
+.potm{background:linear-gradient(160deg,rgba(200,162,74,.16),rgba(0,10,31,.9) 70%);border-color:rgba(200,162,74,.55)}
