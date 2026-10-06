@@ -377,23 +377,15 @@ function paintTape(tex, list) {
   });
   x.globalAlpha = 1; tex.needsUpdate = true;
 }
-async function pollTrades() {
-  if (document.hidden) return;
-  try {
-    const j = await (await fetch(`https://api.geckoterminal.com/api/v2/networks/solana/pools/${POOL}/trades`)).json();
-    const list = (j.data || []).map(d => { const a = d.attributes; const v = parseFloat(a.volume_in_usd); return { id: a.tx_hash, kind: a.kind === 'buy' ? 'buy' : 'sell', usd: isFinite(v) ? v : 0, ts: Date.parse(a.block_timestamp), wallet: a.tx_from_address, bot: !(v >= 1) }; }).filter(t => t.id).sort((a, b) => b.ts - a.ts);
-    const fresh = list.filter(t => !seen.has(t.id)); list.forEach(t => seen.add(t.id));
-    tape = list.slice(0, 40);
-    if (!firstPoll) fresh.reverse().forEach((t, i) => setTimeout(() => onTrade(t), i * 1200));
-    firstPoll = false;
-    const last = tape[0], quiet = !last || Date.now() - last.ts > 15 * 60e3;
-    $('#liveDot').classList.toggle('on', !quiet); $('#liveState').textContent = quiet ? 'quiet' : 'live';
-    $('#tapeLast').textContent = last ? `last ${ago(last.ts)}` : '—';
-    $('#tapeRows').innerHTML = tape.slice(0, 6).map(t => `<a class="trow ${t.bot ? 'bot' : ''}" href="https://solscan.io/tx/${t.id}" target="_blank" rel="noopener"><b class="${t.kind === 'buy' ? 'kb' : 'ks'}">${t.kind.toUpperCase()}</b><span>${t.wallet ? t.wallet.slice(0, 4) + '…' + t.wallet.slice(-4) : ''} · ${t.bot ? 'auto' : money(t.usd)}</span><em>${ago(t.ts)}</em></a>`).join('');
-    const day = tape.filter(t => Date.now() - t.ts < 864e5);
-    $('#tapeCount').textContent = `${day.filter(t => !t.bot).length} real · ${day.filter(t => t.bot).length} automated (recent) · links to Solscan`;
-    paintTape(press.tapeTex, tape);
-  } catch { $('#liveState').textContent = 'feed offline'; }
+function useTrades(list) {
+  tape = list.slice(0, 40);
+  const last = tape.find(t => !t.bot), quiet = !last || Date.now() - last.ts > 15 * 60e3;
+  $('#liveDot').classList.toggle('on', !quiet); $('#liveState').textContent = PULSE.state.snapshot ? 'snapshot' : quiet ? 'quiet' : 'live';
+  $('#tapeLast').textContent = last ? `last ${ago(last.ts)}` : '—';
+  $('#tapeRows').innerHTML = tape.slice(0, 6).map(t => `<a class="trow ${t.bot ? 'bot' : ''}" href="https://solscan.io/tx/${t.id}" target="_blank" rel="noopener"><b class="${t.kind === 'buy' ? 'kb' : 'ks'}">${t.kind}</b><span>${t.bot ? 'automated' : money(t.usd)}</span><i>${ago(t.ts)}</i></a>`).join('');
+  const day = tape.filter(t => Date.now() - t.ts < 864e5);
+  $('#tapeCount').textContent = `${day.filter(t => !t.bot).length} real · ${day.filter(t => t.bot).length} automated (recent) · links to Solscan`;
+  paintTape(press.tapeTex, tape);
 }
 function onTrade(t) {
   if (t.bot) return;
@@ -407,21 +399,12 @@ function onTrade(t) {
     vials.flash.push({ i, t: 1 });
   }
 }
-async function pollMeta() {
-  try {
-    const j = await (await fetch(`https://api.dexscreener.com/latest/dex/pairs/solana/${POOL}`)).json();
-    const p = (j.pairs || [j.pair])[0]; const mc = p && (p.marketCap || p.fdv);
-    if (mc) { document.querySelectorAll('[data-mcap]').forEach(e => e.textContent = money(mc)); setBoss(mc); }
-  } catch {}
-  try {
-    const j = await (await fetch(`https://api.geckoterminal.com/api/v2/networks/solana/tokens/${CA}/info`)).json();
-    const h = j.data.attributes.holders; if (h && h.count) {
-      $('#holderCount').textContent = h.count.toLocaleString();
-      if (Math.abs(h.count - vials.count) > 4) buildVials(h.count);
-      const d = h.distribution_percentage || {};
-      $('#dist').innerHTML = [['Top 10', d.top_10], ['11–20', d['11_20']], ['21–40', d['21_40']], ['Everyone else', d.rest]].map(([k, v]) => `<div><span>${k}</span><i style="width:${Math.min(100, +v || 0)}%"></i><b>${(+v || 0).toFixed(1)}%</b></div>`).join('') + '<div style="grid-template-columns:1fr;color:#6d88aa">Top 10 includes the liquidity pool (≈half of supply).</div>';
-    }
-  } catch {}
+function useHolders(h) {
+  if (!h || !h.count) return;
+  $('#holderCount').textContent = h.count.toLocaleString();
+  if (Math.abs(h.count - vials.count) > 4) buildVials(h.count);
+  const d = h.dist || {};
+  $('#dist').innerHTML = [['Top 10', d.top_10], ['11–20', d['11_20']], ['21–40', d['21_40']], ['Everyone else', d.rest]].map(([k, v]) => `<div><span>${k}</span><i style="width:${Math.min(100, +v || 0)}%"></i><b>${(+v || 0).toFixed(1)}%</b></div>`).join('');
 }
 function setBoss(mc) {
   const T = (window.TARGETS && window.TARGETS.targets) || []; if (!T.length) return;
@@ -495,9 +478,13 @@ function frame() {
 step(1);
 scrollToT(); tNow = tTarget;
 frame();
-pollTrades(); pollMeta();
-setInterval(pollTrades, 30000); setInterval(pollMeta, 120000);
-document.addEventListener('visibilitychange', () => { if (!document.hidden) pollTrades(); });
+/* live data: the shared PULSE engine (one poller per page, snapshot-seeded, 429-aware) */
+PULSE.on('trades', useTrades);
+PULSE.on('trade', onTrade);
+PULSE.on('pair', p => { if (p && p.mcap) { document.querySelectorAll('[data-mcap]').forEach(e => e.textContent = money(p.mcap)); setBoss(p.mcap); } });
+PULSE.on('holders', useHolders);
+if (!PULSE.state.holders && window.HOLDERS) useHolders({ count: HOLDERS.holders, dist: {} });
+PULSE.start();
 const go = $('#bootGo'); go.disabled = false;
 go.onclick = () => { $('#boot').classList.add('gone'); document.querySelector('[data-st="0"] .card').classList.add('show'); };
 if (sessionStorage.getItem('hq_entered')) go.click();
