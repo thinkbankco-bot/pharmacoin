@@ -1,0 +1,108 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>PHARMA HQ — Pharmacoin</title>
+<meta name="description" content="Enter PHARMA Holdings HQ: a living lab driven by real $PHARMA trades. The press stamps on real buys, every holder is a vial, the top raiders have booths, and every claim has a receipt.">
+<meta property="og:title" content="PHARMA HQ — enter the lab">
+<meta property="og:description" content="A living lab driven by real on-chain trades. No tabs. Just walk in.">
+<meta property="og:url" content="https://thinkbankco-bot.github.io/pharmacoin/hq.html">
+<meta property="og:image" content="https://thinkbankco-bot.github.io/pharmacoin/assets/og.png"><meta name="twitter:card" content="summary_large_image">
+<meta name="theme-color" content="#04162e">
+<link rel="icon" href="assets/brand/favicon-32.png">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@100..125,300..800&family=IBM+Plex+Mono:wght@400;500;600&family=Instrument+Serif:ital@0;1&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/hq3d.css">
+<script type="importmap">{"imports":{"three":"https://cdn.jsdelivr.net/npm/three@0.170.0/build/three.module.js","three/addons/":"https://cdn.jsdelivr.net/npm/three@0.170.0/examples/jsm/"}}</script>
+</head><body>
+
+<canvas id="world" aria-label="PHARMA HQ, a 3D lab driven by live $PHARMA trades"></canvas>
+<div class="vignette" aria-hidden="true"></div>
+
+<!-- boot -->
+<div class="boot" id="boot">
+  <div class="boot-mark"><img src="assets/brand/caduceus-96.png" alt=""></div>
+  <div class="boot-line">PHARMA HOLDINGS PLC · AUTHORIZING VISITOR</div>
+  <div class="boot-bar"><i id="bootBar"></i></div>
+  <button class="boot-go" id="bootGo" disabled>Enter the lab</button>
+  <div class="boot-fine">Real on-chain data · nothing simulated · sound off</div>
+</div>
+
+<!-- HUD -->
+<header class="hud">
+  <a class="hud-brand" href="index.html"><img src="assets/brand/caduceus-96.png" alt=""><span>PHARMA HQ</span></a>
+  <div class="hud-live"><i id="liveDot"></i><span id="liveState">connecting</span><b data-mcap>—</b></div>
+  <a class="hud-exit" href="index.html">Classic site ↗</a>
+</header>
+
+<nav class="rail" id="rail" aria-label="Floors"></nav>
+
+<!-- one tall scroll track drives the camera -->
+<main id="track">
+  <section class="st" data-st="0">
+    <div class="card hero">
+      <div class="k">PHARMA HOLDINGS PLC · SUBLEVEL 4</div>
+      <h1>PHARMA<em>COIN</em></h1>
+      <p>Welcome to the lab. Everything in this building moves with <b>real $PHARMA trades</b>. Scroll to walk in.</p>
+      <div class="ca"><span>CA</span><code id="ca"></code><button id="copyCa">Copy</button></div>
+    </div>
+  </section>
+  <section class="st" data-st="1">
+    <div class="card right">
+      <div class="k">01 · THE PRESS</div>
+      <h2>Every buy <em>stamps a capsule.</em></h2>
+      <p>The gold press only moves when a real buy lands on-chain. Sells crack a vial. When it’s quiet, it waits.</p>
+      <div class="tape" id="tape"><div class="tape-h"><span>LIVE TAPE</span><span id="tapeLast">—</span></div><div id="tapeRows"></div><div class="tape-f" id="tapeCount">Real trades only · ~30s delay · links to Solscan</div></div>
+    </div>
+  </section>
+  <section class="st" data-st="2">
+    <div class="card left">
+      <div class="k">02 · THE DISPENSARY</div>
+      <h2><span id="holderCount">1,8xx</span> vials. <em>One per holder.</em></h2>
+      <p>Every glowing vial on the wall is a real wallet holding $PHARMA. Gold vials are the top 10 (liquidity pool included, and labeled).</p>
+      <div class="dist" id="dist"></div>
+    </div>
+  </section>
+  <section class="st" data-st="3">
+    <div class="card right">
+      <div class="k">03 · EXECUTIVE BOOTHS</div>
+      <h2>The raiders <em>get booths.</em></h2>
+      <p>Top posters from the X sweep get a private glass booth with their name in gold. Earned by posting, never by bag size.</p>
+      <div class="booths" id="boothList"></div>
+      <a class="btn" href="prescribers.html">Full leaderboard →</a>
+    </div>
+  </section>
+  <section class="st" data-st="4">
+    <div class="card left">
+      <div class="k">04 · THE ARCHIVE</div>
+      <h2>Sixty files. <em>All real.</em></h2>
+      <p>Every floating file is a sourced DOJ / FDA receipt. <b>Tap one</b> to pull it from the stack.</p>
+      <div class="statline"><b id="recCount">60</b> receipts · <b id="recSum">$81.6B</b> raw total · 0 retractions</div>
+    </div>
+  </section>
+  <section class="st" data-st="5">
+    <div class="card right">
+      <div class="k">05 · CONGRESSIONAL RELATIONS</div>
+      <h2>535 seats, <em>lit by the money.</em></h2>
+      <p>Every light is a member of Congress. Brightness = drug-company PAC + employee money, from FEC filings. Legal, disclosed, not a bribe.</p>
+      <a class="btn" href="congress.html">Enter The Floor →</a>
+    </div>
+  </section>
+  <section class="st" data-st="6">
+    <div class="card left">
+      <div class="k">06 · THE BOARDROOM</div>
+      <h2>Next boss: <em id="bossName">—</em></h2>
+      <p id="bossLine">Every boss is a real drugmaker’s market cap. Ours is the damage.</p>
+      <div class="hp"><i id="hpFill"></i></div>
+      <div class="actions"><a class="btn gold" id="buyBtn" target="_blank" rel="noopener">Buy $PHARMA</a><a class="btn" href="arena.html">Boss Raid →</a></div>
+    </div>
+  </section>
+</main>
+
+<dialog class="file" id="fileDlg"><div id="fileBody"></div></dialog>
+
+<script src="data/receipts.js"></script>
+<script src="data/prescribers.js"></script>
+<script src="data/congress.js"></script>
+<script src="data/congress_employees.js"></script>
+<script src="data/targets.js"></script>
+<script type="module" src="js/hq3d.js"></script>
+</body></html>
