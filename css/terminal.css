@@ -103,7 +103,15 @@
 .irt-foot a{color:#ffb5c0}
 .irt-foot .sig{grid-column:1/-1;text-align:right;color:var(--muted);font-family:var(--mono);font-size:.6rem;letter-spacing:.14em;margin-top:6px}
 .irt-actions{display:flex;gap:10px;flex-wrap:wrap;padding:0 18px 16px}
-/* phone */
+/* phone mini bar */
+.irt-mini{position:fixed;left:10px;right:10px;bottom:10px;z-index:60;display:none;align-items:center;gap:10px;padding:9px 12px;border-radius:12px;background:rgba(6,13,28,.92);border:1px solid var(--line2);backdrop-filter:blur(8px);font-family:var(--mono);font-size:.68rem;color:var(--muted);transform:translateY(120%);transition:transform .35s var(--ease)}
+.irt-mini.on{transform:none}
+.irt-mini b{color:var(--ink);font-family:var(--sans);font-weight:1000;font-size:.95rem;letter-spacing:-.03em;font-variant-numeric:tabular-nums}
+.irt-mini .up{color:var(--cyan)}.irt-mini .dn{color:var(--red)}
+.irt-mini a{margin-left:auto;color:var(--cyan);text-decoration:none;font-weight:600;letter-spacing:.1em;font-size:.58rem}
+@media (max-width:980px){.irt-mini{display:flex;white-space:nowrap;overflow:hidden}}
+@media (max-width:480px){.irt-mini #miniT{display:none}.irt-mini>span:first-child{display:none}}
+/* phone
 @media (max-width:980px){
   .irt-grid{grid-template-columns:1fr}
   .span-3,.span-4,.span-5,.span-6,.span-8{grid-column:span 1}

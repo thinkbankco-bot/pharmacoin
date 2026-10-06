@@ -9,7 +9,7 @@
 <meta name="theme-color" content="#050914">
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:ital,wght@0,400;0,500;0,700;0,800;0,900;1,800;1,900&family=IBM+Plex+Mono:wght@400;500;600;700&family=Caveat:wght@600;700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="css/pharma.css"><link rel="stylesheet" href="css/pages.css"><link rel="stylesheet" href="css/phase1.css"><link rel="stylesheet" href="css/terminal.css">
+<link rel="stylesheet" href="css/pharma.css"><link rel="stylesheet" href="css/pages.css"><link rel="stylesheet" href="css/phase1.css"><link rel="stylesheet" href="css/terminal.css"><link rel="stylesheet" href="css/ward.css">
 </head><body>
 
 <!-- HERO -->
@@ -88,6 +88,24 @@
         <div class="sig">Reviewed by M. Pruitt, Receipts Dept. · nothing simulated · not medical or financial advice</div>
       </div>
       <div class="irt-actions"><button class="btn primary" id="printChart">Print today’s patient chart <span class="arr">→</span></button><button class="btn" id="irtSound">Monitor beeps: off</button><a class="btn" data-dex href="#">Full chart on DexScreener</a><span class="src" id="sinceWrap" style="align-self:center">last real trade <b id="sinceN" style="color:var(--ink)">—</b> ago</span></div>
+    </div>
+  </div>
+</section>
+
+<!-- THE WARD (holder census) -->
+<section class="sec ward-sec" id="ward-sec">
+  <div class="wrap">
+    <div class="sec-head" style="margin-bottom:22px"><div><div class="kicker">Patient census · on-chain</div><h2 class="title rv-words">Every holder <em>has a bed.</em></h2><p class="lead rv">A full census of every wallet holding $PHARMA, taken from the chain at each deploy. The twenty largest get private rooms. Everyone else gets a vial on the wall. <span class="rl" data-rl="Wallets are public. We show the first and last four characters, link to Solscan, and never attach names." data-st="v">PHARMA Holdings respects patient confidentiality.</span> Paste your address at the desk to find your bed.</p></div></div>
+    <div class="rooms" id="rooms"></div>
+    <button class="btn rooms-more" id="roomsMore">Show rooms 109–120 <span class="arr">↓</span></button>
+    <div class="rooms-foot" id="roomsFoot"></div>
+    <div class="wall"><div class="wall-h"><h3 id="wallH">vials</h3><span id="wallSub"></span></div><canvas id="wallCv" aria-label="One vial per holder, sized by balance"></canvas><div class="wall-tip" id="wallTip"></div><div class="wall-k"><span><i style="background:#ffb84d"></i>the dispensary (pool)</span><span><i style="background:#ffcf6b"></i>private rooms (top 20)</span><span><i style="background:#55d8ff"></i>general ward</span><span><i style="background:rgba(93,117,145,.75)"></i>under a dollar</span><span><i style="background:#ff3b58"></i>you</span></div></div>
+    <div class="desk">
+      <div class="desk-form"><h3>Check-in desk</h3><p>Paste a Solana wallet address. We find it in the census (and try the public RPC for a live balance) and rank it against every other holder. Read-only. No connect, no signature, no seed phrase, ever.</p>
+        <div class="desk-row"><input id="deskIn" placeholder="Solana wallet address" autocomplete="off" spellcheck="false"><button class="btn primary" id="deskBtn">Check in</button></div>
+        <div class="desk-err" id="deskErr"></div>
+        <div class="desk-note" id="deskNote">rank = wallets with a larger balance + 1 · census refreshed at every deploy · your address stays on your device</div></div>
+      <div class="pchart" id="pchart"></div>
     </div>
   </div>
 </section>
@@ -172,12 +190,15 @@
   </div>
 </section>
 
+<div class="irt-mini" id="irtMini" aria-hidden="true"><span>$PHARMA</span><b id="miniP">—</b><span id="miniC"></span><span id="miniT"></span><a href="#terminal">TERMINAL ↑</a></div>
 <script src="js/pharma.js"></script>
 <script src="data/receipts.js"></script>
 <script src="data/formulary.js"></script>
 <script src="js/formulary.js"></script>
 <script src="js/home.js"></script>
 <script src="data/pulse_snapshot.js"></script>
+<script src="data/holders_snapshot.js"></script>
 <script src="js/pulse.js"></script>
 <script src="js/terminal.js"></script>
+<script src="js/ward.js"></script>
 </body></html>

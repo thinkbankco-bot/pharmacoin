@@ -1,0 +1,61 @@
+/* THE WARD — holder census: private rooms, vial wall, check-in desk */
+.ward-sec{padding-top:30px}
+.rooms{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:12px;margin-top:8px}
+.room{position:relative;border:1px solid var(--line);border-radius:14px;padding:14px 14px 12px;background:linear-gradient(180deg,rgba(16,30,53,.9),rgba(7,16,31,.95));min-width:0;text-decoration:none;color:var(--ink);transition:transform .3s var(--ease),border-color .3s;overflow:hidden}
+.room:hover{transform:translateY(-3px);border-color:var(--line2)}
+.room .no{font-family:var(--mono);font-size:.58rem;letter-spacing:.16em;color:var(--dim);display:flex;justify-content:space-between;align-items:center;gap:6px;flex-wrap:wrap}
+.room .no b{color:var(--amber);font-weight:600}
+.room .pt{font-family:var(--mono);font-size:.78rem;margin-top:8px;color:var(--ink)}
+.room .amt{font-family:var(--sans);font-weight:1000;font-size:1.35rem;letter-spacing:-.04em;line-height:1.05;margin-top:6px;font-variant-numeric:tabular-nums}
+.room .amt small{display:block;font-family:var(--mono);font-weight:400;font-size:.6rem;letter-spacing:.08em;color:var(--muted);margin-top:3px}
+.room .dx{font-family:Caveat,cursive;font-size:1rem;color:#ff8a9b;margin-top:8px;line-height:1.2}
+.room .st{font-family:var(--mono);font-size:.52rem;letter-spacing:.12em;padding:2px 6px;border-radius:4px;border:1px solid var(--line);color:var(--muted);white-space:nowrap}
+.room .st.up{color:var(--cyan);border-color:rgba(85,216,255,.4)}.room .st.dn{color:#ff8a9b;border-color:rgba(255,59,88,.4)}.room .st.new{color:var(--amber);border-color:rgba(255,184,77,.4)}
+.room.pool{grid-column:span 2;border-color:rgba(255,184,77,.45);background:linear-gradient(135deg,rgba(255,184,77,.12),rgba(7,16,31,.95))}
+.room.pool .amt{font-size:1.9rem}
+.room .bar{height:4px;border-radius:4px;background:rgba(117,154,199,.12);margin-top:10px;overflow:hidden}
+.room .bar i{display:block;height:100%;background:linear-gradient(90deg,var(--blue),var(--cyan))}
+.room.pool .bar i{background:linear-gradient(90deg,var(--amber),#ffcf6b)}
+.rooms-foot{display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap;margin-top:12px;font-family:var(--mono);font-size:.62rem;letter-spacing:.1em;color:var(--dim);text-transform:uppercase}
+/* vial wall */
+.wall{position:relative;margin-top:40px;border:1px solid var(--line);border-radius:18px;background:var(--panel);overflow:hidden}
+.wall-h{display:flex;justify-content:space-between;align-items:baseline;gap:16px;padding:14px 18px 6px;flex-wrap:wrap}
+.wall-h h3{font-family:var(--sans);font-weight:1000;letter-spacing:-.03em;font-size:1.3rem;margin:0}
+.wall-h h3 em{color:var(--cyan);font-style:normal}
+.wall-h span{font-family:var(--mono);font-size:.6rem;letter-spacing:.12em;color:var(--dim);text-transform:uppercase}
+.wall canvas{display:block;width:100%;cursor:crosshair}
+.wall-tip{position:absolute;pointer-events:none;background:rgba(4,16,31,.95);border:1px solid var(--line2);border-radius:8px;padding:8px 10px;font-family:var(--mono);font-size:.66rem;color:var(--ink);white-space:nowrap;transform:translate(-50%,-115%);opacity:0;transition:opacity .15s}
+.wall-tip b{color:var(--amber)}
+.wall-k{display:flex;gap:18px;flex-wrap:wrap;padding:8px 18px 14px;font-family:var(--mono);font-size:.6rem;color:var(--muted);letter-spacing:.08em}
+.wall-k i{display:inline-block;width:8px;height:12px;border-radius:2px 2px 3px 3px;margin-right:6px;vertical-align:-2px}
+/* check-in desk */
+.desk{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.2fr);gap:28px;margin-top:40px;align-items:start}
+.desk-form{border:1px solid var(--line);border-radius:18px;padding:22px;background:linear-gradient(180deg,rgba(16,30,53,.7),rgba(7,16,31,.9))}
+.desk-form h3{font-family:var(--sans);font-weight:1000;letter-spacing:-.03em;font-size:1.5rem;margin:0 0 6px}
+.desk-form p{color:var(--muted);font-size:.92rem;margin:0 0 16px}
+.desk-row{display:flex;gap:8px}
+.desk-row input{flex:1;min-width:0;background:rgba(5,9,20,.8);border:1px solid var(--line2);color:var(--ink);border-radius:12px;padding:12px 14px;font-family:var(--mono);font-size:.8rem}
+.desk-row input:focus{outline:none;border-color:var(--cyan)}
+.desk-note{font-family:var(--mono);font-size:.6rem;letter-spacing:.1em;color:var(--dim);text-transform:uppercase;margin-top:10px}
+.desk-err{font-family:Caveat,cursive;color:#ff8a9b;font-size:1.05rem;margin-top:10px;min-height:1.3em}
+/* the chart (result) */
+.pchart{position:relative;background:var(--paper);color:#1d1a15;border-radius:6px 6px 14px 14px;padding:22px 24px 20px;box-shadow:0 30px 80px rgba(0,0,0,.5);transform:rotate(-.4deg);display:none}
+.pchart.on{display:block;animation:slidein .5s var(--ease)}
+@keyframes slidein{from{opacity:0;transform:translateY(16px) rotate(-.4deg)}to{opacity:1;transform:rotate(-.4deg)}}
+.pchart::before{content:"";position:absolute;left:0;right:0;top:0;height:10px;background:#1d1a15;border-radius:6px 6px 0 0}
+.pchart .ph{display:flex;justify-content:space-between;align-items:baseline;gap:12px;padding-top:8px;border-bottom:2px solid #1d1a15;padding-bottom:8px}
+.pchart .ph b{font-family:var(--sans);font-weight:1000;font-size:1.1rem;letter-spacing:-.02em}
+.pchart .ph span{font-family:var(--mono);font-size:.62rem;letter-spacing:.12em;color:#6b5f4f}
+.pchart .pr{display:grid;grid-template-columns:1fr auto;gap:4px 16px;padding:9px 0;border-bottom:1px solid rgba(29,26,21,.2);font-family:var(--mono);font-size:.72rem}
+.pchart .pr span{color:#6b5f4f}.pchart .pr b{font-family:var(--sans);font-weight:900;font-size:1rem;letter-spacing:-.02em;text-align:right;font-variant-numeric:tabular-nums}
+.pchart .pr b.big{font-size:1.6rem}
+.pchart .att{font-family:Caveat,cursive;font-size:1.2rem;color:#c4122f;line-height:1.25;margin:14px 0 4px;padding:10px 12px;border-left:3px solid #c4122f;background:rgba(196,18,47,.05)}
+.pchart .att small{display:block;font-family:var(--mono);font-size:.58rem;letter-spacing:.12em;color:#6b5f4f;margin-top:6px;text-transform:uppercase}
+.pchart .pa{display:flex;gap:8px;flex-wrap:wrap;margin-top:14px}
+.pchart .pa .btn{border-color:#1d1a15;color:#1d1a15}.pchart .pa .btn.primary{background:#1d1a15;color:var(--paper);border-color:#1d1a15}
+.pchart .pa .btn:hover{color:var(--paper);background:#1d1a15}
+@media (max-width:1100px){.rooms{grid-template-columns:repeat(4,minmax(0,1fr))}}
+.rooms-more{display:none!important}
+@media (max-width:860px){.rooms.collapsed .room:nth-child(n+10){display:none}.rooms-more{display:inline-flex!important;margin-top:12px;width:100%;justify-content:center}.rooms-more[style*='none']{display:none!important}
+.rooms{grid-template-columns:repeat(2,minmax(0,1fr))}.room.pool{grid-column:span 2}.desk{grid-template-columns:1fr}.pchart{transform:none}}
+@media (max-width:480px){.rooms{grid-template-columns:1fr 1fr;gap:8px}.room{padding:11px 10px}.room .amt{font-size:1.1rem}.room .dx{font-size:.9rem}}

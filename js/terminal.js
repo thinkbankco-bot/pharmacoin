@@ -155,7 +155,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const d = h.dist, parts = [['Top 10', +d.top_10 || 0, '#ffcf6b'], ['11–20', +d['11_20'] || 0, '#15a7ff'], ['21–40', +d['21_40'] || 0, '#55d8ff'], ['Everyone else', +d.rest || 0, '#6ee7b7']];
     $('#distBar').innerHTML = parts.map(([k, v, c]) => `<i style="width:${v}%;background:${c}" title="${k} ${v.toFixed(1)}%"></i>`).join('');
     $('#distK').innerHTML = parts.map(([k, v, c]) => `<div><i style="background:${c}"></i>${k} ${v.toFixed(1)}%</div>`).join('');
-    $('#distNote').textContent = `Top 10 wallets hold ${(+d.top_10 || 0).toFixed(1)}% (the liquidity pool is one of them). We are, in fact, Big Pharma.`;
+    const HH = window.HOLDERS, poolPct = HH && HH.top && HH.supply ? (HH.top.find(t => t.o === HH.pool) || { a: 0 }).a / HH.supply * 100 : 0; $('#distNote').textContent = poolPct ? `Top 10 hold ${(+d.top_10 || 0).toFixed(1)}%, and ${poolPct.toFixed(1)} points of that is the liquidity pool. We are, in fact, Big Pharma.` : `Top 10 wallets hold ${(+d.top_10 || 0).toFixed(1)}% (the liquidity pool is one of them). We are, in fact, Big Pharma.`;
     stamp($('#srcE'), 'GECKOTERMINAL', P.state.at.holders, h.snapshot);
   });
   /* ---------- G: fines ticker ---------- */
@@ -191,6 +191,14 @@ document.addEventListener('DOMContentLoaded', () => {
     c.toBlob(b => { const a = document.createElement('a'); a.href = URL.createObjectURL(b); a.download = `pharma-chart-${new Date().toISOString().slice(0, 10)}.png`; a.click(); setTimeout(() => URL.revokeObjectURL(a.href), 4000); if (window.PH) PH.toast('Chart printed. Post it with the ticker.'); }, 'image/png');
   };
 
+  /* phone mini bar: price + 24h + last trade, visible once the terminal is above the fold */
+  const mini = document.getElementById('irtMini');
+  if (mini) {
+    const upd = () => { const p = P.state.pair; if (!p) return; mini.querySelector('#miniP').textContent = P.fmtPrice(p.price); const c = p.chg?.h24; mini.querySelector('#miniC').innerHTML = c == null ? '' : `<span class="${c > 0 ? 'up' : c < 0 ? 'dn' : ''}">${c > 0 ? '+' : ''}${(+c).toFixed(1)}% 24h</span>`; const last = P.state.trades.find(t => !t.bot); mini.querySelector('#miniT').textContent = last ? `· last ${last.kind} ${P.ago(last.ts)} ago` : ''; };
+    P.on('pair', upd); P.on('trades', upd);
+    const io = new IntersectionObserver(es => { const below = T.getBoundingClientRect().bottom < 0; mini.classList.toggle('on', !es[0].isIntersecting && below && !document.querySelector('footer')?.getBoundingClientRect().top < innerHeight); }, { threshold: 0 });
+    io.observe(T); addEventListener('scroll', () => { if (!mini.classList.contains('on')) return; const f = document.querySelector('footer'); if (f && f.getBoundingClientRect().top < innerHeight) mini.classList.remove('on'); }, { passive: true });
+  }
   /* first paint from whatever PULSE already has, then start */
   P.start();
   setTimeout(() => { nowServing(); ward(); drawEkg(); mood(); }, 400);
