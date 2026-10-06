@@ -84,7 +84,7 @@ document.addEventListener('DOMContentLoaded', () => {
              ${r ? receiptHTML(r) : ''}</div>
       </div>
       <div class="pi-foot"><span>FICTIONAL PRODUCT · SATIRE · NOT MEDICAL ADVICE · artwork: $PHARMA community, via the Meme Depot</span>
-        <span class="actions" style="gap:8px"><button class="btn" data-share="${d.id}">Copy link</button><a class="btn primary" data-buy href="${PH.CONFIG.buy}" target="_blank" rel="noopener">Fill prescription</a></span></div>`;
+        <span class="actions" style="gap:8px">${PH.xShare(`${d.name}®: "${d.tag}" Side effects include a real DOJ receipt. $PHARMA`, location.href.split('#')[0] + '#' + d.id)}<button class="btn" data-share="${d.id}">Copy link</button><a class="btn primary" data-buy href="${PH.CONFIG.buy}" target="_blank" rel="noopener">Fill prescription</a></span></div>`;
     $('.pi-x', dlg).onclick = () => dlg.close();
     $('[data-share]', dlg).onclick = async () => { const u = location.href.split('#')[0] + '#' + d.id; try { await navigator.clipboard.writeText(u); toast('Link copied. Share responsibly.'); } catch { toast(u); } };
     if (!dlg.open) dlg.showModal();

@@ -6,8 +6,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
   /* Today's dose number (Dose #1 = Oct 5, 2026 UTC) */
   const doseNo = Math.max(0, Math.floor((Date.now() - Date.UTC(2026, 9, 5)) / 864e5)) + 1;
-  $('#heroDose').textContent = `Daily Dose #${doseNo}`; $('#ctaDose').textContent = doseNo; $('#faxNo').textContent = `DOSE #${doseNo}`;
-  const now = new Date(); $('#filled').textContent = `${String(now.getMonth() + 1).padStart(2, '0')}/${String(now.getDate()).padStart(2, '0')}/${String(now.getFullYear()).slice(2)}`;
+  const setT = (sel, v) => { const el = $(sel); if (el) el.textContent = v; };
+  setT('#heroDose', `Daily Dose #${doseNo}`); setT('#ctaDose', doseNo); setT('#faxNo', `DOSE #${doseNo}`);
 
   /* Ticker */
   const money = R.filter(r => r.amount_usd).sort((a, b) => b.amount_usd - a.amount_usd);

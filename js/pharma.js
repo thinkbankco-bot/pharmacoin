@@ -16,7 +16,7 @@ const PH = (() => {
   const MASK = `<svg viewBox="0 0 220 170" aria-hidden="true"><path d="M46 14h128l24 48c-5 49-34 83-88 102C56 145 27 111 22 62L46 14Z" fill="#eaf5ff" stroke="#0b1220" stroke-width="5"/><path d="M57 58c18-14 36-15 55-2M108 56c19-13 38-12 55 2" fill="none" stroke="#0b1220" stroke-width="9" stroke-linecap="round"/><path d="M66 75c17-12 30-12 43 0-14 8-28 8-43 0ZM115 75c15-12 29-12 43 0-14 8-28 8-43 0Z" fill="#0b1220"/><path d="M110 76c-10 24-12 37 0 44 12-7 10-20 0-44Z" fill="#0b1220" opacity=".8"/><path d="M62 116c23 8 41 7 48-4 7 11 25 12 48 4-9 19-28 26-48 12-20 14-39 7-48-12ZM93 137c12 10 22 10 34 0-3 18-9 26-17 28-8-2-14-10-17-28Z" fill="#0b1220"/></svg>`;
 
   const PAGES = [
-    ['index.html', 'Home'], ['dose.html', 'Daily Dose', 'hot'], ['arena.html', 'Boss Raid'], ['congress.html', 'The Floor'],
+    ['index.html', 'Home'], ['congress.html', 'The Floor', 'hot'], ['arena.html', 'Boss Raid'], ['dose.html', 'Daily Dose'],
     ['formulary.html', 'Formulary'], ['archive.html', 'Receipts'], ['prescribers.html', 'Prescribers'],
   ];
 
@@ -28,11 +28,11 @@ const PH = (() => {
   function onScroll(fn) { scrollFns.push(fn); kick(); }
 
   function chrome() {
-    if (!document.querySelector('link[rel=icon]')) { const l = document.createElement('link'); l.rel = 'icon'; l.href = "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ccircle cx='50' cy='50' r='48' fill='%2355d8ff'/%3E%3Ctext x='50' y='68' font-size='52' text-anchor='middle' font-family='Arial' font-weight='900' fill='%23050914'%3ERx%3C/text%3E%3C/svg%3E"; document.head.append(l); }
+    if (!document.querySelector('link[rel=icon]')) { const l = document.createElement('link'); l.rel = 'icon'; l.href = 'assets/brand/favicon-32.png'; document.head.append(l); }
     const here = location.pathname.split('/').pop() || 'index.html';
     const nav = document.createElement('nav');
     nav.className = 'nav';
-    nav.innerHTML = `<div class="nav-inner"><a class="brand" href="index.html"><span class="brand-mask">${MASK}</span><span>$PHARMA</span></a>
+    nav.innerHTML = `<div class="nav-inner"><a class="brand" href="index.html"><span class="brand-mask"><img src="assets/brand/caduceus-96.png" alt=""></span><span>PHARMACOIN</span></a>
       <div class="nav-links">${PAGES.slice(1).map(([h, t, c]) => `<a href="${h}" class="${c || ''}" ${h === here ? 'aria-current="page"' : ''}>${t}</a>`).join('')}</div>
       <a class="mcap-chip" href="${CONFIG.dex}" target="_blank" rel="noopener">MCAP <b data-mcap>—</b></a>
       <button class="burger" aria-label="Menu"><span></span><span></span><span></span></button></div>`;
@@ -42,12 +42,12 @@ const PH = (() => {
 
     const foot = document.createElement('footer');
     foot.innerHTML = `<div class="wrap"><div class="foot-grid">
-      <div><a class="brand" href="index.html"><span class="brand-mask">${MASK}</span><span>$PHARMA</span></a>
+      <div><a class="brand" href="index.html"><span class="brand-mask"><img src="assets/brand/caduceus-96.png" alt=""></span><span>PHARMACOIN</span></a>
       <p class="fine" style="margin-top:16px">PHARMA Holdings plc is not a real pharmaceutical company, which is the nicest thing anyone has said about it. Satirical evidence desk. Real sources, sarcastic string. Not medical advice. Not investment advice. Not saying the calendar did it. If you are sick, call a doctor, not a memecoin.</p></div>
       <div><h4>The Lab</h4><a href="dose.html">Daily Dose</a><a href="archive.html">Receipt Archive</a><a href="plague.html">Plague Desk</a><a href="hantavirus.html">Hanta Calendar</a><a href="polio.html">Polio Trail</a></div>
       <div><h4>The Company</h4><a href="formulary.html">The Formulary</a><a href="arena.html">Boss Raid</a><a href="congress.html">The Floor</a><a href="prescribers.html">Top Prescribers</a><a href="index.html#letter">Investor Relations</a><a href="casino.html">PharmaCasino</a><a href="boss-fight.html">Discontinued Products</a></div>
       <div><h4>Chart</h4><a href="${CONFIG.buy}" target="_blank" rel="noopener">Buy $PHARMA</a><a href="${CONFIG.dex}" target="_blank" rel="noopener">DexScreener</a><a href="${CONFIG.x}" target="_blank" rel="noopener">X: @PharmaCoinSol</a><a href="methodology.html">How we don't get sued</a></div>
-      </div><div class="foot-word" aria-hidden="true">$PHARMA</div></div>`;
+      </div><div class="foot-word" aria-hidden="true">PHARMACOIN</div></div>`;
     document.body.append(foot);
     const t = document.createElement('div'); t.className = 'toast'; document.body.append(t);
   }
@@ -222,9 +222,9 @@ const PH = (() => {
     let pref = null; try { pref = localStorage.getItem('ph_redline'); } catch {}
     let on = pref === 'on';
     const btn = document.createElement('button'); btn.className = 'rl-toggle';
-    const paint = () => { document.body.classList.toggle('redline-on', on); btn.innerHTML = `<b>Receipts Dept. edits</b><span>${on ? 'ON' : 'OFF'}</span>`; btn.setAttribute('aria-pressed', on); };
+    const paint = () => { document.body.classList.toggle('redline-on', on); btn.innerHTML = `<b>Corrections</b><span>${on ? 'ON' : 'OFF'}</span>`; btn.setAttribute('aria-pressed', on); };
     btn.onclick = () => { on = !on; try { localStorage.setItem('ph_redline', on ? 'on' : 'off'); } catch {} paint(); toast(on ? 'Marjorie has entered the chat.' : 'Edits hidden. Corporate thanks you for your trust.'); };
-    document.body.append(btn); paint();
+    const host = $('.nav-inner .mcap-chip'); host ? host.before(btn) : document.body.append(btn); paint();
     if (pref === null) setTimeout(() => { on = true; paint(); }, reduced ? 0 : 1600);
   }
 
@@ -249,6 +249,8 @@ const PH = (() => {
     field($('canvas.field'));
     console.log('%c$PHARMA', 'font:900 28px Inter;color:#55d8ff', '\nYou opened the console. That is how it starts. Type "sideeffects" anywhere on the page.');
   }
-  return { CONFIG, MASK, $, $$, esc, toast, countUp, fmtMoney, receiptHTML, init, reduced, touch, onScroll, CAT };
+  const XSVG = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M18.9 2H22l-7.6 8.7L23 22h-6.8l-5.3-6.9L4.8 22H1.7l8.1-9.3L1 2h7l4.8 6.3L18.9 2Zm-1.2 18h1.7L6.4 3.9H4.6L17.7 20Z"/></svg>';
+  const xShare = (text, url) => `<a class="btn xshare" href="https://x.com/intent/post?text=${encodeURIComponent(text)}&url=${encodeURIComponent(url || location.href)}" target="_blank" rel="noopener">${XSVG} Post</a>`;
+  return { xShare, CONFIG, MASK, $, $$, esc, toast, countUp, fmtMoney, receiptHTML, init, reduced, touch, onScroll, CAT };
 })();
 document.addEventListener('DOMContentLoaded', PH.init);

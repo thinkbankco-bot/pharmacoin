@@ -8,69 +8,40 @@
 <meta property="og:image" content="https://thinkbankco-bot.github.io/pharmacoin/assets/og.png"><meta name="twitter:card" content="summary_large_image">
 <meta name="theme-color" content="#050914">
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Inter:ital,wght@0,400;0,500;0,700;0,800;0,900;1,800;1,900&family=IBM+Plex+Mono:wght@400;500;600;700&family=Caveat:wght@600;700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="css/pharma.css"><link rel="stylesheet" href="css/pages.css"><link rel="stylesheet" href="css/phase1.css">
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,300..800&family=Geist:wght@300..800&family=Geist+Mono:wght@400..600&family=Instrument+Serif:ital@0;1&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/pharma.css"><link rel="stylesheet" href="css/pages.css"><link rel="stylesheet" href="css/phase1.css"><link rel="stylesheet" href="css/hq.css">
 </head><body>
 
-<!-- HERO -->
-<header class="hero">
-  <div class="plane plane-grid" data-rate=".12"></div>
-  <div class="plane plane-rx" data-rate=".32" aria-hidden="true"><span>Rx</span></div>
-  <canvas class="field" aria-hidden="true"></canvas>
-  <div class="plane" data-rate=".2" aria-hidden="true">
-    <div class="dim-line h"><span>PHARMA HOLDINGS PLC</span><span>INVESTOR RELATIONS</span><span>EST. 2026 · CVS PARKING LOT</span></div>
-    <div class="dim-line v">MISSION: BECOME BIG PHARMA BY 2031 · RECEIPTS DEPARTMENT: SUBLEVEL B4</div>
-  </div>
-  <div class="wrap hero-grid">
+<!-- HERO: the live capsule -->
+<header class="hq-hero">
+  <canvas id="capsule" aria-hidden="true"></canvas>
+  <div class="wrap hq-grid">
     <div>
-      <a class="eyebrow" href="dose.html" style="text-decoration:none"><span class="dot"></span> <span id="heroDose">Daily Dose #1</span> is live · guess today’s company →</a>
-      <h1>Pharma<span class="l2">fixes this</span></h1>
-      <p class="sub"><span class="rl" data-rl="Translation: a memecoin with a receipts department. Every claim here is sourced or stamped." data-st="v">PHARMA Holdings plc is a patient-first pharmaceutical innovator committed to transparency, integrity and long-term shareholder value.</span> We would love to be Big Pharma. <b>We cannot afford the fines.</b></p>
-      <div class="actions">
-        <a class="btn primary" href="dose.html">Take today’s dose <span class="arr">→</span></a>
-        <a class="btn" href="formulary.html">Browse the Formulary</a>
-        <a class="btn" data-buy href="#">Buy $PHARMA</a>
+      <div class="eyebrow"><span class="dot"></span> PHARMA Holdings plc · Sublevel 4 · The Dispensary</div>
+      <h1 class="hq-word">Pharmacoin<small>$PHARMA · Receipts Department</small></h1>
+      <p class="hq-line"><span class="rl" data-rl="Translation: a memecoin with a receipts department. Every claim is sourced or stamped." data-st="v">PHARMA Holdings plc is a patient-first innovator committed to transparency and long-term shareholder value.</span> We would love to be Big Pharma. We cannot afford the fines.</p>
+      <div class="hq-ca"><span>CA</span><code data-ca></code><button data-copy-ca>Copy</button></div>
+      <div class="actions" style="margin-bottom:22px">
+        <a class="btn primary" data-buy href="#">Buy $PHARMA <span class="arr">→</span></a>
+        <a class="btn" href="congress.html">Enter The Floor</a>
+        <a class="btn" href="arena.html">Boss Raid</a>
+        <a class="btn xshare" href="https://x.com/PharmaCoinSol" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M18.9 2H22l-7.6 8.7L23 22h-6.8l-5.3-6.9L4.8 22H1.7l8.1-9.3L1 2h7l4.8 6.3L18.9 2Zm-1.2 18h1.7L6.4 3.9H4.6L17.7 20Z"/></svg> @PharmaCoinSol</a>
       </div>
-      <div class="mission">
+      <div class="hq-mission mission">
         <div class="mission-top"><span>Progress to being fined like Pfizer (2009)</span><b id="missionPct">loading…</b></div>
         <div class="mission-bar"><i id="missionBar"></i></div>
-        <div class="mission-top" style="margin-top:6px;letter-spacing:.06em;text-transform:none"><span>Live market cap ÷ Pfizer’s $2.3B Bextra resolution. <a href="https://www.justice.gov/archives/opa/pr/justice-department-announces-largest-health-care-fraud-settlement-its-history" target="_blank" rel="noopener" style="color:inherit">DOJ ↗</a></span></div>
       </div>
     </div>
-    <div class="rx-label" data-rate="-.06" style="will-change:transform">
-      <div class="rx-top"><div class="pharm">$PHARMA<small>PHARMA HOLDINGS PLC · STORE 000-RX</small></div><div class="rx-no">RX NO.<b>0420-PH</b>FILLED <span id="filled">10/05/26</span></div></div>
-      <div class="rx-patient"><div class="rx-mask"></div><p>PATIENT: <b>ANONYMOUS</b><br>DR: H. FENNWICK (HONORARY)<br>QTY: 1 BILLION (SUPPLY)</p></div>
-      <div class="rx-drug">Receiptamine 500mg</div>
-      <div class="rx-sig">Take one receipt by mouth every time a TV ad whispers “may cause death” over ukulele music.</div>
-      <div class="ca-row"><code data-ca></code><button data-copy-ca>Copy</button></div>
-      <div class="rx-warn"><span>May cause compulsive DOJ reading</span><span>Do not take with blind trust</span><span>Not medical advice</span></div>
-      <div class="rx-refills"><span>REFILLS: UNLIMITED</span><span>MCAP <b data-mcap>—</b></span></div>
-    </div>
+    <aside class="live-panel" id="livePanel" aria-live="polite">
+      <div class="lp-head"><span><i id="lpDot"></i>Live tape · <span id="lpState">connecting</span></span><span>MCAP <b data-mcap style="color:var(--bloom);font-weight:500">—</b></span></div>
+      <div class="lp-big"><b id="lpLast">—</b><span id="lpLastSub">waiting for the pool</span></div>
+      <div class="lp-feed" id="lpFeed"></div>
+      <div class="lp-foot"><span id="lpCount">—</span><br>Real trades only · nothing simulated · ~30s delay · <a href="https://www.geckoterminal.com/solana/pools/3PffTrmfWe23GTNH6XNERGzzUkLDiPTejJpH9DK3R28u" target="_blank" rel="noopener">source ↗</a></div>
+    </aside>
   </div>
-  <div class="scroll-cue"><span>Scroll</span><i></i></div>
 </header>
 
 <div class="ticker" aria-label="Receipt ticker"><div class="ticker-track" id="ticker"></div></div>
-
-<!-- DAILY DOSE CTA -->
-<section class="sec">
-  <div class="wrap">
-    <div class="dose-cta rv">
-      <div>
-        <div class="kicker">New · the daily ritual</div>
-        <h2 class="title rv-words">Wordle for <em>corporate crime.</em></h2>
-        <p class="lead">Every day, everyone gets the same redacted pharma press release. Guess the company in six pills. Guess the bill. Keep your <b style="color:var(--ink)">Refills</b> streak alive, and post the grid.</p>
-        <div class="actions" style="margin-top:24px"><a class="btn primary" href="dose.html">Take Dose #<span id="ctaDose">1</span> <span class="arr">→</span></a></div>
-      </div>
-      <div class="mini-fax" aria-hidden="true">
-        <div style="display:flex;justify-content:space-between;font-weight:700;letter-spacing:.12em;font-size:.7rem;border-bottom:2px solid #16130e;padding-bottom:6px"><span>FOR IMMEDIATE RELEASE</span><span id="faxNo">DOSE #1</span></div>
-        <h4><span class="bar">██████████</span> pleads guilty, pays <span class="bar">█████</span></h4>
-        <span class="bar">████</span> <span class="bar">██████</span> <span class="bar">███████████</span> <span class="bar">██</span> <span class="bar">█████</span> <span class="bar">████████</span> <span class="bar">███</span> <span class="bar">██████</span> <span class="bar">█████████</span> <span class="bar">████</span>
-        <div class="mini-pills"><i></i><i></i><i class="h"></i><i class="e"></i><i class="e"></i><i class="e"></i></div>
-      </div>
-    </div>
-  </div>
-</section>
 
 <!-- FORMULARY SHELF -->
 <section class="sec" style="padding-top:20px">
@@ -205,4 +176,5 @@
 <script src="data/formulary.js"></script>
 <script src="js/formulary.js"></script>
 <script src="js/home.js"></script>
+<script src="js/live.js"></script>
 </body></html>

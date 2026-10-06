@@ -270,7 +270,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const on = reduced || Math.sin(t * 7) > -0.92 || Math.random() > .3;
     ctx.save(); ctx.font = '900 italic 96px Inter, Arial'; ctx.textAlign = 'center';
     ctx.shadowColor = '#ff3b58'; ctx.shadowBlur = on ? 30 : 4; ctx.fillStyle = on ? '#ff5a72' : '#5a1726'; ctx.fillText('BIG PHARMA', 800, 128); ctx.restore();
-    ctx.font = '600 15px "IBM Plex Mono", monospace'; ctx.fillStyle = 'rgba(255,90,114,.55)'; ctx.textAlign = 'center'; ctx.fillText('FLOOR 40 · BOARDROOM · AUTHORIZED SHAREHOLDERS ONLY', 800, 160);
+    ctx.font = '600 15px "IBM Plex Mono", monospace'; ctx.fillStyle = 'rgba(255,90,114,.55)'; ctx.textAlign = 'center'; ctx.fillText('THE BOARDROOM · AUTHORIZED SHAREHOLDERS ONLY', 800, 160);
     // floor
     const f = ctx.createLinearGradient(0, 470, 0, 900); f.addColorStop(0, '#0b1323'); f.addColorStop(1, '#050913'); ctx.fillStyle = f; ctx.fillRect(0, 470, 1600, 430);
     ctx.save(); ctx.beginPath(); ctx.rect(0, 470, 1600, 430); ctx.clip(); ctx.strokeStyle = 'rgba(85,216,255,.08)'; ctx.lineWidth = 1.5;
