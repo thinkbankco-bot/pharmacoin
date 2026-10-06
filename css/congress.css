@@ -89,3 +89,8 @@
 .mem-rank b{color:#92400e}
 @media (max-width:980px){.findings{grid-template-columns:1fr 1fr}}
 @media (max-width:560px){.findings{grid-template-columns:1fr}}
+
+.floor-size{display:flex;flex-wrap:wrap;gap:6px;align-items:center;border-left:1px solid rgba(212,175,55,.35);border-right:1px solid rgba(212,175,55,.35);padding:10px 14px 0;background:#0b0a07}
+.floor-size .sz-l{font-family:var(--mono);font-size:.66rem;letter-spacing:.12em;color:var(--muted);text-transform:uppercase;margin-right:4px}
+.floor-size button{border:1px solid var(--line2);background:none;color:var(--muted);border-radius:999px;padding:8px 14px;font-family:var(--sans);font-weight:700;font-size:.8rem;cursor:pointer}
+.floor-size button.on{background:#d4a84b;border-color:#d4a84b;color:#1a1204}
