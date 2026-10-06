@@ -1,0 +1,79 @@
+/* THE DIARY — Tony's chart. Typed paper, red pen, nothing paraphrased. */
+.diary-hero{position:relative;padding:130px 0 60px;overflow:hidden}
+.diary-grid{display:grid;grid-template-columns:minmax(0,1.1fr) minmax(0,.9fr);gap:40px;align-items:center}
+.journal{position:relative;background:var(--paper);color:#1d1a15;border-radius:6px 18px 18px 6px;padding:34px 34px 30px 46px;box-shadow:0 40px 100px rgba(0,0,0,.55),inset 0 0 0 1px rgba(29,26,21,.15);transform:rotate(1.2deg);font-family:var(--mono)}
+.journal::before{content:"";position:absolute;left:0;top:0;bottom:0;width:22px;background:repeating-linear-gradient(180deg,#1d1a15 0 14px,transparent 14px 30px);border-radius:6px 0 0 6px;opacity:.85}
+.journal .lbl{position:absolute;right:-14px;top:22px;background:#fff;border:1px solid rgba(29,26,21,.3);padding:6px 10px;font-size:.6rem;letter-spacing:.16em;transform:rotate(4deg);box-shadow:0 6px 20px rgba(0,0,0,.25)}
+.journal h1{font-family:var(--mono);font-weight:700;font-size:clamp(1.3rem,2.4vw,1.9rem);letter-spacing:.06em;line-height:1.15;margin:0 0 10px;text-transform:uppercase}
+.journal .typed{font-size:.86rem;line-height:1.6;white-space:pre-wrap;min-height:7.5em}
+.journal .typed .cur{display:inline-block;width:.6em;height:1.05em;background:#1d1a15;vertical-align:-2px;animation:blink 1s steps(2) infinite}
+@keyframes blink{50%{opacity:0}}
+.journal .stamp{position:absolute;right:26px;bottom:22px;border:2px solid #c4122f;color:#c4122f;font-weight:700;font-size:.62rem;letter-spacing:.2em;padding:5px 9px;transform:rotate(-7deg);opacity:.85}
+.diary-stats{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-top:28px}
+.diary-stats div{border:1px solid var(--line);border-radius:12px;padding:12px 14px;background:rgba(10,20,36,.6)}
+.diary-stats b{display:block;font-family:var(--sans);font-weight:1000;font-size:1.6rem;letter-spacing:-.04em;line-height:1;font-variant-numeric:tabular-nums}
+.diary-stats span{display:block;font-family:var(--mono);font-size:.58rem;letter-spacing:.12em;text-transform:uppercase;color:var(--dim);margin-top:6px}
+/* picks */
+.chips{display:flex;gap:8px;flex-wrap:wrap;margin:18px 0 22px}
+.chips button{border:1px solid var(--line2);background:transparent;color:var(--muted);font-family:var(--mono);font-size:.62rem;letter-spacing:.14em;text-transform:uppercase;padding:7px 12px;border-radius:999px;cursor:pointer}
+.chips button.on{color:var(--ink);border-color:var(--cyan);background:rgba(85,216,255,.08)}
+.chips button.shuf{margin-left:auto;color:var(--amber);border-color:rgba(255,184,77,.4)}
+.cards{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:18px}
+.card{position:relative;background:var(--paper);color:#1d1a15;border-radius:4px;padding:18px 18px 16px;box-shadow:0 18px 50px rgba(0,0,0,.45);transform:rotate(var(--r,0deg));transition:transform .35s var(--ease);min-width:0;display:flex;flex-direction:column}
+.card:hover{transform:rotate(0) translateY(-4px)}
+.card.top{grid-column:span 3;display:grid;grid-template-columns:minmax(0,1fr) 260px;gap:22px;padding:26px 28px}
+.card.top .q{font-size:clamp(1.15rem,2vw,1.6rem)}
+.card .dt{display:flex;justify-content:space-between;gap:8px;font-family:var(--mono);font-size:.6rem;letter-spacing:.14em;color:#6b5f4f;text-transform:uppercase;border-bottom:1px solid rgba(29,26,21,.2);padding-bottom:8px;margin-bottom:12px}
+.card .dt a{color:#c4122f;text-decoration:none;font-weight:700}
+.card .q{font-family:var(--mono);font-size:.95rem;line-height:1.55;white-space:pre-wrap;flex:1}
+.card .q .cur{display:inline-block;width:.55em;height:1em;background:#1d1a15;vertical-align:-2px;animation:blink 1s steps(2) infinite}
+.card .ctx{font-family:var(--mono);font-size:.64rem;color:#6b5f4f;margin-top:10px;letter-spacing:.02em}
+.card .why{font-family:Caveat,cursive;font-size:1.15rem;color:#c4122f;line-height:1.2;margin-top:10px;border-left:3px solid #c4122f;padding-left:10px}
+.card .foot{display:flex;justify-content:space-between;align-items:center;gap:8px;margin-top:12px;font-family:var(--mono);font-size:.58rem;letter-spacing:.12em;text-transform:uppercase;color:#6b5f4f}
+.card .foot .tags span{display:inline-block;border:1px solid rgba(29,26,21,.25);border-radius:4px;padding:2px 6px;margin-right:4px}
+.card .foot button{border:0;background:#1d1a15;color:var(--paper);font-family:var(--mono);font-size:.58rem;letter-spacing:.14em;padding:6px 10px;border-radius:6px;cursor:pointer}
+.card .pg{position:absolute;right:14px;top:-10px;background:#c4122f;color:#fff;font-family:var(--mono);font-size:.56rem;letter-spacing:.14em;padding:4px 8px;border-radius:4px;transform:rotate(3deg)}
+.card.top .side{border-left:1px dashed rgba(29,26,21,.3);padding-left:22px;display:flex;flex-direction:column;justify-content:center}
+.more-wrap{text-align:center;margin-top:22px}
+/* body count chart */
+.bc{position:relative;border:1px solid var(--line);border-radius:18px;background:var(--panel);padding:16px 18px 10px;margin-top:10px}
+.bc canvas{display:block;width:100%;height:300px}
+.bc .k{display:flex;gap:16px;flex-wrap:wrap;font-family:var(--mono);font-size:.6rem;letter-spacing:.1em;color:var(--muted);padding:10px 0 4px}
+.bc .k i{display:inline-block;width:14px;height:3px;vertical-align:middle;margin-right:6px}
+.bc .tip{position:absolute;pointer-events:none;background:rgba(4,16,31,.95);border:1px solid var(--line2);border-radius:8px;padding:8px 10px;font-family:var(--mono);font-size:.64rem;color:var(--ink);white-space:nowrap;opacity:0;transform:translate(-50%,-110%)}
+/* scoreboard */
+.score{display:grid;grid-template-columns:minmax(0,1.3fr) minmax(0,1fr);gap:28px;margin-top:10px}
+.bars div{display:grid;grid-template-columns:120px 1fr 48px;gap:10px;align-items:center;font-family:var(--mono);font-size:.7rem;color:var(--muted);padding:5px 0}
+.bars i{display:block;height:12px;border-radius:3px;background:linear-gradient(90deg,var(--blue),var(--cyan));transform-origin:left;transform:scaleX(0);transition:transform 1s var(--ease)}
+.bars .in i{transform:none}
+.bars b{color:var(--ink);text-align:right;font-variant-numeric:tabular-nums}
+.press{border:1px solid var(--line);border-radius:16px;padding:18px;background:rgba(10,20,36,.6)}
+.press h4{margin:0 0 6px;font-family:var(--mono);font-size:.64rem;letter-spacing:.16em;text-transform:uppercase;color:var(--cyan)}
+.press .big{font-family:var(--sans);font-weight:1000;font-size:2.4rem;letter-spacing:-.04em;line-height:1}
+.press .big small{font-size:.4em;color:var(--muted);font-weight:800}
+.press ul{list-style:none;margin:14px 0 0;padding:0;columns:2;font-family:var(--mono);font-size:.68rem;color:var(--muted)}
+.press li{display:flex;justify-content:space-between;gap:8px;padding:3px 0;border-bottom:1px solid rgba(117,154,199,.1)}
+.press li b{color:var(--ink)}
+/* read a day */
+.years{display:flex;gap:8px;margin:18px 0 12px}
+.years button{border:1px solid var(--line2);background:transparent;color:var(--muted);font-family:var(--mono);font-size:.7rem;letter-spacing:.14em;padding:8px 14px;border-radius:10px;cursor:pointer}
+.years button.on{color:var(--ink);border-color:var(--cyan)}
+.daystrip{display:grid;grid-template-columns:repeat(auto-fill,minmax(44px,1fr));gap:4px}
+.daystrip button{border:1px solid var(--line);background:rgba(10,20,36,.6);color:var(--muted);font-family:var(--mono);font-size:.58rem;padding:6px 2px;border-radius:6px;cursor:pointer;position:relative;overflow:hidden}
+.daystrip button::after{content:"";position:absolute;left:0;right:0;bottom:0;height:3px;background:var(--cyan);opacity:.7;transform:scaleX(var(--w,0));transform-origin:left}
+.daystrip button:hover,.daystrip button.on{color:var(--ink);border-color:var(--cyan)}
+.reader{margin-top:18px;background:var(--paper);color:#1d1a15;border-radius:6px;padding:26px 30px;box-shadow:0 30px 80px rgba(0,0,0,.5);display:none;position:relative}
+.reader.on{display:block}
+.reader .rh{display:flex;justify-content:space-between;align-items:baseline;gap:12px;border-bottom:2px solid #1d1a15;padding-bottom:8px;margin-bottom:14px;font-family:var(--mono);font-size:.64rem;letter-spacing:.14em;text-transform:uppercase;color:#6b5f4f;flex-wrap:wrap}
+.reader .rh b{font-family:var(--sans);font-size:1.1rem;letter-spacing:-.02em;color:#1d1a15;text-transform:none}
+.reader .rh a{color:#c4122f;text-decoration:none;font-weight:700}
+.reader pre{font-family:var(--mono);font-size:.84rem;line-height:1.65;white-space:pre-wrap;word-wrap:break-word;margin:0;max-height:60vh;overflow:auto}
+.reader .note{font-family:Caveat,cursive;color:#c4122f;font-size:1.1rem;margin-top:12px}
+/* sources */
+.src-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px;margin-top:10px}
+.src-grid a{display:block;border:1px solid var(--line);border-radius:12px;padding:14px;text-decoration:none;color:var(--ink);background:rgba(10,20,36,.6)}
+.src-grid a small{display:block;font-family:var(--mono);font-size:.58rem;letter-spacing:.12em;text-transform:uppercase;color:var(--dim);margin-top:6px}
+.src-grid .st{display:inline-block;font-family:var(--mono);font-size:.56rem;letter-spacing:.14em;padding:2px 6px;border-radius:4px;border:1px solid;margin-bottom:6px}
+.st.v{color:#6ee7b7;border-color:rgba(110,231,183,.4)}.st.w{color:var(--amber);border-color:rgba(255,184,77,.4)}
+@media (max-width:980px){.diary-grid{grid-template-columns:1fr}.cards{grid-template-columns:1fr 1fr}.card.top{grid-column:span 2;grid-template-columns:1fr}.card.top .side{border-left:0;padding-left:0;border-top:1px dashed rgba(29,26,21,.3);padding-top:14px}.score{grid-template-columns:1fr}.src-grid{grid-template-columns:1fr}.diary-stats{grid-template-columns:1fr 1fr}}
+@media (max-width:640px){.cards{grid-template-columns:1fr}.card.top{grid-column:span 1}.journal{transform:none;padding:26px 20px 26px 38px}.bars div{grid-template-columns:90px 1fr 40px}.bc canvas{height:220px}.chips button.shuf{margin-left:0}}

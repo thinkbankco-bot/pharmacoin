@@ -1,0 +1,90 @@
+<!doctype html>
+<html lang="en" class="no-js"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>The Diary — Dr. Fauci’s own notes, with receipts — $PHARMA</title>
+<meta name="description" content="Dr. Anthony Fauci's pandemic diary, released as a public record by the U.S. Senate in July 2026. Every quote verbatim, every card cites its PDF page. The Receipts Department read all 1,141 pages.">
+<meta property="og:title" content="The Diary — Dr. Fauci’s own notes, with receipts">
+<meta property="og:description" content="1,141 pages released by the Senate. We read all of it. The funniest, vainest and most revealing lines, verbatim, each with its page number.">
+<meta property="og:url" content="https://thinkbankco-bot.github.io/pharmacoin/fauci.html">
+<meta property="og:image" content="https://thinkbankco-bot.github.io/pharmacoin/assets/og.png"><meta name="twitter:card" content="summary_large_image">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:ital,wght@0,400;0,500;0,700;0,800;0,900;1,800;1,900&family=IBM+Plex+Mono:wght@400;500;600;700&family=Caveat:wght@600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/pharma.css"><link rel="stylesheet" href="css/pages.css"><link rel="stylesheet" href="css/phase1.css"><link rel="stylesheet" href="css/fauci.css">
+</head><body>
+
+<header class="diary-hero">
+  <div class="plane plane-grid" data-rate=".12" style="position:absolute;inset:0"></div>
+  <div class="wrap diary-grid" style="position:relative">
+    <div>
+      <div class="kicker">Case file · public record</div>
+      <h2 class="title rv-words" style="font-size:clamp(2.6rem,6vw,5rem)">He kept <em>a diary.</em></h2>
+      <p class="lead rv">Dr. Anthony Fauci typed a journal through the pandemic. In July 2026 the U.S. Senate released 1,141 pages of it. <span class="rl" data-rl="Translation: we are quoting the man verbatim and printing the page number. Selection is the only editorial act here." data-st="v">PHARMA Holdings plc has reviewed the document with the seriousness it deserves.</span> Below: the lines that stop the scroll, the body count he logged by hand, the press hits he tallied, and every day, readable in full.</p>
+      <div class="diary-stats rv">
+        <div><b id="stDays">—</b><span>days with an entry</span></div>
+        <div><b id="stWords">—</b><span>words, his own typing</span></div>
+        <div><b id="stLogged">—</b><span>days opened with the case count</span></div>
+        <div><b id="stPress">—</b><span>days with a “PRESS:” tally</span></div>
+      </div>
+      <div class="actions" style="margin-top:22px"><a class="btn primary" href="#picks">Marjorie’s picks <span class="arr">→</span></a><a class="btn" href="#reader-sec">Read a day</a></div>
+    </div>
+    <div class="journal rv">
+      <span class="lbl">PROPERTY OF A.S. FAUCI · DO NOT DUPLICATE</span>
+      <h1>Tony’s Diary<br><span style="font-weight:400;font-size:.7em">Package · 1,141 pp.</span></h1>
+      <div class="typed" id="coverTyped"></div>
+      <div class="stamp">RELEASED · U.S. SENATE · JUL 2026</div>
+    </div>
+  </div>
+</header>
+
+<section class="sec" id="picks" style="padding-top:40px">
+  <div class="wrap">
+    <div class="sec-head" style="margin-bottom:10px"><div><div class="kicker">Marjorie’s picks</div><h2 class="title rv-words">His words. <em>Our highlighter.</em></h2><p class="lead rv">Every card is a verbatim passage with the PDF page it sits on. Typos are his. Red ink is ours. <span class="rl" data-rl="Pasted news articles are excluded; only lines he wrote himself make a card." data-st="v">Selection reflects the editorial judgment of the Receipts Department.</span></p></div><div class="src" id="pickCount" style="font-family:var(--mono);font-size:.62rem;letter-spacing:.14em;color:var(--dim);text-transform:uppercase"></div></div>
+    <div class="chips" id="chips"></div>
+    <div class="cards" id="cards"></div>
+    <div class="more-wrap" id="moreWrap"><button class="btn" id="more">More receipts <span class="arr">↓</span></button></div>
+  </div>
+</section>
+
+<section class="sec" style="padding-top:30px">
+  <div class="wrap">
+    <div class="sec-head" style="margin-bottom:10px"><div><div class="kicker">Vital signs · by hand</div><h2 class="title rv-words">He logged the <em>body count</em> every morning.</h2><p class="lead rv">Most entries open with a line like “Global – 414,000/18,400; USA – 68,600/1000.” We parsed every one of those lines and plotted them exactly as typed. No smoothing. Hover a dot to read his line.</p></div></div>
+    <div class="bc rv"><canvas id="bcCv"></canvas><div class="tip" id="bcTip"></div><div class="k"><span><i style="background:#55d8ff"></i>global cases</span><span><i style="background:#15a7ff"></i>USA cases</span><span><i style="background:#ff3b58"></i>global deaths</span><span><i style="background:#ff8a9b"></i>USA deaths</span><span id="bcNote" style="margin-left:auto;color:var(--dim)"></span></div></div>
+  </div>
+</section>
+
+<section class="sec" style="padding-top:30px">
+  <div class="wrap">
+    <div class="sec-head" style="margin-bottom:10px"><div><div class="kicker">Scoreboard</div><h2 class="title rv-words">Who shows up <em>in the diary.</em></h2><p class="lead rv">Plain word counts across all 1,141 pages, including the news articles he pasted in. Not a sentiment analysis. Just who he typed about.</p></div></div>
+    <div class="score">
+      <div class="bars rv" id="bars"></div>
+      <div class="press rv"><h4>Press hits, self-reported</h4><div class="big" id="pressBig">—</div><p style="font-family:var(--mono);font-size:.7rem;color:var(--muted);margin:10px 0 0">Many entries carry a “PRESS:” line listing that day’s appearances. Outlets most often named in those lines:</p><ul id="pressList"></ul></div>
+    </div>
+  </div>
+</section>
+
+<section class="sec" id="reader-sec" style="padding-top:30px">
+  <div class="wrap">
+    <div class="sec-head" style="margin-bottom:10px"><div><div class="kicker">Read a day</div><h2 class="title rv-words">Pick a date. <em>Read the page.</em></h2><p class="lead rv">The full text for any day, exactly as extracted from the Senate PDF, with a link to check it against the original. Bar under each date = how much he wrote.</p></div><button class="btn" id="randomDay">Random day ↻</button></div>
+    <div class="years" id="years"></div>
+    <div class="daystrip" id="daystrip"></div>
+    <div class="reader" id="reader"><div class="rh"></div><pre></pre><div class="note"></div></div>
+  </div>
+</section>
+
+<section class="sec" style="padding-top:30px">
+  <div class="wrap">
+    <div class="sec-head" style="margin-bottom:10px"><div><div class="kicker">Sources · Marjorie’s stamps</div><h2 class="title rv-words">Where this <em>comes from.</em></h2></div></div>
+    <div class="src-grid">
+      <a href="https://www.paul.senate.gov/wp-content/uploads/2026/08/2026.07.24_Tonys-Diary-Package.pdf" target="_blank" rel="noopener"><span class="st v">VERIFIED</span><b>The PDF itself</b><small>paul.senate.gov · “Tony’s Diary Package” · 1,141 pp · every quote above links to its page</small></a>
+      <a href="https://www.paul.senate.gov/readingroom/" target="_blank" rel="noopener"><span class="st v">VERIFIED</span><b>Senate HSGAC Reading Room</b><small>release index · Chairman Rand Paul · July 2026 · also the Prequel (2001–2015), awards and CBP packages</small></a>
+      <a href="https://www.npr.org/2026/07/27/nx-s1-5909531/rand-paul-anthony-fauci-coronavirus-diary-lab-leak-origin" target="_blank" rel="noopener"><span class="st v">VERIFIED</span><b>Coverage: NPR, CBS, The Hill</b><small>independent reporting on the release and what it contains</small></a>
+      <a href="https://www.denvergazette.com/2026/07/31/how-did-faucis-diaries-make-it-public-no-one-will-say/" target="_blank" rel="noopener"><span class="st w">WEAK SIGNAL</span><b>How the diary surfaced</b><small>HHS says it came off government servers; the committee hasn’t said how it got it. We make no claim about why.</small></a>
+      <a href="https://www.faucisdiary.com/" target="_blank" rel="noopener"><span class="st v">VERIFIED</span><b>Independent archive</b><small>faucisdiary.com · a reader-built index of the same PDFs · useful second source for any page</small></a>
+      <a href="methodology.html"><span class="st v">HOUSE RULES</span><b>What we will not claim</b><small>No causation, no mind-reading, no paraphrase presented as quote. The joke is the selection. Report an error → it gets corrected publicly.</small></a>
+    </div>
+  </div>
+</section>
+
+<script src="js/pharma.js"></script>
+<script src="data/fauci.js"></script>
+<script src="js/fauci.js"></script>
+</body></html>

@@ -34,6 +34,7 @@ img,svg{display:block;max-width:100%}
 .nav-links a{text-decoration:none;padding:8px 10px;border-radius:999px;transition:color .2s,background .2s}
 .nav-links a:hover,.nav-links a[aria-current]{color:var(--ink);background:rgba(85,216,255,.08)}
 .nav-links a.hot{color:var(--red)}
+.nav-links a.new{color:var(--amber)}
 .nav-links a.hot::before{content:"";display:inline-block;width:6px;height:6px;border-radius:50%;background:var(--red);margin-right:7px;vertical-align:1px;box-shadow:0 0 10px var(--red);animation:pulse 1.6s infinite}
 .mcap-chip{font-family:var(--mono);font-size:.72rem;border:1px solid var(--line);border-radius:999px;padding:6px 11px;color:var(--muted);white-space:nowrap;text-decoration:none}
 .mcap-chip b{color:var(--green);font-weight:600}

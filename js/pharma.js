@@ -16,7 +16,7 @@ const PH = (() => {
   const MASK = `<svg viewBox="0 0 220 170" aria-hidden="true"><path d="M46 14h128l24 48c-5 49-34 83-88 102C56 145 27 111 22 62L46 14Z" fill="#eaf5ff" stroke="#0b1220" stroke-width="5"/><path d="M57 58c18-14 36-15 55-2M108 56c19-13 38-12 55 2" fill="none" stroke="#0b1220" stroke-width="9" stroke-linecap="round"/><path d="M66 75c17-12 30-12 43 0-14 8-28 8-43 0ZM115 75c15-12 29-12 43 0-14 8-28 8-43 0Z" fill="#0b1220"/><path d="M110 76c-10 24-12 37 0 44 12-7 10-20 0-44Z" fill="#0b1220" opacity=".8"/><path d="M62 116c23 8 41 7 48-4 7 11 25 12 48 4-9 19-28 26-48 12-20 14-39 7-48-12ZM93 137c12 10 22 10 34 0-3 18-9 26-17 28-8-2-14-10-17-28Z" fill="#0b1220"/></svg>`;
 
   const PAGES = [
-    ['index.html', 'Home'], ['congress.html', 'The Floor', 'hot'], ['arena.html', 'Boss Raid'], ['dose.html', 'Daily Dose'],
+    ['index.html', 'Home'], ['congress.html', 'The Floor', 'hot'], ['fauci.html', 'The Diary', 'new'], ['arena.html', 'Boss Raid'], ['dose.html', 'Daily Dose'],
     ['formulary.html', 'Formulary'], ['archive.html', 'Receipts'], ['prescribers.html', 'Prescribers'],
   ];
 
