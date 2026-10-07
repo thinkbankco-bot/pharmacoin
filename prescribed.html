@@ -1,0 +1,80 @@
+<!doctype html>
+<html lang="en" class="no-js"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Get Prescribed — The Pharmussy — $PHARMA</title>
+<meta name="description" content="Walk up to the Pharmussy counter, state your degen condition, and get a PHARMA Holdings plc prescription label with your name on it. Download the PNG. Post it. Become a patient. Satire, not medical advice.">
+<meta property="og:title" content="Get Prescribed — The Pharmussy">
+<meta property="og:description" content="State your condition. Get your label. Refills: unlimited. I got prescribed.">
+<meta property="og:url" content="https://buypharmacoin.xyz/prescribed.html">
+<meta property="og:image" content="https://buypharmacoin.xyz/assets/og.png"><meta name="twitter:card" content="summary_large_image">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:ital,wght@0,400;0,500;0,700;0,800;0,900;1,800;1,900&family=IBM+Plex+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/pharma.css"><link rel="stylesheet" href="css/pages.css"><link rel="stylesheet" href="css/prescribed.css">
+</head><body>
+
+<header class="phero rxp-hero">
+  <div class="plane plane-grid" data-rate=".12" style="position:absolute;inset:0"></div>
+  <div class="wrap" style="position:relative">
+    <span class="case-no">Window 3 · Pickup</span>
+    <div class="eyebrow"><span class="dot"></span> The Pharmussy · walk-in counter · no appointment · no insurance · no cure</div>
+    <h1 class="rv-words">Get <em>Prescribed.</em></h1>
+    <p class="sub rv">Tell the pharmacist what’s wrong with you. Be honest, she’s seen your wallet. You leave with a real-looking label, a fake drug, and unlimited refills. <b style="color:var(--ink)">Holders aren’t holders. They’re patients.</b></p>
+  </div>
+</header>
+
+<section class="rxp-sec">
+  <div class="wrap rxp-grid">
+    <form class="rxp-form panel" id="rxForm" autocomplete="off" novalidate>
+      <div class="rxp-step"><span>01</span> Patient intake</div>
+      <label class="rxp-lab" for="rxName">Name or X handle</label>
+      <input class="rxp-in" id="rxName" name="n" type="text" maxlength="40" placeholder="@yourhandle" spellcheck="false">
+      <div class="rxp-step"><span>02</span> Chief complaint</div>
+      <label class="rxp-lab" for="rxCond">Pick your condition</label>
+      <div class="rxp-sel"><select class="rxp-in" id="rxCond" name="c"></select></div>
+      <label class="rxp-lab" for="rxCustom">…or describe your own symptoms</label>
+      <input class="rxp-in" id="rxCustom" type="text" maxlength="60" placeholder="e.g. Emotionally married to a bag" spellcheck="false">
+      <div class="rxp-count mono"><span id="rxCount">0</span>/60</div>
+      <button class="rxp-go" id="rxGo" type="submit"><span class="rxp-go-rx">Rx</span> Get prescribed</button>
+      <p class="rxp-fine mono">Same name + same condition = same label, every time. Your pharmacist keeps no records. Neither does anyone else here.</p>
+    </form>
+
+    <div class="rxp-counter">
+      <div class="rxp-printer" aria-hidden="true">
+        <div class="rxp-pr-top">
+          <span class="rxp-pr-brand">THE PHARMUSSY <small>DISPENSARY UNIT 0420</small></span>
+          <span class="rxp-leds"><i class="g"></i><i class="a"></i><i class="r"></i></span>
+        </div>
+        <div class="rxp-pr-screen mono" id="rxScreen">READY · AWAITING PATIENT</div>
+        <div class="rxp-slot"></div>
+      </div>
+      <div class="rxp-tray" id="rxTray">
+        <div class="rxp-label" id="rxLabel">
+          <canvas id="rxCanvas" width="1080" height="1350" role="img" aria-label="Your prescription label"></canvas>
+        </div>
+        <div class="rxp-empty mono" id="rxEmpty">Your label prints here.<br>Fill out the intake and hit the big button.</div>
+      </div>
+      <div class="rxp-actions" id="rxActions" hidden>
+        <button class="btn primary" id="rxSave" type="button">Download label (PNG)</button>
+        <a class="btn rxp-x" id="rxPost" target="_blank" rel="noopener">Post to X</a>
+        <button class="btn" id="rxLink" type="button">Copy my Rx link</button>
+      </div>
+      <p class="rxp-hint mono" id="rxHint" hidden>X won’t attach the image for you. Download the label first, then drop it into the post. The pharmacist is not your social media manager.</p>
+    </div>
+  </div>
+</section>
+
+<section class="sec dark-band rxp-why">
+  <div class="wrap">
+    <div class="sec-head"><div><div class="kicker">Patient orientation</div><h2 class="title rv-words">You’re not a holder. <em>You’re a patient.</em></h2><p class="lead rv">Every patient gets a label. Post yours. Find the others in the waiting room. Compare conditions. Nobody gets better, and that’s the community.</p></div></div>
+    <div class="rxp-rules">
+      <div class="panel rv"><h3>Pick a condition</h3><p>Fourteen chronic conditions on file, all diagnosed on the timeline. Or write your own. The pharmacist has heard worse.</p></div>
+      <div class="panel rv"><h3>Get your drug</h3><p>Every condition maps to a real product from <a href="formulary.html" style="color:var(--cyan)">the Pharmussy</a>, the holder-made pipeline. Zero approvals, full art.</p></div>
+      <div class="panel rv"><h3>Post the label</h3><p>Download the PNG, post it, tag nobody, say “I got prescribed.” Refills are unlimited, which is also the problem.</p></div>
+    </div>
+    <p class="rxp-legal mono">Satire. PHARMA Holdings plc is not a pharmacy, not a doctor, and not a real company. The drugs are memes. Nothing on this label is medical advice or financial advice. If you are actually sick, call an actual doctor.</p>
+  </div>
+</section>
+
+<script src="js/pharma.js"></script>
+<script src="data/formulary.js"></script>
+<script src="js/prescribed.js"></script>
+</body></html>

@@ -412,3 +412,6 @@ body.side-effects .hero h1{filter:hue-rotate(140deg)}
 @media (max-width:560px){
   .rx-no,.rx-no b,#filled,.sku-ndc,.sku-cls,.tag,.st-v,.lad-tier,.cls-lv,.rc-src,.mono,.vote-key,.lg-sz,.cat-w,.dec,.role,.reel-cap,.boot-fine,.tape-f,.fax-sub,#faxMode,.room .no,.room .st,.rooms-foot,.wall-h span,.wall-k,.desk-note{font-size:max(.66rem,10.5px)!important}
 }
+
+/* nav: 9 links fit on one line at desktop widths */
+@media (min-width:1240px){.nav-links{letter-spacing:.09em;gap:2px}.nav-links a{white-space:nowrap;padding:8px 9px}}

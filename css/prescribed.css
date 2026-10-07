@@ -1,0 +1,73 @@
+/* Get Prescribed — the Pharmussy walk-in counter */
+.rxp-hero{padding-bottom:50px}
+.rxp-hero h1 em{color:var(--cyan);text-shadow:0 0 40px rgba(85,216,255,.35)}
+.rxp-sec{padding:50px 0 90px}
+.rxp-grid{display:grid;grid-template-columns:minmax(0,420px) minmax(0,1fr);gap:40px;align-items:start}
+
+/* intake form */
+.rxp-form{position:sticky;top:84px;border-color:rgba(85,216,255,.3);box-shadow:0 0 70px rgba(21,167,255,.10)}
+.rxp-step{font-family:var(--mono);font-size:.7rem;letter-spacing:.16em;text-transform:uppercase;color:var(--amber);font-weight:700;margin:4px 0 14px;display:flex;align-items:center;gap:10px}
+.rxp-step span{background:var(--amber);color:#1a1000;border-radius:6px;padding:2px 7px}
+.rxp-step:not(:first-child){margin-top:26px}
+.rxp-lab{display:block;font-size:.8rem;font-weight:800;color:var(--muted);margin:0 0 8px}
+.rxp-in{width:100%;background:#050c1a;border:1px solid var(--line2);color:var(--ink);border-radius:14px;padding:14px 16px;font:600 1rem var(--sans);outline:none;transition:border-color .2s,box-shadow .2s;margin-bottom:14px;min-width:0}
+.rxp-in:focus{border-color:var(--cyan);box-shadow:0 0 0 3px rgba(85,216,255,.18)}
+.rxp-in::placeholder{color:var(--dim)}
+.rxp-sel{position:relative}
+.rxp-sel::after{content:"";position:absolute;right:18px;top:21px;width:9px;height:9px;border-right:2px solid var(--cyan);border-bottom:2px solid var(--cyan);transform:rotate(45deg);pointer-events:none}
+.rxp-sel select{appearance:none;-webkit-appearance:none;padding-right:44px;cursor:pointer;text-overflow:ellipsis}
+.rxp-sel select.dim{opacity:.45}
+.rxp-sel option{background:#0a1424;color:var(--ink)}
+.rxp-count{text-align:right;font-size:.66rem;color:var(--dim);margin:-8px 0 18px}
+.rxp-go{width:100%;display:flex;align-items:center;justify-content:center;gap:14px;border:0;border-radius:18px;padding:22px 18px;cursor:pointer;
+  font:900 clamp(1.25rem,3vw,1.6rem)/1 var(--sans);letter-spacing:-.03em;text-transform:uppercase;color:#1a0207;
+  background:linear-gradient(180deg,#ff5a72,#ff3b58 55%,#d91f3d);box-shadow:0 8px 0 #8d0f24,0 0 50px rgba(255,59,88,.35);transition:transform .12s,box-shadow .12s,filter .2s}
+.rxp-go:hover{filter:brightness(1.08)}
+.rxp-go:active,.rxp-go:disabled{transform:translateY(6px);box-shadow:0 2px 0 #8d0f24,0 0 30px rgba(255,59,88,.3)}
+.rxp-go:disabled{cursor:progress;filter:saturate(.7)}
+.rxp-go-rx{background:#1a0207;color:#ff5a72;border-radius:50%;width:44px;height:44px;display:grid;place-items:center;font-size:1.1rem;flex:none}
+.rxp-fine{font-size:.66rem;color:var(--dim);margin:20px 0 0;line-height:1.55}
+
+/* printer + tray */
+.rxp-counter{scroll-margin-top:70px;min-width:0;max-width:620px;width:100%;justify-self:center}
+.rxp-printer{position:relative;z-index:2;background:linear-gradient(180deg,#1a2a44,#0d1729);border:1px solid var(--line2);border-radius:26px 26px 14px 14px;padding:18px 22px 30px;box-shadow:0 20px 50px rgba(0,0,0,.45),inset 0 1px 0 rgba(255,255,255,.08)}
+.rxp-pr-top{display:flex;justify-content:space-between;align-items:center;gap:12px}
+.rxp-pr-brand{font-weight:900;letter-spacing:-.03em;font-size:1.05rem}
+.rxp-pr-brand small{display:block;font-family:var(--mono);font-weight:600;font-size:.6rem;letter-spacing:.16em;color:var(--muted)}
+.rxp-leds{display:flex;gap:8px}
+.rxp-leds i{width:10px;height:10px;border-radius:50%;background:#26354d}
+.rxp-leds i.g{background:var(--green);box-shadow:0 0 10px var(--green)}
+.rxp-printer:has(+ .rxp-tray .printing) .rxp-leds i.a{background:var(--amber);box-shadow:0 0 10px var(--amber);animation:pulse .5s infinite}
+.rxp-pr-screen{margin-top:14px;background:#03130d;color:#6ee7b7;border:1px solid rgba(110,231,183,.25);border-radius:10px;padding:10px 14px;font-size:.72rem;letter-spacing:.08em;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;text-shadow:0 0 8px rgba(110,231,183,.5)}
+.rxp-slot{position:absolute;left:5%;right:5%;bottom:10px;height:12px;border-radius:8px;background:#01040a;box-shadow:inset 0 3px 6px rgba(0,0,0,.9)}
+.rxp-tray{position:relative;margin:-14px 7% 0;overflow:hidden;min-height:180px;padding-bottom:8px}
+.rxp-label{position:relative;transform:translateY(0);border-radius:6px}
+.rxp-label canvas{display:block;width:100%;height:auto;border-radius:6px;box-shadow:0 18px 40px rgba(0,0,0,.5)}
+.rxp-label:not(.out){visibility:hidden;height:0;overflow:hidden}
+.rxp-label.printing.out{animation:rxp-print var(--dur,1700ms) steps(14,end) both}
+@keyframes rxp-print{0%{transform:translateY(-100%)}70%{transform:translateY(-6%)}100%{transform:translateY(0)}}
+.rxp-empty{border:2px dashed var(--line2);border-radius:14px;margin-top:22px;padding:46px 20px;text-align:center;color:var(--dim);font-size:.75rem;line-height:1.7}
+.rxp-actions{display:flex;flex-wrap:wrap;gap:10px;margin-top:22px;justify-content:center}
+.rxp-actions .btn{flex:1 1 180px}
+.rxp-x{background:#eaf5ff;color:#050914;border-color:#eaf5ff}
+.rxp-x:hover{background:#fff}
+.rxp-hint{font-size:.66rem;color:var(--dim);text-align:center;margin:12px auto 0;max-width:460px;line-height:1.5}
+
+/* orientation */
+.rxp-rules{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
+.rxp-legal{font-size:.66rem;color:var(--dim);margin:30px 0 0;max-width:760px;line-height:1.6}
+
+@media (max-width:980px){
+  .rxp-grid{grid-template-columns:minmax(0,1fr);gap:30px}
+  .rxp-form{position:static}
+  .rxp-rules{grid-template-columns:1fr}
+}
+@media (max-width:560px){
+  .rxp-sec{padding:30px 0 60px}
+  .rxp-printer{padding:14px 16px 26px;border-radius:20px 20px 12px 12px}
+  .rxp-tray{margin:-14px 5% 0}
+  .rxp-actions .btn{flex:1 1 100%}
+  .rxp-pr-brand{font-size:.92rem}
+}
+@media (prefers-reduced-motion:reduce){.rxp-label.printing.out{animation:none}}
+.rxp-actions[hidden],.rxp-hint[hidden],.rxp-empty[hidden]{display:none}
