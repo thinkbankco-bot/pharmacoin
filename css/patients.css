@@ -504,6 +504,24 @@ a.wb-row:hover{background:rgba(110,231,183,.05)}
   .wd-cap,.wd-order,.wd-fig figcaption,.wd-tl .kd,.wd-tl a,.wd-ev a,.wd-big span,.wd-walk-h,.wd-consent small{font-size:max(.62rem,10.5px)!important}
 }
 
+/* ---------- ROUTED VIEWS: ward list (#ward) vs one open file (#file-NNN) ---------- */
+.wd-hero[hidden],.wd-sec[hidden],.wd-back[hidden]{display:none!important}
+.wd-step,#board,#walkins,#method{scroll-margin-top:calc(var(--bar,64px) + 64px)}
+.wd-back{position:sticky;top:var(--bar,64px);z-index:40;background:rgba(5,9,20,.86);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);border-bottom:1px solid var(--line)}
+.wd-back .wrap{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:8px 16px;padding-top:10px;padding-bottom:10px}
+.wd-back-a{font-family:var(--mono);font-size:.74rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--cyan);text-decoration:none;border:1px solid rgba(85,216,255,.35);border-radius:999px;padding:7px 14px;transition:background .2s,border-color .2s}
+.wd-back-a:hover{background:rgba(85,216,255,.08);border-color:var(--cyan)}
+.wd-back-a:focus-visible{outline:2px solid var(--cyan);outline-offset:3px}
+.wd-back-id{display:flex;align-items:baseline;gap:10px;min-width:0;font-family:var(--mono);font-size:.74rem;color:var(--muted)}
+.wd-back-id b{color:var(--green);letter-spacing:.14em;font-weight:700;white-space:nowrap}
+.wd-back-id span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;color:var(--ink);font-weight:600}
+body[data-view=file] .wd-file-sec{padding-top:30px}
+@media (max-width:640px){
+  .wd-back .wrap{padding-top:8px;padding-bottom:8px}
+  .wd-back-a{font-size:max(.64rem,10.5px);padding:6px 11px;letter-spacing:.08em}
+  .wd-back-id{font-size:max(.64rem,10.5px);gap:8px}
+}
+
 /* ---------- DNA REPORT (File #002 genome block; renders only when the record is live) ---------- */
 .dna-dx{margin-top:18px}
 .wd-step.dna .wd-card.wide{margin-bottom:18px;max-width:860px}

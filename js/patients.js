@@ -1,4 +1,5 @@
-/* THE WARD — Patient Files. Ward board, walk-in clinic, then each full file in the order its thread ran.
+/* THE WARD — Patient Files. Ward board + walk-in clinic is the list view; each full file (in the order its thread ran)
+   opens on its own via the hash router at the bottom (#file-001, #file-002; #ward = the board).
    Every number comes from data/patients.js (requests[] is the source of truth). Every quote links to its post. */
 document.addEventListener('DOMContentLoaded', () => {
   /* Held files (consent: 'pending') never render on the live page; flip consent in data/patients.js to publish. */
@@ -253,7 +254,7 @@ document.addEventListener('DOMContentLoaded', () => {
   }
   if (g2) renderGenome(g2);
 
-  if (!p1) { $('#wdFile').innerHTML = '<p class="empty">The ward is empty. The Attending is on rounds.</p>'; return; }
+  if (!p1) { $('#wdFile').innerHTML = '<p class="empty">The ward is empty. The Attending is on rounds.</p>'; $('#file-001').dataset.empty = '1'; initRouter(); return; }
 
   /* ---------- PATIENT FILE ---------- */
   const vial = pct => {
@@ -435,4 +436,67 @@ document.addEventListener('DOMContentLoaded', () => {
       <p><b>Patient engaged with his file on ${consentDate ? fmtD(consentDate) : 'Oct 8, 2026'}.</b> He quote-posted it, replied in character, asked for money in the replies, and thanked the account.</p>
       <div class="wd-ev">${(() => { const c = {}; return ev.map(e => { c[e.kind] = (c[e.kind] || 0) + 1; const many = ev.filter(x => x.kind === e.kind).length > 1; return `<a href="${xurl(e.handle, e.id)}" target="_blank" rel="noopener">${esc(e.kind)}${many ? ' ' + c[e.kind] : ''} ↗</a>`; }).join(''); })()}</div>
     </div>`;
+
+  initRouter();
+
+  /* ---------- ROUTER: the ward is a list; a file opens on its own ----------
+     #ward / no hash  -> hero + ward board + walk-ins only
+     #file-NNN        -> that file only (live records only; pending/unknown fall back to the ward)
+     old anchors      -> #board/#walkins scroll on the ward; #method -> file #001; #pNNN-<step> -> file NNN at that step */
+  function initRouter() {
+    const hero = $('.wd-hero'), boardSec = $('#board'), method = $('#method'), back = $('#wdBack');
+    const files = [...document.querySelectorAll('.wd-file-sec')];
+    const live = {};
+    P.forEach(p => { const s = document.getElementById(`file-${p.no}`); if (s && !s.dataset.empty) live[p.no] = p; });
+    const baseTitle = document.title;
+    let view = null, fromWard = false;
+    try { history.scrollRestoration = 'manual'; } catch (e) { }
+
+    const resolve = () => {
+      let h = location.hash.replace(/^#/, '');
+      try { h = decodeURIComponent(h); } catch (e) { }
+      let m = h.match(/^file-(\d{3})$/);
+      if (m && live[m[1]]) return { no: m[1] };
+      m = h.match(/^p(\d{3})-[\w-]+$/);
+      if (m && live[m[1]]) return { no: m[1], target: h };
+      if (h === 'method' && live['001']) return { no: '001', target: 'method' };
+      if (h === 'board' || h === 'walkins') return { no: null, target: h };
+      return { no: null };
+    };
+
+    const render = () => {
+      const r = resolve(), next = r.no ? `file-${r.no}` : 'ward', prev = view;
+      view = next;
+      const inFile = !!r.no;
+      document.body.dataset.view = inFile ? 'file' : 'ward';
+      hero.hidden = boardSec.hidden = inFile;
+      files.forEach(s => { s.hidden = s.id !== next; });
+      method.hidden = r.no !== '001';            // method + consent footer is file #001's record
+      back.hidden = !inFile;
+      if (inFile) {
+        const p = live[r.no];
+        back.innerHTML = `<div class="wrap"><a class="wd-back-a" href="#ward">← Back to the Ward</a>
+          <span class="wd-back-id"><b>BED #${esc(p.no)}</b><span>@${esc(p.handle)}</span></span></div>`;
+        document.title = `File #${p.no} · @${p.handle} — ${baseTitle}`;
+      } else document.title = baseTitle;
+
+      const el = r.target && document.getElementById(r.target);
+      /* instant jumps: the site sets scroll-behavior:smooth, which would glide through the whole file */
+      const I = { behavior: 'instant' };
+      if (el) requestAnimationFrame(() => el.scrollIntoView(I));
+      else if (inFile && prev !== next) window.scrollTo({ top: 0, ...I });
+      else if (!inFile && prev && prev !== 'ward') requestAnimationFrame(() => boardSec.scrollIntoView(I));
+    };
+
+    /* "Back to the Ward": if we came here from the board, step back in history (so Back/Forward stay sane) */
+    back.addEventListener('click', e => {
+      if (e.target.closest('.wd-back-a') && fromWard) { e.preventDefault(); history.back(); }
+    });
+    document.addEventListener('click', e => {
+      const a = e.target.closest('a.wb-row');
+      if (a) fromWard = true;
+    });
+    window.addEventListener('hashchange', () => { render(); if (view === 'ward') fromWard = false; });
+    render();
+  }
 });

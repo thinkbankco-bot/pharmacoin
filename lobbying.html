@@ -1,0 +1,56 @@
+<!doctype html>
+<html lang="en" class="no-js"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>The Access Ledger — $PHARMA</title>
+<meta name="description" content="PHARMA Holdings plc records the lobbying disclosures. Annual company filings, honest gaps, and the paperwork behind each figure.">
+<meta property="og:title" content="The Access Ledger — PHARMA Holdings plc">
+<meta property="og:description" content="The meeting budget has its own spreadsheet. Every disclosed figure has a receipt.">
+<meta property="og:url" content="https://buypharmacoin.xyz/lobbying.html">
+<meta property="og:image" content="https://buypharmacoin.xyz/assets/og.png"><meta name="twitter:card" content="summary_large_image">
+<meta name="theme-color" content="#050914">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:ital,wght@0,400;0,500;0,700;0,800;0,900;1,800;1,900&family=IBM+Plex+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/pharma.css"><link rel="stylesheet" href="css/pages.css"><link rel="stylesheet" href="css/lobbying.css">
+</head><body data-evidence-desk>
+<header class="phero ledger-hero">
+  <div class="plane plane-grid" data-rate=".12" aria-hidden="true" style="position:absolute;inset:0"></div>
+  <div class="wrap" style="position:relative">
+    <span class="case-no">Receipts Dept. · Access ledger</span>
+    <div class="eyebrow"><span class="dot"></span> Government affairs · annual disclosures</div>
+    <h1 class="rv-words">The access <em>ledger.</em></h1>
+    <p class="sub rv">PHARMA Holdings plc regards access as a key operating expense. The meeting budget has acquired its own spreadsheet. Marjorie has attached the filings.</p>
+    <div class="stats rv" id="lobbyStats"></div>
+    <p class="updated" id="lobbyCutoff"></p>
+  </div>
+</header>
+<main>
+<section class="sec ledger-section">
+  <div class="wrap">
+    <div class="sec-head"><div><div class="kicker">Disclosed amounts · USD</div><h2 class="title rv-words">The cost of <em>being in the room.</em></h2><p class="lead">Toggle a filer to inspect its line. Missing annual totals break the line. The selected total adds disclosed figures only; it does not fill the gaps.</p></div></div>
+    <div class="panel ledger-chart-panel">
+      <div class="ledger-toolbar">
+        <button class="chip" id="showAll" type="button">Show all filers</button>
+        <button class="chip" id="clearAll" type="button">Clear filers</button>
+        <button class="chip on" id="totalToggle" type="button" aria-pressed="true" aria-controls="lobbyChart">Selected total</button>
+      </div>
+      <div id="companyToggles" class="ledger-toggles" role="group" aria-label="Filers shown on the chart"></div>
+      <div class="ledger-chart" id="lobbyChart" aria-live="off"></div>
+      <p class="ledger-chart-note mono" id="chartSelection" aria-live="polite"></p>
+      <div class="ledger-years" id="yearButtons" role="group" aria-label="Inspect one year of disclosures"></div>
+      <div id="yearDetail" class="ledger-detail" aria-live="polite"></div>
+    </div>
+    <div class="callout w ledger-limit"><b>The sum has qualifications.</b> These are named-filer disclosures, not a consolidated industry total. Association dues can overlap trade-group spending. Some reporting methods include state, local or grassroots activity. Outside-firm income fills documented missing quarters in some records. A disclosure does not establish a policy outcome.</div>
+  </div>
+</section>
+<section class="sec dark-band ledger-section">
+  <div class="wrap">
+    <div class="sec-head"><div><div class="kicker">The original paperwork</div><h2 class="title rv-words">Every cell <em>has a receipt.</em></h2><p class="lead">The complete ledger stays below, independently of chart selections. Open any cell for that record's original LDA source.</p></div></div>
+    <p class="ledger-gap-note">“No filing found” means no complete annual total was substantiated in this research snapshot. It can reflect missing quarters, a blank expense field, or a later company's formation. It means neither zero spending nor proof that no filing exists. The linked search record explains the gap.</p>
+    <table class="ledger-table" id="lobbyTable"><caption class="sr-only">Company-year lobbying disclosures, with each annual cell linked to its primary record.</caption></table>
+    <p class="ledger-notice mono">Senate Office of Public Records cannot vouch for the data or analyses derived from these data after the data have been retrieved from LDA.gov.</p>
+    <p class="ledger-notice">Figures and source links come from the dated receipts database. PHARMA Holdings plc supplies the stationery.</p>
+  </div>
+</section>
+</main>
+<noscript><p class="wrap callout w">This ledger requires JavaScript to display the local records and interactive chart.</p></noscript>
+<script src="js/pharma.js"></script><script src="data/lobbying.js"></script><script src="js/lobbying.js"></script>
+</body></html>

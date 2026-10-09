@@ -9,6 +9,7 @@ const PH = (() => {
   };
   const reduced = matchMedia('(prefers-reduced-motion: reduce)').matches;
   const touch = matchMedia('(hover: none)').matches;
+  const evidenceDesk = document.body.hasAttribute('data-evidence-desk');
   const $ = (s, r = document) => r.querySelector(s);
   const $$ = (s, r = document) => [...r.querySelectorAll(s)];
   const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
@@ -17,7 +18,7 @@ const PH = (() => {
 
   const PAGES = [
     ['index.html', 'Home'], ['congress.html', 'The Floor', 'hot'], ['fauci.html', 'The Diary', 'new'], ['prescribed.html', 'Get Prescribed', 'new'], ['patients.html', 'Patient Files', 'new'], ['arena.html', 'Boss Raid'], ['dose.html', 'Daily Dose'],
-    ['formulary.html', 'Pharmussy'], ['archive.html', 'Receipts'], ['prescribers.html', 'Prescribers'],
+    ['formulary.html', 'Pharmussy'], ['archive.html', 'Receipts'], ['revolving.html', 'Revolving Door'], ['lobbying.html', 'Access Ledger'], ['prescribers.html', 'Prescribers'],
   ];
 
   /* One shared scroll scheduler: every scroll-driven effect runs once per frame */
@@ -34,19 +35,26 @@ const PH = (() => {
     nav.className = 'nav';
     nav.innerHTML = `<div class="nav-inner"><a class="brand" href="index.html"><span class="brand-mask">${MASK}</span><span>$PHARMA</span></a>
       <div class="nav-links">${PAGES.slice(1).map(([h, t, c]) => `<a href="${h}" class="${c || ''}" ${h === here ? 'aria-current="page"' : ''}>${t}</a>`).join('')}</div>
-      <a class="mcap-chip" href="${CONFIG.dex}" target="_blank" rel="noopener">MCAP <b data-mcap>—</b></a>
-      <button class="burger" aria-label="Menu"><span></span><span></span><span></span></button></div>`;
+      ${evidenceDesk ? '' : `<a class="mcap-chip" href="${CONFIG.dex}" target="_blank" rel="noopener">MCAP <b data-mcap>—</b></a>`}
+      <button class="burger" aria-label="Menu" aria-expanded="false"><span></span><span></span><span></span></button></div>`;
     document.body.prepend(nav);
-    $('.burger', nav).onclick = () => nav.classList.toggle('open');
+    $('.burger', nav).onclick = () => { const open = nav.classList.toggle('open'); $('.burger', nav).setAttribute('aria-expanded', String(open)); };
+    // Preserve the shared menu when the expanded department list cannot fit.
+    const fitNav = () => {
+      nav.classList.remove('compact');
+      if (innerWidth > 980 && $('.nav-inner', nav).scrollWidth > $('.nav-inner', nav).clientWidth) nav.classList.add('compact');
+    };
+    addEventListener('resize', fitNav); requestAnimationFrame(fitNav);
+    if (document.fonts) document.fonts.ready.then(fitNav);
     onScroll(() => nav.classList.toggle('scrolled', scrollY > 30));
 
     const foot = document.createElement('footer');
     foot.innerHTML = `<div class="wrap"><div class="foot-grid">
       <div><a class="brand" href="index.html"><span class="brand-mask">${MASK}</span><span>$PHARMA</span></a>
       <p class="fine" style="margin-top:16px">PHARMA Holdings plc is not a real pharmaceutical company, which is the nicest thing anyone has said about it. Satirical evidence desk. Real sources, sarcastic string. Not medical advice. Not investment advice. Not saying the calendar did it. If you are sick, call a doctor, not a memecoin.</p></div>
-      <div><h4>The Lab</h4><a href="dose.html">Daily Dose</a><a href="archive.html">Receipt Archive</a><a href="plague.html">Plague Desk</a><a href="hantavirus.html">Hanta Calendar</a><a href="polio.html">Polio Trail</a></div>
+      <div><h4>The Lab</h4><a href="dose.html">Daily Dose</a><a href="archive.html">Receipt Archive</a><a href="revolving.html">The Revolving Door</a><a href="lobbying.html">The Access Ledger</a><a href="plague.html">Plague Desk</a><a href="hantavirus.html">Hanta Calendar</a><a href="polio.html">Polio Trail</a></div>
       <div><h4>The Company</h4><a href="formulary.html">The Pharmussy</a><a href="prescribed.html">Get Prescribed</a><a href="patients.html">Patient Files</a><a href="arena.html">Boss Raid</a><a href="congress.html">The Floor</a><a href="prescribers.html">Top Prescribers</a><a href="index.html#letter">Investor Relations</a><a href="casino.html">PharmaCasino</a><a href="boss-fight.html">Discontinued Products</a></div>
-      <div><h4>Chart</h4><a href="${CONFIG.buy}" target="_blank" rel="noopener">Buy $PHARMA</a><a href="${CONFIG.dex}" target="_blank" rel="noopener">DexScreener</a><a href="${CONFIG.x}" target="_blank" rel="noopener">X: @PharmaCoinSol</a><a href="methodology.html">How we don't get sued</a></div>
+      <div><h4>Chart</h4>${evidenceDesk ? '' : `<a href="${CONFIG.buy}" target="_blank" rel="noopener">Buy $PHARMA</a>`}<a href="${CONFIG.dex}" target="_blank" rel="noopener">DexScreener</a><a href="${CONFIG.x}" target="_blank" rel="noopener">X: @PharmaCoinSol</a><a href="methodology.html">How we don't get sued</a></div>
       </div><div class="foot-word" aria-hidden="true">$PHARMA</div></div>`;
     document.body.append(foot);
     const t = document.createElement('div'); t.className = 'toast'; document.body.append(t);
@@ -250,7 +258,7 @@ const PH = (() => {
 
   function init() {
     document.documentElement.classList.remove('no-js');
-    chrome(); copyCA(); redline(); reveal(); counts(); parallax(); timelines(); eggs(); live();
+    chrome(); copyCA(); redline(); reveal(); counts(); parallax(); timelines(); eggs(); if (!evidenceDesk) live();
     field($('canvas.field'));
     console.log('%c$PHARMA', 'font:900 28px Inter;color:#55d8ff', '\nYou opened the console. That is how it starts. Type "sideeffects" anywhere on the page.');
   }
