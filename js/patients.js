@@ -1,7 +1,8 @@
 /* THE WARD — Patient Files. Ward board, walk-in clinic, then each full file in the order its thread ran.
    Every number comes from data/patients.js (requests[] is the source of truth). Every quote links to its post. */
 document.addEventListener('DOMContentLoaded', () => {
-  const P = window.PATIENTS || [];
+  /* Held files (consent: 'pending') never render on the live page; flip consent in data/patients.js to publish. */
+  const P = (window.PATIENTS || []).filter(p => p.consent && p.consent !== 'pending');
   const W = window.WALKINS || [];
   const F = Object.fromEntries((window.FORMULARY || []).map(d => [d.id, d]));
   const $ = s => document.querySelector(s);
@@ -10,7 +11,7 @@ document.addEventListener('DOMContentLoaded', () => {
   const fmtD = (s, yr = true) => { const d = new Date(String(s).slice(0, 10) + 'T00:00:00Z'); return isNaN(d) ? esc(s) : d.toLocaleDateString('en-US', { month: 'short', day: 'numeric', ...(yr ? { year: 'numeric' } : {}), timeZone: 'UTC' }); };
   const xurl = (h, id) => `https://x.com/${encodeURIComponent(h)}/status/${encodeURIComponent(id)}`;
   const url = (p, id) => xurl(p.handle, id);
-  const FLAG = { CRIT: ['crit', 'CRITICAL'], H: ['hi', 'H ▲'], L: ['lo', 'L ▼'], E: ['el', 'ELEVATED'], N: ['ok', 'NORMAL ✓'], '-': ['na', '—'] };
+  const FLAG = { CRIT: ['crit', 'CRITICAL'], H: ['hi', 'H ▲'], L: ['lo', 'L ▼'], E: ['el', 'ELEVATED'], N: ['ok', 'NORMAL ✓'], NOTE: ['na', 'NOTED'], '-': ['na', '—'] };
   const av = (p, cls) => `<span class="${cls}" ${p.avatar ? `style="background-image:url('${esc(p.avatar)}')"` : ''}></span>`;
   const link = (p, id, txt = 'post ↗') => id ? `<a href="${url(p, id)}" target="_blank" rel="noopener">${txt}</a>` : '';
   const img = (src, w, h, alt, cls = '') => `<a class="wd-card ${cls}" href="${esc(src)}" target="_blank" rel="noopener"><img src="${esc(src)}" width="${w}" height="${h}" alt="${esc(alt)}" loading="lazy" decoding="async"></a>`;
@@ -27,15 +28,32 @@ document.addEventListener('DOMContentLoaded', () => {
 
   /* ---------- WARD BOARD ---------- */
   const board = $('#wdBoard');
-  const p1 = P[0];
+  const p1 = P.find(p => !p.genome);
+  const g2 = P.find(p => p.no === '002' && p.genome);   // live only once consent is flipped
   const beds = [
     p1 && { bed: p1.no, p: p1, status: 'FILE COMPLETE', cls: 'done' },
-    { bed: '002', status: 'BLOODWORK IN PROGRESS', cls: 'prog' },
+    g2 ? { bed: '002', p: g2, status: 'DNA REPORT FINAL', cls: 'done' } : { bed: '002', status: 'BLOODWORK IN PROGRESS', cls: 'prog' },
     { bed: '003', status: 'BED AVAILABLE', cls: 'free' },
     { bed: '004', status: 'BED AVAILABLE', cls: 'free' },
   ].filter(Boolean);
   const occupied = beds.filter(b => b.cls !== 'free').length;
   const row = b => {
+    if (b.p && b.p.genome) {
+      const p = b.p, G = p.genome;
+      return `<a class="wb-row done" href="#file-${esc(p.no)}">
+        <span class="wb-bed"><small>BED</small>#${esc(b.bed)}</span>
+        <span class="wb-pt">${av(p, 'wb-av')}<span><b>@${esc(p.handle)}</b><i>${esc(p.name)} · MRN ${esc(p.no)}</i></span></span>
+        <span class="wb-st"><i class="wb-led"></i>${b.status}</span>
+        <span class="wb-vals">
+          <span class="red"><b>1→12</b><em>children reported</em></span>
+          <span><b>0</b><em>sightings</em></span>
+          <span class="red"><b>${esc(G.age.rate)}</b><em>yrs per yr</em></span>
+          <span><b>${n(G.relatives.rows.length)}</b><em>DNA matches</em></span>
+          <span><b>${n(p.specimen.corpus)}</b><em>posts sequenced · 2022–2026</em></span>
+        </span>
+        <span class="wb-go">Open file →</span>
+      </a>`;
+    }
     if (b.p) {
       const p = b.p, s = p.specimen, t = sum(p);
       return `<a class="wb-row done" href="#file-${esc(p.no)}">
@@ -80,6 +98,160 @@ document.addEventListener('DOMContentLoaded', () => {
         <span class="wk-c">Dx: ${esc(w.condition)}</span>
         <span class="wk-rx">℞ ${esc(w.drug)} · refills unlimited</span></div>
     </div>`).join('') || '<p class="wk-empty">No walk-ins today.</p>';
+
+  /* ---------- FILE #002 · THE DNA REPORT (any live record with a genome block) ----------
+     Rendered into its own section after #file-001. Pending records never reach this point (filtered above). */
+  function renderGenome(p) {
+    const G = p.genome, L = (id, txt = 'post ↗') => link(p, id, txt);
+    const card = r => (G.cards || []).find(c => c.report === r) || {};
+    const cimg = (r, alt) => { const c = card(r); if (!c.file) return ''; const [w, h] = c.size.split('x').map(Number); return img(c.file, w, h, alt, w > h ? 'wide' : 'port'); };
+    const qt = (q, cls = '') => q ? `<q class="${cls}">${esc(q.text)}</q> ${L(q.id)}` : '';
+    const st = (no, id, kicker, title, body) => `<article class="wd-step dna" id="p${esc(p.no)}-${id}">
+      <div class="wd-step-h"><span class="no">${no}</span><div><span class="k">${kicker}</span><h3>${title}</h3></div></div>${body}</article>`;
+    const sec = document.createElement('section');
+    sec.className = 'wd-sec wd-file-sec'; sec.id = `file-${p.no}`;
+    const after = document.getElementById('file-001');
+    (after ? after.after(sec) : $('#method').before(sec));
+    const consentDate = (String(p.consent).match(/\d{4}-\d{2}-\d{2}/) || [])[0];
+    const A = G.age, T = G.tree, AN = G.ancestry, GE = G.genes, R = G.relatives, HE = G.health, PR = G.predictions;
+    const fmtT = s => String(s).slice(11, 16);
+
+    /* 01 age */
+    const ageRow = (q, lbl) => `<li><span class="d">${fmtD(q.date)}</span><span class="t"><q>${esc(q.text)}</q> ${L(q.id)}</span>${lbl ? `<span class="v">${lbl}</span>` : ''}</li>`;
+    const ageBlock = `<div class="wd-paper dna-age">
+      <div class="dna-age-g">
+        <div><div class="pf-lbl">Patient #${esc(p.no)} · age</div><ol class="dna-rec">${ageRow(A.records[0])}${ageRow(A.records[1])}</ol>
+          <div class="dna-rate">Rate: ${esc(A.rate)} <small>yrs per yr</small></div></div>
+        <div><div class="pf-lbl">Son</div><ol class="dna-rec">${A.son.records.map(q => ageRow(q)).join('')}</ol>
+          <div class="dna-rate">Rate: −${esc(Math.abs(A.son.rate))} <small>yrs per yr</small></div></div>
+      </div>
+      <p class="dna-line">${esc(A.line)}</p>
+      <p class="dna-fine">Third record: <q>${esc(A.records[2].text)}</q> ${L(A.records[2].id)} (${fmtD(A.records[2].date)}). Age has held at 36 for ${n(A.stableDays)} days. At his 2024–26 rate he is now about ${esc(A.projectedNow)}. Method: ${esc(A.rateRule)}.</p>
+    </div>`;
+
+    /* 02 tree */
+    const node = nd => {
+      const q = nd.quote ? `<q>${esc(nd.quote.text)}</q> ${L(nd.quote.id)}` : nd.cardId ? `<q>${esc(nd.cardLine)}</q> ${L(nd.cardId)}` : `<i class="dna-desc">label only · post on file</i> ${L(nd.id)}`;
+      const also = nd.also ? ` → <q>${esc(nd.also.text)}</q> ${L(nd.also.id)}` : '';
+      const off = nd.card === false;
+      return `<li class="${off ? 'off' : ''}"><b>${esc(nd.label)}${nd.posts ? ` <em>· ${n(nd.posts)} posts</em>` : ''}</b><span>${q}${also}</span>${off ? '<i class="dna-tag">ward only</i>' : ''}</li>`;
+    };
+    const grp = (k, t) => { const xs = T.nodes.filter(x => x.group === k); return xs.length ? `<div class="pf-lbl">${t} <em>· ${xs.length}</em></div><ul class="dna-nodes">${xs.map(node).join('')}</ul>` : ''; };
+    const B = T.budget;
+    const treeBlock = `<div class="wd-two rx">
+      <div class="wd-paper">
+        <p class="dna-hl">${esc(T.headline)}</p><p class="dna-fine">${esc(T.headlineNote)}</p>
+        ${grp('marriage', 'The marriage')}${grp('partners', 'Partners')}${grp('dependents', 'Dependents')}${grp('household', 'Household')}
+        <div class="pf-lbl">Household budget <em>· per patient</em></div>
+        <div class="dna-bud">
+          <span>Income<b>$${n(B.incomePerMonth)}<small>/mo</small></b>${L(B.xPerWeek.id, '$50/wk X + $200/wk ↗')}</span>
+          <span>Lambo lease<b>$${n(B.lamboLeasePerMonth.usd)}<small>/mo</small></b>${L(B.lamboLeasePerMonth.id)}</span>
+          <span>Life savings<b>$${n(B.lifeSavings.usd)}</b>${L(B.lifeSavings.id)}</span>
+          <span>Net worth<b>${esc(B.netWorth.value)}</b>${L(B.netWorth.id)}</span>
+        </div>
+        <p class="dna-fen">“${esc(T.fennwick)}”<small>— ${esc(p.attending)}</small></p>
+      </div>
+      <div class="wd-side port">${cimg('2', 'Family tree card: children reported 1 → 12, sightings 0')}</div>
+    </div>`;
+
+    /* A ancestry */
+    const comp = AN.composition, COL = { scooter: '#c4122f', imperator: '#1b5fb0', imperooter: '#1f9d6b' };
+    const ancBlock = `<div class="wd-two rx">
+      <div class="wd-paper">
+        <div class="pf-lbl">Ancestry composition <em>· self-references, n = ${n(AN.n)}</em></div>
+        <div class="dna-bar">${Object.entries(comp).map(([k, v]) => `<i style="width:${v.pct}%;background:${COL[k]}"></i>`).join('')}</div>
+        <ul class="dna-comp">${Object.entries(comp).map(([k, v]) => `<li><b style="color:${COL[k]}">${v.pct}%</b><span>${k[0].toUpperCase() + k.slice(1)} · ${n(v.posts)} posts</span></li>`).join('')}</ul>
+        <div class="pf-lbl">Timeline</div>
+        <ol class="dna-tl">${AN.timeline.map(e => `<li><span class="d">${esc(e.label)}</span><span class="t">${qt(e.quote)}</span></li>`).join('')}</ol>
+        <p class="dna-fine">Silence: ${esc(AN.gap.exact)}, ${esc(String(AN.gap.from).slice(0, 10))} → ${esc(String(AN.gap.to).slice(0, 10))}. “Shadowban”: ${n(AN.shadowban.y2024)} times in 2024, ${n(AN.shadowban.y2026)} in 2026.</p>
+        <div class="pf-lbl">Heritable trait <em>· the homerun, ${AN.homeruns.list.length} on file</em></div>
+        <ul class="dna-hr">${AN.homeruns.list.map(h => `<li><b>${esc(h.surname)}</b><span>${fmtD(h.at)}</span>${L(h.id)}</li>`).join('')}</ul>
+      </div>
+      <div class="wd-side port">${cimg('A', 'Ancestry card: 69% Scooter, 25% Imperator, 6% Imperooter')}</div>
+    </div>`;
+
+    /* 03 genes: all 12 rows */
+    const side = (arr, sum) => sum ? `<span class="sum">${esc(sum)}</span>${Array.isArray(arr) && arr[0] && arr[0].id ? ' ' + L(arr[0].id) : ''}`
+      : (arr || []).map(q => `<q>${esc(q.text || q.phrase)}</q> ${L(q.id)}${q.back ? ` <small>back in ${esc(q.back)}</small>` : ''}`).join('<br>');
+    const geneBlock = `<div class="wd-two rx">
+      <div class="wd-paper dna-genes">
+        <div class="dna-stamp">DISCORDANT<small>${esc(GE.stamp.split('·')[1] || '')}</small></div>
+        <div class="dna-gh" aria-hidden="true"><span>Gene · result</span><span>Sample A</span><span>Sample B</span></div>
+        ${GE.rows.map((r, i) => `<div class="dna-gr ${r.card ? '' : 'off'}">
+          <div class="gn"><span class="no">${String(i + 1).padStart(2, '0')}</span><b>${esc(r.gene)}</b><span class="cd">${esc(r.code)}${r.card ? '' : ' · ward only'}</span><span class="tg">${esc(r.tag)}</span></div>
+          <div class="sa"><span class="sl">A · ${esc(r.labelA)}</span>${side(r.A, r.summaryA)}</div>
+          <div class="sb"><span class="sl">B · ${esc(r.labelB)}</span>${side(r.B, r.summaryB)}</div></div>`).join('')}
+        <p class="dna-fine">${esc(GE.note)} Withheld: ${esc(GE.withheld.join(', '))}.</p>
+      </div>
+      <div class="wd-side port">${cimg('3', 'Gene panel card: two swabs, eight genes, discordant')}</div>
+    </div>`;
+
+    /* 04 relatives */
+    const U = R.unipcsBlock;
+    const relBlock = `<div class="wd-two rx">
+      <div class="wd-paper">
+        <div class="dna-uni"><b>${n(U.before)} → <em>${n(U.after)}</em></b><span>Unipcs posts before the block → after it. Blocking the patient raises expression ${esc(U.ratio)}×. Clinical advice: do not block the patient.</span></div>
+        <ol class="dna-rel">${R.rows.map(r => `<li><span class="rk">${r.rank}</span>
+          <span class="nm"><b>${esc(r.name)}</b><i>${n(r.posts)} posts${r.extra ? ' · ' + esc(r.extra) : ''}</i></span>
+          <span class="ln">${r.lines.map(q => `<q>${esc(q.text)}</q> ${L(q.id)}`).join(' → ')}${r.note ? `<small>${esc(r.note)}</small>` : ''}</span>
+          <span class="stt">${esc(r.status)}</span></li>`).join('')}</ol>
+        <div class="pf-lbl">Unrequited <em>· one-way matches</em></div>
+        <ul class="dna-nodes">${R.unrequited.map(node).join('')}</ul>
+        <p class="dna-fine">Blocked by: liltay, Sophie Rain, Lexapro, Unipcs, TeTheGamer and, per patient, <q>${esc(R.blockedBy[R.blockedBy.length - 1].text)}</q> ${L(R.blockedBy[R.blockedBy.length - 1].id)}</p>
+      </div>
+      <div class="wd-side port">${cimg('4', 'Relatives card: DNA matches ranked by posts')}</div>
+    </div>`;
+
+    /* 05 health */
+    const I = HE.incident;
+    const healthBlock = `<div class="wd-two rx">
+      <div class="wd-paper">
+        <ul class="dna-org">${HE.organs.map(o => `<li><b>${esc(o.organ)}</b><span>${(o.quotes || [o.quote]).map(q => `<q>${esc(q.text)}</q> ${L(q.id)}`).join(' → ')}${o.indexCase ? `<small>Index case: has since diagnosed erectile dysfunction in ${o.indexCase.length} opponents ${o.indexCase.map(q => L(q.id)).join(' ')}</small>` : ''}</span></li>`).join('')}</ul>
+        <div class="pf-lbl">Incident <em>· ${esc(I.name)}, ${fmtD(I.from, false)}–${fmtD(I.to)} (UTC)</em></div>
+        <ol class="dna-tl">${I.timeline.map(e => `<li><span class="d">${fmtD(e.time, false)} · ${fmtT(e.time)}</span><span class="t"><q>${esc(e.text)}</q> ${L(e.id)}</span></li>`).join('')}</ol>
+        <div class="dna-rem"><b>${esc(I.remission)}</b><span>to spontaneous remission. No PHARMA product was administered.</span></div>
+        <p class="dna-note">${esc(I.attendingNote)}<small>— H.F., attending</small></p>
+        <div class="pf-pg"><b><small>Prognosis</small>“${esc(HE.prognosis.quote.text)}” ${L(HE.prognosis.quote.id)}</b><span>${esc(HE.prognosis.tag)}</span></div>
+      </div>
+      <div class="wd-side port">${cimg('5', 'Health card: the body on file and the hate-deficiency incident')}</div>
+    </div>`;
+
+    /* 06 predictions */
+    const predBlock = `<div class="wd-two rx">
+      <div class="wd-paper">
+        <ol class="dna-pred">${PR.rows.map(r => `<li><span class="pn">${String(r.n).padStart(2, '0')}</span><span class="pt"><b>${esc(r.prediction)}</b><small>Base · ${esc(r.base)}</small></span><span class="pp">${esc(r.probability)}</span></li>`).join('')}</ol>
+        <div class="dna-oq"><span>Open question</span><b>${esc(PR.openQuestion)}</b>
+          <small>On record: ${PR.openQuestionRecords.map(r => `${esc(typeof r.value === 'number' ? r.value : '“' + r.value + '”')} (${fmtD(r.date)}) ${L(r.id, '↗')}`).join(' · ')}</small></div>
+        <p class="dna-fine">Filed ${fmtD(PR.filed)}. Compliance tracked for ${PR.trackDays} days; scorecard ${fmtD(PR.scorecard)}.</p>
+      </div>
+      <div class="wd-side port">${cimg('6', 'Genetic risk report card: ten predictions with base rates')}</div>
+    </div>`;
+
+    /* 07 consultation notes */
+    const cn = (G.consultation && G.consultation.notes) || [];
+    const consultBlock = cn.length ? `<ol class="wd-tl">${cn.map(c => `<li><span class="tm">${esc(String(c.at).slice(11, 16) || '')} UTC</span><div class="ev"><span class="kd">${esc(c.kind)}</span>${c.quote ? `<q>${esc(c.quote)}</q>` : ''}${c.id ? `<a href="${xurl(c.handle || p.handle, c.id)}" target="_blank" rel="noopener">@${esc(c.handle || p.handle)} on X ↗</a>` : ''}</div></li>`).join('')}</ol>`
+      : `<div class="dna-empty"><span class="vial" aria-hidden="true"><u></u></span>${esc((G.consultation && G.consultation.placeholder) || 'Consultation notes pending.')}</div>`;
+
+    sec.innerHTML = `<div class="wrap">
+      <div class="wd-folder dna-folder">
+        <span class="wd-tab">FILE #${esc(p.no)} · DNA REPORT</span>
+        ${av(p, 'wd-av')}
+        <div class="wd-who"><b>${esc(p.name)}</b><a href="https://x.com/${esc(p.handle)}" target="_blank" rel="noopener">@${esc(p.handle)}</a><span>Formerly @${esc(p.formerly)} · On X since ${esc(p.joined)} · Attending: ${esc(p.attending)}</span></div>
+        <span class="wd-consent">${/^public participation/i.test(p.consent) ? 'Public participation' : p.consent === 'public-figure' ? 'Public account' : 'Consent on file'}<small>${consentDate ? fmtD(consentDate) : (p.posted ? 'File posted ' + fmtD(p.posted) : '')}</small></span>
+      </div>
+      <p class="wd-order">${esc(p.lab)} · Specimen: ${n(p.specimen.corpus)} public posts, ${fmtD(p.specimen.from)} – ${fmtD(p.specimen.to)}. Reports numbered as on the cards; ${p.thread ? `<a href="${esc(p.thread)}" target="_blank" rel="noopener">the thread</a>` : 'the thread'} ran genes, relatives, body, predictions, tree, age. Ancestry is report A. Every quote links to its post.</p>
+      <div class="wd-paper dna-dx"><div class="pf-dx"><h4><small>DX</small>${esc(p.diagnosis.name)}</h4><p>${esc(p.diagnosis.text)}</p><span class="pf-stamp">SEQUENCED<small>${esc(p.diagnosis.tag)}</small></span></div></div>
+      ${st('01', 'age', 'Report 1 · Age', 'Father and son, <em>opposite directions</em>', `${cimg('1', 'Age card: patient ageing 7.3 years per year, son −1.9')}${ageBlock}`)}
+      ${st('02', 'tree', 'Report 2 · Family tree (self-reported)', `Children reported: <em>1 → 12</em>`, treeBlock)}
+      ${st('A', 'ancestry', 'Report A · Ancestry (ward page)', 'The <em>Three Fathers</em>', ancBlock)}
+      ${st('03', 'genes', 'Report 3 · Gene panel', `Two swabs, <em>${GE.rows.length} genes</em>`, geneBlock)}
+      ${st('04', 'relatives', 'Report 4 · Relatives', '<em>DNA</em> matches', relBlock)}
+      ${st('05', 'health', 'Report 5 · Health', 'The body <em>on file</em>', healthBlock)}
+      ${st('06', 'predictions', 'Report 6 · Genetic risk', 'Predictions, <em>with base rates</em>', predBlock)}
+      ${st('07', 'consult', 'After the file', 'Consultation notes', consultBlock)}
+    </div>`;
+  }
+  if (g2) renderGenome(g2);
 
   if (!p1) { $('#wdFile').innerHTML = '<p class="empty">The ward is empty. The Attending is on rounds.</p>'; return; }
 
