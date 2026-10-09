@@ -1,0 +1,76 @@
+<!doctype html>
+<html lang="en" class="no-js"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>The Price Tag — $PHARMA</title>
+<meta name="description" content="Thirty brand-name prescription drug price receipts, normalized across the United States, United Kingdom, Canada, Australia and France.">
+<meta property="og:title" content="The Price Tag — PHARMA Holdings plc">
+<meta property="og:description" content="Same drug. Same strength. Same quantity. Five public price files and the receipt for every comparison.">
+<meta property="og:url" content="https://buypharmacoin.xyz/pricetag.html">
+<meta property="og:image" content="https://buypharmacoin.xyz/assets/og.png"><meta name="twitter:card" content="summary_large_image">
+<meta name="theme-color" content="#050914">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:ital,wght@0,400;0,500;0,700;0,800;0,900;1,800;1,900&family=IBM+Plex+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/pharma.css"><link rel="stylesheet" href="css/pages.css"><link rel="stylesheet" href="css/pricetag.css">
+</head><body data-evidence-desk>
+
+<header class="phero price-hero">
+  <div class="plane plane-grid" data-rate=".12" aria-hidden="true" style="position:absolute;inset:0"></div>
+  <div class="wrap" style="position:relative">
+    <span class="case-no">Comparative pricing · 30 files</span>
+    <div class="eyebrow"><span class="dot"></span> Receipts Department · international desk</div>
+    <h1 class="rv-words">The price <em>tag.</em></h1>
+    <p class="sub rv">Same medicine. Same strength. Same quantity. Five public price files have been asked to explain themselves. Marjorie retained the source links.</p>
+    <div class="stats rv" id="priceStats" aria-label="Price receipt statistics"></div>
+    <p class="updated" id="priceChecked"></p>
+  </div>
+</header>
+
+<main>
+  <section class="sec price-directory" aria-labelledby="priceDirectoryTitle">
+    <div class="wrap">
+      <div class="sec-head price-section-head">
+        <div>
+          <div class="kicker">Thirty normalized receipts</div>
+          <h2 class="title" id="priceDirectoryTitle">Show us the <em>label.</em></h2>
+          <p class="lead">Each file compares a United States public list price with official public prices in the United Kingdom, Ontario, Australia and France. The headline uses the least expensive substantiated foreign price after one dated currency conversion.</p>
+        </div>
+      </div>
+      <div class="search price-search">
+        <label class="sr-only" for="priceQuery">Search drug price receipts</label>
+        <input id="priceQuery" type="search" placeholder="Search a drug, maker, ingredient or record…" autocomplete="off">
+        <span class="count" id="priceCount" role="status" aria-live="polite"></span>
+      </div>
+      <div class="price-filter-row">
+        <span class="price-filter-label mono">Claim stamp</span>
+        <div class="filters" id="priceStatuses" role="group" aria-label="Filter by claim status"></div>
+      </div>
+      <p class="price-order mono">Filed by receipt number. “No public price found” is a missing observation, never a zero.</p>
+      <div class="price-ledger" id="priceLedger"></div>
+      <p class="empty" id="priceEmpty" hidden>No matching price receipts. Marjorie has checked the spelling.</p>
+      <noscript><p class="callout w">JavaScript is required to display the local price dataset and its source links.</p></noscript>
+    </div>
+  </section>
+
+  <section class="sec dark-band price-method" aria-labelledby="priceMethodTitle">
+    <div class="wrap">
+      <div class="sec-head">
+        <div>
+          <div class="kicker">How the comparison works</div>
+          <h2 class="title" id="priceMethodTitle">Same pack, then <em>divide.</em></h2>
+          <p class="lead">The arithmetic is simple. The exclusions are the work.</p>
+        </div>
+      </div>
+      <div class="price-method-grid">
+        <article class="panel"><span class="price-method-no">01</span><h3>Match the product</h3><p>Active ingredient, strength, dosage form and normalized quantity must match. A local trade name is allowed only when the medicine itself matches.</p></article>
+        <article class="panel"><span class="price-method-no">02</span><h3>Keep the price field honest</h3><p>The U.S. column is the manufacturer-reported January 1, 2026 WAC in Texas's official file. Texas says WAC is sometimes called list price. Every foreign tariff, formulary or schedule field remains labeled as published.</p></article>
+        <article class="panel"><span class="price-method-no">03</span><h3>Convert once</h3><p id="fxMethod"></p></article>
+        <article class="panel"><span class="price-method-no">04</span><h3>Do not fill a blank</h3><p>A failed scoped search remains “no public price found.” If no clean comparison survives, the whole receipt is stamped DEAD END.</p></article>
+      </div>
+      <div class="callout w price-limit"><b>The headline is narrower than the subject.</b> It compares published price fields for one stated presentation. It does not measure rebates, confidential discounts, dispensing fees, insurance benefits, taxes, purchasing power or what any patient ultimately pays. Medicare's negotiated price is a separate 30-day-equivalent figure and does not enter the international multiple.</div>
+    </div>
+  </section>
+</main>
+
+<section class="share-card" id="shareCard" aria-label="Price Tag share card" hidden></section>
+
+<script src="js/pharma.js"></script><script src="data/pricetag.js"></script><script src="js/pricetag.js"></script>
+</body></html>

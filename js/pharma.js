@@ -16,10 +16,24 @@ const PH = (() => {
 
   const MASK = `<svg viewBox="0 0 220 170" aria-hidden="true"><path d="M46 14h128l24 48c-5 49-34 83-88 102C56 145 27 111 22 62L46 14Z" fill="#eaf5ff" stroke="#0b1220" stroke-width="5"/><path d="M57 58c18-14 36-15 55-2M108 56c19-13 38-12 55 2" fill="none" stroke="#0b1220" stroke-width="9" stroke-linecap="round"/><path d="M66 75c17-12 30-12 43 0-14 8-28 8-43 0ZM115 75c15-12 29-12 43 0-14 8-28 8-43 0Z" fill="#0b1220"/><path d="M110 76c-10 24-12 37 0 44 12-7 10-20 0-44Z" fill="#0b1220" opacity=".8"/><path d="M62 116c23 8 41 7 48-4 7 11 25 12 48 4-9 19-28 26-48 12-20 14-39 7-48-12ZM93 137c12 10 22 10 34 0-3 18-9 26-17 28-8-2-14-10-17-28Z" fill="#0b1220"/></svg>`;
 
-  const PAGES = [
-    ['index.html', 'Home'], ['congress.html', 'The Floor', 'hot'], ['fauci.html', 'The Diary', 'new'], ['prescribed.html', 'Get Prescribed', 'new'], ['patients.html', 'Patient Files', 'new'], ['arena.html', 'Boss Raid'], ['dose.html', 'Daily Dose'],
-    ['formulary.html', 'Pharmussy'], ['archive.html', 'Receipts'], ['revolving.html', 'Revolving Door'], ['lobbying.html', 'Access Ledger'], ['prescribers.html', 'Prescribers'],
+  /* Shared nav, grouped into departments. Edit here: a group with `href` is a
+     standalone top-level link; a group with `items` is a dropdown department.
+     Item = [href, label, tag?]  tag: 'new' (amber NEW label) | any short string. */
+  const GROUPS = [
+    { label: 'The Floor', href: 'congress.html', cls: 'hot' },
+    { label: 'Hospital', items: [
+      ['patients.html', 'Patient Files', 'new'], ['prescribed.html', 'Get Prescribed'], ['formulary.html', 'The Pharmussy'], ['prescribers.html', 'Top Prescribers'],
+    ] },
+    { label: 'Receipts Dept', items: [
+      ['archive.html', 'Receipt Archive'], ['pricetag.html', 'The Price Tag', 'new'], ['revolving.html', 'The Revolving Door'], ['lobbying.html', 'The Access Ledger'],
+      ['fauci.html', 'The Diary'], ['plague.html', 'Plague Desk'], ['hantavirus.html', 'Hanta Calendar'], ['polio.html', 'Polio Trail'],
+    ] },
+    { label: 'Games', items: [
+      ['arena.html', 'Boss Raid'], ['dose.html', 'Daily Dose'], ['casino.html', 'PharmaCasino'], ['boss-fight.html', 'Discontinued Products'],
+    ] },
   ];
+  /* Flat list derived from GROUPS (old shape: [href, label, cls?]) for anything that wants every page. */
+  const PAGES = [['index.html', 'Home'], ...GROUPS.flatMap(g => g.items ? g.items : [[g.href, g.label, g.cls]])];
 
   /* One shared scroll scheduler: every scroll-driven effect runs once per frame */
   const scrollFns = []; let queued = false;
@@ -34,11 +48,50 @@ const PH = (() => {
     const nav = document.createElement('nav');
     nav.className = 'nav';
     nav.innerHTML = `<div class="nav-inner"><a class="brand" href="index.html"><span class="brand-mask">${MASK}</span><span>$PHARMA</span></a>
-      <div class="nav-links">${PAGES.slice(1).map(([h, t, c]) => `<a href="${h}" class="${c || ''}" ${h === here ? 'aria-current="page"' : ''}>${t}</a>`).join('')}</div>
+      <div class="nav-links">${GROUPS.map((g, gi) => {
+        if (!g.items) return `<a class="nav-top ${g.cls || ''}" href="${g.href}" ${g.href === here ? 'aria-current="page"' : ''}>${g.label}</a>`;
+        const isHere = g.items.some(([h]) => h === here), hasNew = g.items.some(i => i[2] === 'new'), id = `navp${gi}`;
+        return `<div class="nav-grp${gi === GROUPS.length - 1 ? ' end' : ''}">
+          <button type="button" class="nav-btn${isHere ? ' here' : ''}${hasNew ? ' has-new' : ''}" aria-expanded="false" aria-controls="${id}">${g.label}<svg viewBox="0 0 10 6" aria-hidden="true"><path d="M1 1l4 4 4-4" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+          <div class="nav-panel" id="${id}"><div class="nav-card"><div class="nav-card-h"><span>${g.label}</span><span>${String(g.items.length).padStart(2, '0')} ${g.label === 'Games' ? 'cabinets' : 'files'}</span></div>
+          ${g.items.map(([h, t, tag]) => `<a href="${h}" ${h === here ? 'aria-current="page"' : ''}><span>${t}</span>${tag ? `<i class="nav-tag ${tag === 'new' ? 'new' : ''}">${tag === 'new' ? 'NEW' : tag}</i>` : ''}</a>`).join('')}</div></div></div>`;
+      }).join('')}</div>
       ${evidenceDesk ? '' : `<a class="mcap-chip" href="${CONFIG.dex}" target="_blank" rel="noopener">MCAP <b data-mcap>—</b></a>`}
       <button class="burger" aria-label="Menu" aria-expanded="false"><span></span><span></span><span></span></button></div>`;
     document.body.prepend(nav);
     $('.burger', nav).onclick = () => { const open = nav.classList.toggle('open'); $('.burger', nav).setAttribute('aria-expanded', String(open)); };
+    // Department dropdowns (desktop only; the burger panel shows them as headed sections).
+    const burgerMode = () => innerWidth <= 980 || nav.classList.contains('compact');
+    const grps = $$('.nav-grp', nav);
+    let hoverT;
+    const setOpen = (g, open, pinned = false) => {
+      grps.forEach(o => { if (o !== g || !open) { o.classList.remove('open'); delete o.dataset.pinned; $('.nav-btn', o).setAttribute('aria-expanded', 'false'); } });
+      if (open) { g.classList.add('open'); $('.nav-btn', g).setAttribute('aria-expanded', 'true'); if (pinned) g.dataset.pinned = '1'; }
+    };
+    const closeAll = () => grps.forEach(g => g.classList.contains('open') && setOpen(g, false));
+    grps.forEach(g => {
+      const btn = $('.nav-btn', g), links = () => $$('.nav-panel a', g);
+      btn.addEventListener('click', () => {
+        if (burgerMode()) return;
+        if (!g.classList.contains('open')) setOpen(g, true, true);
+        else if (!g.dataset.pinned) g.dataset.pinned = '1'; // opened by hover: a click keeps it open
+        else setOpen(g, false);
+      });
+      g.addEventListener('pointerenter', e => { if (e.pointerType !== 'mouse' || burgerMode()) return; clearTimeout(hoverT); if (!g.classList.contains('open')) setOpen(g, true); });
+      g.addEventListener('pointerleave', e => { if (e.pointerType !== 'mouse' || g.dataset.pinned) return; clearTimeout(hoverT); hoverT = setTimeout(() => setOpen(g, false), 180); });
+      g.addEventListener('focusout', e => { if (!g.contains(e.relatedTarget)) setOpen(g, false); });
+      g.addEventListener('keydown', e => {
+        if (burgerMode()) return;
+        const ls = links(), i = ls.indexOf(document.activeElement);
+        if (e.key === 'Escape' && g.classList.contains('open')) { e.preventDefault(); setOpen(g, false); btn.focus(); }
+        else if (e.key === 'ArrowDown') { e.preventDefault(); if (!g.classList.contains('open')) setOpen(g, true, true); (ls[i + 1] || ls[0]).focus(); }
+        else if (e.key === 'ArrowUp' && i >= 0) { e.preventDefault(); (i ? ls[i - 1] : btn).focus(); }
+        else if ((e.key === 'Home' || e.key === 'End') && i >= 0) { e.preventDefault(); (e.key === 'Home' ? ls[0] : ls[ls.length - 1]).focus(); }
+      });
+    });
+    document.addEventListener('click', e => { if (!e.target.closest('.nav-grp')) closeAll(); });
+    document.addEventListener('keydown', e => { if (e.key === 'Escape') closeAll(); });
+    addEventListener('resize', () => { if (burgerMode()) closeAll(); });
     // Preserve the shared menu when the expanded department list cannot fit.
     const fitNav = () => {
       nav.classList.remove('compact');
@@ -52,7 +105,7 @@ const PH = (() => {
     foot.innerHTML = `<div class="wrap"><div class="foot-grid">
       <div><a class="brand" href="index.html"><span class="brand-mask">${MASK}</span><span>$PHARMA</span></a>
       <p class="fine" style="margin-top:16px">PHARMA Holdings plc is not a real pharmaceutical company, which is the nicest thing anyone has said about it. Satirical evidence desk. Real sources, sarcastic string. Not medical advice. Not investment advice. Not saying the calendar did it. If you are sick, call a doctor, not a memecoin.</p></div>
-      <div><h4>The Lab</h4><a href="dose.html">Daily Dose</a><a href="archive.html">Receipt Archive</a><a href="revolving.html">The Revolving Door</a><a href="lobbying.html">The Access Ledger</a><a href="plague.html">Plague Desk</a><a href="hantavirus.html">Hanta Calendar</a><a href="polio.html">Polio Trail</a></div>
+      <div><h4>The Lab</h4><a href="dose.html">Daily Dose</a><a href="archive.html">Receipt Archive</a><a href="revolving.html">The Revolving Door</a><a href="lobbying.html">The Access Ledger</a><a href="pricetag.html">The Price Tag</a><a href="plague.html">Plague Desk</a><a href="hantavirus.html">Hanta Calendar</a><a href="polio.html">Polio Trail</a></div>
       <div><h4>The Company</h4><a href="formulary.html">The Pharmussy</a><a href="prescribed.html">Get Prescribed</a><a href="patients.html">Patient Files</a><a href="arena.html">Boss Raid</a><a href="congress.html">The Floor</a><a href="prescribers.html">Top Prescribers</a><a href="index.html#letter">Investor Relations</a><a href="casino.html">PharmaCasino</a><a href="boss-fight.html">Discontinued Products</a></div>
       <div><h4>Chart</h4>${evidenceDesk ? '' : `<a href="${CONFIG.buy}" target="_blank" rel="noopener">Buy $PHARMA</a>`}<a href="${CONFIG.dex}" target="_blank" rel="noopener">DexScreener</a><a href="${CONFIG.x}" target="_blank" rel="noopener">X: @PharmaCoinSol</a><a href="methodology.html">How we don't get sued</a></div>
       </div><div class="foot-word" aria-hidden="true">$PHARMA</div></div>`;
@@ -262,6 +315,6 @@ const PH = (() => {
     field($('canvas.field'));
     console.log('%c$PHARMA', 'font:900 28px Inter;color:#55d8ff', '\nYou opened the console. That is how it starts. Type "sideeffects" anywhere on the page.');
   }
-  return { CONFIG, MASK, $, $$, esc, toast, countUp, fmtMoney, receiptHTML, init, reduced, touch, onScroll, CAT };
+  return { CONFIG, MASK, $, $$, esc, toast, countUp, fmtMoney, receiptHTML, init, reduced, touch, onScroll, CAT, GROUPS, PAGES };
 })();
 document.addEventListener('DOMContentLoaded', PH.init);

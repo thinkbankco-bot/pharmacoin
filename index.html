@@ -44,6 +44,27 @@
   <div class="scroll-cue"><span>Scroll</span><i></i></div>
 </header>
 
+<!-- LATEST FROM THE DESK: edit the 3 entries in LATEST below -->
+<section class="latest" id="latest" aria-label="Latest from the desk">
+  <div class="wrap latest-row">
+    <div class="kicker latest-k">Latest from the desk</div>
+    <div class="latest-cards" id="latestCards"></div>
+  </div>
+</section>
+<script>
+(() => {
+  const LATEST = [
+    { href: 'pricetag.html', dept: 'Receipts Dept', tag: 'new', title: 'The Price Tag', line: '30 drugs, US vs the world, median 13.5x' },
+    { href: 'patients.html#file-002', dept: 'Hospital', tag: 'now open', title: 'Patient File #002', line: 'DNA report, now open' },
+    { href: 'revolving.html', dept: 'Receipts Dept', tag: '', title: 'The Revolving Door', line: '40 of 77 regulators went to industry' },
+  ];
+  const esc = s => String(s).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+  document.getElementById('latestCards').innerHTML = LATEST.map((x, i) => `<a class="latest-card rv" href="${esc(x.href)}" style="transition-delay:${i * 70}ms">
+    <span class="latest-meta"><span>${esc(x.dept)}</span>${x.tag ? `<i class="nav-tag new">${esc(x.tag.toUpperCase())}</i>` : ''}</span>
+    <b>${esc(x.title)}</b><span class="latest-line">${esc(x.line)}</span><span class="latest-arr" aria-hidden="true">→</span></a>`).join('');
+})();
+</script>
+
 
 <!-- IR TERMINAL (the live hero) -->
 <section class="sec" id="terminal" style="padding-top:54px;padding-bottom:34px">
