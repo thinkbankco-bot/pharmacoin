@@ -636,3 +636,20 @@ body[data-view=file] .wd-file-sec{padding-top:30px}
   .dna-pred li{grid-template-columns:24px minmax(0,1fr) auto;gap:8px}
   .dna-fine,.dna-gr .sl,.dna-gr .cd,.dna-rel .nm i,.dna-rel .stt,.dna-pred .pt small,.dna-bud span,.dna-oq small{font-size:max(.6rem,10px)}
 }
+
+/* FILE #003 · cards thread */
+.wd-vitals{display:grid;grid-template-columns:repeat(3,1fr);gap:14px 18px}
+.wd-vitals div{display:flex;flex-direction:column;gap:2px;padding:10px 12px;border:1px solid rgba(0,0,0,.12);background:rgba(255,255,255,.5)}
+.wd-vitals b{font-size:1.6rem;line-height:1.05;letter-spacing:-.01em}
+.wd-vitals span{font-weight:700;font-size:.78rem;letter-spacing:.06em;text-transform:uppercase;opacity:.75}
+.wd-vitals small{font-size:.86rem;opacity:.8}
+.wd-cap q{font-size:1.15rem;font-weight:700}
+.wd-receipts{list-style:none;margin:6px 0 0;padding:0}
+.wd-receipts li{display:flex;gap:10px;align-items:baseline;padding:5px 0;border-top:1px dashed rgba(0,0,0,.15);font-size:.95rem}
+.wd-receipts .d{flex:none;font-size:.78rem;opacity:.7;min-width:84px}
+@media (max-width:700px){.wd-vitals{grid-template-columns:repeat(2,1fr)}}
+#file-003 .wd-video video{width:100%;max-width:960px;height:auto;display:block;border-radius:10px;background:#000}
+#file-003 .wd-card.wide{max-width:960px}
+#file-003 .wd-card.wide img{width:100%;height:auto}
+#file-003 .wd-video{width:100%;max-width:960px;margin:0 0 14px}
+#file-003 .wd-video{display:block;grid-template-columns:none;padding-bottom:0}

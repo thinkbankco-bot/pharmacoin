@@ -31,14 +31,28 @@ document.addEventListener('DOMContentLoaded', () => {
   const board = $('#wdBoard');
   const p1 = P.find(p => !p.genome);
   const g2 = P.find(p => p.no === '002' && p.genome);   // live only once consent is flipped
+  const c3 = P.find(p => p.kind === 'cards');            // file #003: the cards thread (live once consent is flipped)
   const beds = [
     p1 && { bed: p1.no, p: p1, status: 'FILE COMPLETE', cls: 'done' },
     g2 ? { bed: '002', p: g2, status: 'DNA REPORT FINAL', cls: 'done' } : { bed: '002', status: 'BLOODWORK IN PROGRESS', cls: 'prog' },
-    { bed: '003', status: 'BED AVAILABLE', cls: 'free' },
+    c3 ? { bed: '003', p: c3, status: 'DISCHARGE PENDING', cls: 'done' } : { bed: '003', status: 'BED AVAILABLE', cls: 'free' },
     { bed: '004', status: 'BED AVAILABLE', cls: 'free' },
   ].filter(Boolean);
   const occupied = beds.filter(b => b.cls !== 'free').length;
   const row = b => {
+    if (b.p && b.p.kind === 'cards') {
+      const p = b.p, V = p.vitals || [];
+      return `<a class="wb-row done" href="#file-${esc(p.no)}">
+        <span class="wb-bed"><small>BED</small>#${esc(b.bed)}</span>
+        <span class="wb-pt">${av(p, 'wb-av')}<span><b>@${esc(p.handle)}</b><i>${esc(p.name)} · MRN ${esc(p.no)}</i></span></span>
+        <span class="wb-st"><i class="wb-led"></i>${b.status}</span>
+        <span class="wb-vals">
+          ${V.slice(0, 4).map((v, i) => `<span class="${i === 3 ? 'red' : ''}"><b>${esc(v.v)}</b><em>${esc(v.k.toLowerCase())}</em></span>`).join('')}
+          <span><b>${n(p.specimen.corpus)}</b><em>posts read · ${p.specimen.pct}% of ${n(p.specimen.archived)}</em></span>
+        </span>
+        <span class="wb-go">Open file →</span>
+      </a>`;
+    }
     if (b.p && b.p.genome) {
       const p = b.p, G = p.genome;
       return `<a class="wb-row done" href="#file-${esc(p.no)}">
@@ -253,6 +267,42 @@ document.addEventListener('DOMContentLoaded', () => {
     </div>`;
   }
   if (g2) renderGenome(g2);
+
+  /* ---------- FILE #003 · THE CARDS (any live record with kind: 'cards') ----------
+     Three posts, one object each, in thread order. Every quote under a card links to its post. */
+  function renderCards(p) {
+    const L = (id, txt = 'post ↗') => link(p, id, txt);
+    const sec = document.createElement('section');
+    sec.className = 'wd-sec wd-file-sec'; sec.id = `file-${p.no}`;
+    const after = document.getElementById('file-002') || document.getElementById('file-001');
+    (after ? after.after(sec) : $('#method').before(sec));
+    const consentDate = (String(p.consent).match(/\d{4}-\d{2}-\d{2}/) || [])[0];
+    const st = (no, id, kicker, title, body) => `<article class="wd-step dna" id="p${esc(p.no)}-${id}">
+      <div class="wd-step-h"><span class="no">${no}</span><div><span class="k">${kicker}</span><h3>${title}</h3></div></div>${body}</article>`;
+    const receipts = c => `<ul class="wd-receipts">${c.receipts.map(r => `<li><span class="d">${fmtD(r.date)}</span><q>${esc(r.text)}</q> ${L(r.id)}</li>`).join('')}</ul>`;
+    const media = c => {
+      if (c.video) return `<div class="wd-video"><video controls playsinline preload="metadata" poster="${esc(c.poster)}" width="1200" height="675"><source src="${esc(c.video)}" type="video/mp4">Your browser can’t play this video. <a href="${esc(c.video)}">Download the MP4</a>.</video></div>`;
+      const [w, h] = String(c.size).split('x').map(Number); return img(c.file, w, h, c.title, 'wide');
+    };
+    const cards = p.cards.map((c, i) => st(String(i + 1).padStart(2, '0'), 'card' + c.no, esc(c.kicker), esc(c.title),
+      `${media(c)}<div class="wd-paper"><p class="wd-cap"><q>${esc(c.caption)}</q></p><p>${esc(c.blurb)}</p><div class="pf-lbl">Receipts · his posts, verbatim</div>${receipts(c)}</div>`)).join('');
+    const vitals = `<div class="wd-paper wd-vitals">${(p.vitals || []).map(v => `<div><b>${esc(v.v)}</b><span>${esc(v.k)}</span><small>${esc(v.note)}</small></div>`).join('')}</div>`;
+    sec.innerHTML = `<div class="wrap">
+      <div class="wd-folder dna-folder">
+        <span class="wd-tab">FILE #${esc(p.no)} · WARD 3</span>
+        ${av(p, 'wd-av')}
+        <div class="wd-who"><b>${esc(p.name)}</b><a href="https://x.com/${esc(p.handle)}" target="_blank" rel="noopener">@${esc(p.handle)}</a><span>${esc(p.bio.text)} · On X since ${esc(p.joined)} · Attending: ${esc(p.attending)}</span></div>
+        <span class="wd-consent">${p.consent === 'public-figure' ? 'Public account' : 'Consent on file'}<small>${consentDate ? fmtD(consentDate) : (p.thread ? 'File posted ' + fmtD(p.thread.posted) : '')}</small></span>
+      </div>
+      <p class="wd-order">${esc(p.lab)} · Specimen: ${n(p.specimen.corpus)} of ${n(p.specimen.archived)} public posts (${p.specimen.pct}%), ${fmtD(p.specimen.from)} – ${fmtD(p.specimen.to)}. Presented in the order the <a href="${xurl(p.thread.handle, p.thread.id)}" target="_blank" rel="noopener">${p.thread.posts}-post thread</a> ran on ${fmtD(p.thread.posted)}. Every quote links to its post. Wallets: not examined.</p>
+      <div class="wd-paper dna-dx"><div class="pf-dx"><h4><small>DX</small>${esc(p.diagnosis.name)}</h4><p>${esc(p.diagnosis.text)}</p><span class="pf-stamp">ADMITTED<small>${esc(p.diagnosis.tag)}</small></span></div></div>
+      ${st('00', 'vitals', 'Vitals', 'The numbers <em>on file</em>', vitals)}
+      ${cards}
+      ${p.consult && p.consult.length ? st('04', 'consult', 'After the file', 'Consultation notes', `<ul class="wd-consult">${p.consult.map(c => `<li><span class="d">${esc(c.at)}</span> ${esc(c.kind)} ${c.quote ? `<q>${esc(c.quote)}</q>` : ''} ${link({ handle: c.handle }, c.id)}</li>`).join('')}</ul>`) : ''}
+      <p class="wd-order"><small>${esc(p.method)}</small></p>
+    </div>`;
+  }
+  if (c3) renderCards(c3);
 
   if (!p1) { $('#wdFile').innerHTML = '<p class="empty">The ward is empty. The Attending is on rounds.</p>'; $('#file-001').dataset.empty = '1'; initRouter(); return; }
 
