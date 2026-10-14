@@ -1,0 +1,68 @@
+<!doctype html>
+<html lang="en" class="no-js"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>IR Terminal — $PHARMA</title>
+<meta name="description" content="PHARMA Holdings plc investor relations terminal: live price, trades, holders and liquidity, nothing simulated.">
+<meta property="og:title" content="IR Terminal — $PHARMA">
+<meta property="og:description" content="PHARMA Holdings plc investor relations terminal: live price, trades, holders and liquidity, nothing simulated.">
+<meta property="og:url" content="https://buypharmacoin.xyz/terminal.html">
+<meta property="og:image" content="https://buypharmacoin.xyz/assets/og.png"><meta name="twitter:card" content="summary_large_image">
+<meta name="theme-color" content="#050914">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:ital,wght@0,400;0,500;0,700;0,800;0,900;1,800;1,900&family=IBM+Plex+Mono:wght@400;500;600;700&family=Caveat:wght@600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/pharma.css"><link rel="stylesheet" href="css/pages.css"><link rel="stylesheet" href="css/phase1.css"><link rel="stylesheet" href="css/terminal.css">
+</head><body>
+<!-- IR TERMINAL (the live hero) -->
+<section class="sec" id="terminal" style="padding-top:34px;padding-bottom:34px">
+  <div class="wrap">
+    <div class="sec-head" style="margin-bottom:22px"><div><div class="kicker">Investor relations · live</div><h2 class="title rv-words">The numbers are small. <em>The receipts are real.</em></h2><p class="lead rv">Every figure below is pulled live from the chain. Nothing is simulated, smoothed or looped. When nobody trades, the screen says so. <span class="rl" data-rl="A $20K coin running a Bloomberg desk. That is the joke, and we are committed to it." data-st="v">PHARMA Holdings plc believes in radical transparency with its shareholders.</span></p></div></div>
+    <div class="irt" id="irt">
+      <div class="irt-head"><b>PHARMA HOLDINGS PLC</b><span>IR TERMINAL · TICKER: PHARMA</span><span class="sess" id="irtSess"><i></i><span>SESSION OPENING…</span></span><span class="mkt" id="irtMkt">connecting to the pharmacy counter</span><span class="clock" id="irtClock">--:--:-- UTC</span></div>
+      <div class="irt-grid">
+        <div class="pnl pA span-4"><div class="pnl-h"><div class="pnl-t"><s>Share price</s><em>one token</em><sup>1</sup></div><span class="src" id="srcA">dexscreener · …</span></div>
+          <div class="odo" id="odo"><span class="d">$</span><span class="d">0</span><small>USD</small></div>
+          <div class="chg" id="chg"></div>
+          <div class="mcap-line"><s style="opacity:.6">Enterprise value</s> <b id="mcapN">—</b> market cap <span style="color:var(--dim)">· roughly one used sedan</span></div></div>
+        <div class="pnl pB span-8"><div class="pnl-h"><div class="pnl-t"><s>Shareholder returns</s><em>vital signs</em><sup>2</sup></div><span class="src" id="srcB">geckoterminal · 5-min candles</span></div>
+          <div class="ekg-wrap"><canvas id="ekg"></canvas><div class="ekg-tabs"><button class="on" data-r="24h">24H</button><button data-r="7d">7D</button><button data-r="all">ALL</button></div><div class="ekg-note" id="ekgNote">acquiring signal…</div></div></div>
+        <div class="pnl pC span-5"><div class="pnl-h"><div class="pnl-t"><s>Shareholder engagement</s><em>now serving</em><sup>3</sup></div><span class="src" id="srcC">geckoterminal · …</span></div>
+          <div class="ns"><div class="ns-num" id="nsNum"><span class="ch">#</span><span class="ch">-</span><span class="ch">-</span><span class="ch">-</span><span class="ch">-</span></div><div class="ns-who" id="nsWho"><b>PATIENT ····</b><i>Dx: pending</i><span>awaiting the next real trade</span></div></div>
+          <div class="ns-log" id="nsLog"><div class="ns-empty">opening the front desk…</div></div>
+          <div class="ns-stats" id="nsStats"></div></div>
+        <div class="pnl pD span-4"><div class="pnl-h"><div class="pnl-t"><s>Customer acquisition</s><em>admissions vs discharges</em><sup>4</sup></div><span class="src" id="srcD">dexscreener · …</span></div>
+          <div class="adm" id="adm"></div><div class="adm-ratio" id="admRatio">—</div></div>
+        <div class="pnl pE span-3"><div class="pnl-h"><div class="pnl-t"><s>Shareholder base</s><em>patient roster</em><sup>5</sup></div><span class="src" id="srcE">geckoterminal · …</span></div>
+          <div class="big-n" id="holdN">—</div><div class="src" style="margin-top:4px">holders of record</div>
+          <div class="dist-bar" id="distBar"></div><div class="dist-k" id="distK"></div><div class="ekg-note" id="distNote" style="position:static;margin-top:10px">counting wallets…</div></div>
+        <div class="pnl pF span-3"><div class="pnl-h"><div class="pnl-t"><s>Liquidity position</s><em>the pill bottle</em><sup>6</sup></div><span class="src" id="srcF">dexscreener · …</span></div>
+          <div class="bottle"><svg viewBox="0 0 64 110" aria-hidden="true"><rect x="18" y="2" width="28" height="12" rx="3" fill="#ffcf6b"/><rect x="8" y="14" width="48" height="94" rx="10" fill="rgba(255,255,255,.06)" stroke="rgba(142,167,193,.5)"/><rect class="liq" id="liq" x="10" y="98" width="44" height="8" rx="6" fill="url(#liqg)"/><defs><linearGradient id="liqg" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#55d8ff"/><stop offset="1" stop-color="#15a7ff"/></linearGradient></defs><rect x="14" y="40" width="36" height="34" rx="3" fill="#f3efe4" opacity=".92"/><text x="32" y="54" text-anchor="middle" font-family="IBM Plex Mono,monospace" font-size="7" font-weight="700" fill="#1d1a15">Rx 0420</text><text x="32" y="65" text-anchor="middle" font-family="IBM Plex Mono,monospace" font-size="5.5" fill="#6b5f4f">DO NOT SHAKE</text></svg><div class="bottle-n" id="liqN">—<small>in the pool · DexScreener</small></div></div></div>
+        <div class="pnl pG span-3"><div class="pnl-h"><div class="pnl-t"><s>Regulatory milestones</s><em>fines progress</em><sup>7</sup></div><span class="src" id="srcG">dexscreener · …</span></div>
+          <div class="fine-n" id="fineN">—<small>%</small></div><div class="fine-bar"><i id="fineBar" style="width:.3%"></i></div>
+          <div class="src" style="margin-bottom:8px">of Pfizer’s 2009 $2.3B Bextra resolution · market cap ÷ fine</div>
+          <div class="fine-ticker" id="fineTicker"><span>loading receipts…</span></div></div>
+        <div class="pnl pH span-6"><div class="pnl-h"><div class="pnl-t"><s>Key accounts</s><em>the ward · 24h</em><sup>8</sup></div><span class="src" id="srcH">geckoterminal · …</span></div>
+          <div class="ward" id="ward"></div><div class="cb-log" id="cbLog"></div></div>
+      </div>
+      <div class="irt-foot">
+        <div>¹ Price and market cap from <a href="https://dexscreener.com/solana/3PffTrmfWe23GTNH6XNERGzzUkLDiPTejJpH9DK3R28u" target="_blank" rel="noopener">DexScreener</a>, every 30s. Odometer only rolls when the price actually changed. — M.P.</div>
+        <div>² 5-minute closes from GeckoTerminal. Grey dashed = nobody traded. We don’t smooth the flatline. The dots are the actual trades.</div>
+        <div>³ Ticket = last four digits of the trade’s Solana block. Diagnoses are jokes, assigned by wallet address. Tap a row for the transaction on Solscan.</div>
+        <div>⁴ Buys and sells per window from DexScreener. “Admitted” is a buy. “Discharged” is a sell. Nobody is actually in hospital.</div>
+        <div>⁵ Holder count and concentration from GeckoTerminal token info, refreshed every 5 minutes. The liquidity pool counts as one “wallet”.</div>
+        <div>⁶ Liquidity = the USD value sitting in the PumpSwap pool. If it fits in a Honda Odyssey, we say so.</div>
+        <div>⁷ The Bextra resolution is the <a href="https://www.justice.gov/archives/opa/pr/justice-department-announces-largest-health-care-fraud-settlement-its-history" target="_blank" rel="noopener">DOJ’s</a> largest health-care fraud settlement at the time. Our market cap, divided by it.</div>
+        <div>⁸ Computed from the last 300 trades only. Trades under $1 are counted as automated refills (bots) and shown faded.</div>
+        <div class="sig">Reviewed by M. Pruitt, Receipts Dept. · nothing simulated · not medical or financial advice</div>
+      </div>
+      <div class="irt-actions"><button class="btn primary" id="printChart">Print today’s patient chart <span class="arr">→</span></button><button class="btn" id="irtSound">Monitor beeps: off</button><a class="btn" data-dex href="#">Full chart on DexScreener</a><span class="src" id="sinceWrap" style="align-self:center">last real trade <b id="sinceN" style="color:var(--ink)">—</b> ago</span></div>
+    </div>
+  </div>
+</section>
+
+<div class="irt-mini" id="irtMini" aria-hidden="true"><span>$PHARMA</span><b id="miniP">—</b><span id="miniC"></span><span id="miniT"></span><a href="#terminal">TERMINAL ↑</a></div>
+<script src="js/pharma.js"></script>
+<script src="data/receipts.js"></script>
+<script src="data/pulse_snapshot.js"></script>
+<script src="data/holders_snapshot.js"></script>
+<script src="js/pulse.js"></script>
+<script src="js/terminal.js"></script>
+</body></html>

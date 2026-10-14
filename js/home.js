@@ -7,7 +7,7 @@ document.addEventListener('DOMContentLoaded', () => {
   /* Today's dose number (Dose #1 = Oct 5, 2026 UTC) */
   const doseNo = Math.max(0, Math.floor((Date.now() - Date.UTC(2026, 9, 5)) / 864e5)) + 1;
   if ($('#heroDose')) $('#heroDose').textContent = `Daily Dose #${doseNo}`; if ($('#ctaDose')) $('#ctaDose').textContent = doseNo; if ($('#faxNo')) $('#faxNo').textContent = `DOSE #${doseNo}`;
-  const now = new Date(); $('#filled').textContent = `${String(now.getMonth() + 1).padStart(2, '0')}/${String(now.getDate()).padStart(2, '0')}/${String(now.getFullYear()).slice(2)}`;
+  const now = new Date(); if ($('#filled')) $('#filled').textContent = `${String(now.getMonth() + 1).padStart(2, '0')}/${String(now.getDate()).padStart(2, '0')}/${String(now.getFullYear()).slice(2)}`;
 
   /* Ticker */
   const money = R.filter(r => r.amount_usd).sort((a, b) => b.amount_usd - a.amount_usd);
@@ -26,40 +26,25 @@ document.addEventListener('DOMContentLoaded', () => {
       <span class="sku-name">${esc(d.name)}<sup>®</sup></span><span class="sku-gen">(${esc(d.pron)})</span><span class="sku-tag">${esc(d.tag)}</span></a>`).join('');
   }
 
-  /* Settlement stack: biggest receipts, ordered by year */
-  const stackSet = money.slice(0, 6).sort((a, b) => a.year - b.year);
-  const stack = $('#stack');
-  stack.innerHTML = stackSet.map(r => receiptHTML(r)).join('');
-  const cards = $$('.receipt', stack);
-  cards.forEach((c, i) => { c.style.top = `calc(var(--bar) + 30px + ${i * 12}px)`; c.style.zIndex = i + 1; c.style.rotate = `${(i % 2 ? 1 : -1) * (0.6 + (i % 3) * .5)}deg`; });
+  /* Receipts: archive total + one featured receipt per day (rotates through the 30 biggest, by UTC day) */
   const total = money.reduce((s, r) => s + r.amount_usd, 0);
-  const stackTotal = stackSet.reduce((s, r) => s + r.amount_usd, 0);
-  $('#allCount').textContent = stackSet.length;
-  const runTotal = $('#runTotal'), runCount = $('#runCount'), runCo = $('#runCo'), meter = $('#runMeter');
-  let shown = -1, cur = 0, anim;
-  const animateTo = to => {
-    cancelAnimationFrame(anim);
-    const from = cur, t0 = performance.now();
-    const step = t => { const p = Math.min((t - t0) / 650, 1), e = 1 - Math.pow(1 - p, 3); cur = from + (to - from) * e; runTotal.textContent = fmtMoney(cur); if (p < 1) anim = requestAnimationFrame(step); };
-    reduced ? (cur = to, runTotal.textContent = fmtMoney(to)) : (anim = requestAnimationFrame(step));
-  };
-  PH.onScroll(() => {
-    const sr = stack.getBoundingClientRect();
-    if (sr.bottom < -200 || sr.top > innerHeight + 200) return; // off-screen: skip the per-card work
-    const line = innerHeight * .62;
-    let n = 0; for (const c of cards) { if (c.getBoundingClientRect().top < line) n++; else break; }
-    if (n === shown) return; shown = n;
-    const sum = stackSet.slice(0, n).reduce((s, r) => s + r.amount_usd, 0);
-    animateTo(sum);
-    runCount.textContent = n;
-    runCo.textContent = n ? `last: ${stackSet[n - 1].company.split(',')[0]}${stackSet[n - 1].company.includes(',') ? ' et al.' : ''}` : 'scroll to print';
-    meter.style.width = (sum / stackTotal * 100) + '%';
-  });
-
-  $('#compare').innerHTML = [
-    ['Receipts in the full archive', R.length],
-    ['Archive raw sum (some deals overlap)', fmtMoney(total)],
+  if ($('#archTotal')) {
+    const el = $('#archTotal'); el.textContent = fmtMoney(0);
+    const t0 = performance.now();
+    const step = t => { const p = Math.min((t - t0) / 1100, 1), e = 1 - Math.pow(1 - p, 3); el.textContent = fmtMoney(total * e); if (p < 1) requestAnimationFrame(step); };
+    reduced ? el.textContent = fmtMoney(total) : requestAnimationFrame(step);
+  }
+  if ($('#archCount')) $('#archCount').textContent = R.length;
+  if ($('#featured')) {
+    const pool = money.slice(0, 30);
+    const day = Math.floor(Date.now() / 864e5);
+    const r = pool[day % pool.length];
+    if (r) { $('#featured').innerHTML = receiptHTML(r); const c = $('.receipt', $('#featured')); if (c) { c.style.top = 'auto'; c.style.zIndex = 1; } }
+    if ($('#featDay')) $('#featDay').textContent = new Date().toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+  }
+  if ($('#compare')) $('#compare').innerHTML = [
     ['Biggest single receipt', money[0] ? `${fmtMoney(money[0].amount_usd)} · ${money[0].company.split(',')[0]} et al.` : '—'],
+    ['Receipts with a dollar figure', money.length],
   ].map(([a, b]) => `<div><span>${esc(a)}</span><b>${esc(b)}</b></div>`).join('');
 
   /* Mission bar: progress to being fined like Pfizer (2009, $2.3B) */

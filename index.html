@@ -9,10 +9,10 @@
 <meta name="theme-color" content="#050914">
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:ital,wght@0,400;0,500;0,700;0,800;0,900;1,800;1,900&family=IBM+Plex+Mono:wght@400;500;600;700&family=Caveat:wght@600;700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="css/pharma.css"><link rel="stylesheet" href="css/pages.css"><link rel="stylesheet" href="css/phase1.css"><link rel="stylesheet" href="css/terminal.css"><link rel="stylesheet" href="css/ward.css">
+<link rel="stylesheet" href="css/pharma.css"><link rel="stylesheet" href="css/pages.css"><link rel="stylesheet" href="css/phase1.css"><link rel="stylesheet" href="css/home2.css">
 </head><body>
 
-<!-- HERO -->
+<!-- 1. HERO -->
 <header class="hero">
   <div class="plane plane-grid" data-rate=".12"></div>
   <div class="plane plane-rx" data-rate=".32" aria-hidden="true"><span>Rx</span></div>
@@ -26,10 +26,12 @@
       <a class="eyebrow" href="dose.html" style="text-decoration:none"><span class="dot"></span> <span id="heroDose">Daily Dose #1</span> is live · guess today’s company →</a>
       <h1>Pharma<span class="l2">fixes this</span></h1>
       <p class="sub"><span class="rl" data-rl="Translation: a memecoin with a receipts department. Every claim here is sourced or stamped." data-st="v">PHARMA Holdings plc is a patient-first pharmaceutical innovator committed to transparency, integrity and long-term shareholder value.</span> We would love to be Big Pharma. <b>We cannot afford the fines.</b></p>
+      <p class="plain">A memecoin that reads the DOJ press releases so you don’t have to. Real fines, fake drugs, one puzzle a day.</p>
       <div class="actions">
         <a class="btn primary" data-buy href="#">Buy $PHARMA <span class="arr">→</span></a>
-        <a class="btn" href="#terminal">See the live terminal</a>
+        <a class="btn" href="dose.html">Take today’s dose</a>
       </div>
+      <div class="ca-mini"><span>CA</span><code data-ca></code><button data-copy-ca>Copy</button></div>
     </div>
     <div class="rx-label" data-rate="-.06" style="will-change:transform">
       <div class="rx-top"><div class="pharm">$PHARMA<small>PHARMA HOLDINGS PLC · STORE 000-RX</small></div><div class="rx-no">RX NO.<b>0420-PH</b>FILLED <span id="filled">10/05/26</span></div></div>
@@ -44,141 +46,75 @@
   <div class="scroll-cue"><span>Scroll</span><i></i></div>
 </header>
 
-<!-- LATEST FROM THE DESK: edit the 3 entries in LATEST below -->
-<section class="latest" id="latest" aria-label="Latest from the desk">
-  <div class="wrap latest-row">
-    <div class="kicker latest-k">Latest from the desk</div>
-    <div class="latest-cards" id="latestCards"></div>
-  </div>
-</section>
-<script>
-(() => {
-  const LATEST = [
-    { href: 'pricetag.html', dept: 'Receipts Dept', tag: 'new', title: 'The Price Tag', line: '30 drugs, US vs the world, median 13.5x' },
-    { href: 'patients.html#file-002', dept: 'Hospital', tag: 'now open', title: 'Patient File #002', line: 'DNA report, now open' },
-    { href: 'revolving.html', dept: 'Receipts Dept', tag: '', title: 'The Revolving Door', line: '40 of 77 regulators went to industry' },
-  ];
-  const esc = s => String(s).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
-  document.getElementById('latestCards').innerHTML = LATEST.map((x, i) => `<a class="latest-card rv" href="${esc(x.href)}" style="transition-delay:${i * 70}ms">
-    <span class="latest-meta"><span>${esc(x.dept)}</span>${x.tag ? `<i class="nav-tag new">${esc(x.tag.toUpperCase())}</i>` : ''}</span>
-    <b>${esc(x.title)}</b><span class="latest-line">${esc(x.line)}</span><span class="latest-arr" aria-hidden="true">→</span></a>`).join('');
-})();
-</script>
-
-
-<!-- IR TERMINAL (the live hero) -->
-<section class="sec" id="terminal" style="padding-top:54px;padding-bottom:34px">
+<!-- 2. PULL A LEVER: the four things people actually use -->
+<section class="sec" id="play" style="padding-top:44px">
   <div class="wrap">
-    <div class="sec-head" style="margin-bottom:22px"><div><div class="kicker">Investor relations · live</div><h2 class="title rv-words">The numbers are small. <em>The receipts are real.</em></h2><p class="lead rv">Every figure below is pulled live from the chain. Nothing is simulated, smoothed or looped. When nobody trades, the screen says so. <span class="rl" data-rl="A $20K coin running a Bloomberg desk. That is the joke, and we are committed to it." data-st="v">PHARMA Holdings plc believes in radical transparency with its shareholders.</span></p></div></div>
-    <div class="irt" id="irt">
-      <div class="irt-head"><b>PHARMA HOLDINGS PLC</b><span>IR TERMINAL · TICKER: PHARMA</span><span class="sess" id="irtSess"><i></i><span>SESSION OPENING…</span></span><span class="mkt" id="irtMkt">connecting to the pharmacy counter</span><span class="clock" id="irtClock">--:--:-- UTC</span></div>
-      <div class="irt-grid">
-        <div class="pnl pA span-4"><div class="pnl-h"><div class="pnl-t"><s>Share price</s><em>one token</em><sup>1</sup></div><span class="src" id="srcA">dexscreener · …</span></div>
-          <div class="odo" id="odo"><span class="d">$</span><span class="d">0</span><small>USD</small></div>
-          <div class="chg" id="chg"></div>
-          <div class="mcap-line"><s style="opacity:.6">Enterprise value</s> <b id="mcapN">—</b> market cap <span style="color:var(--dim)">· roughly one used sedan</span></div></div>
-        <div class="pnl pB span-8"><div class="pnl-h"><div class="pnl-t"><s>Shareholder returns</s><em>vital signs</em><sup>2</sup></div><span class="src" id="srcB">geckoterminal · 5-min candles</span></div>
-          <div class="ekg-wrap"><canvas id="ekg"></canvas><div class="ekg-tabs"><button class="on" data-r="24h">24H</button><button data-r="7d">7D</button><button data-r="all">ALL</button></div><div class="ekg-note" id="ekgNote">acquiring signal…</div></div></div>
-        <div class="pnl pC span-5"><div class="pnl-h"><div class="pnl-t"><s>Shareholder engagement</s><em>now serving</em><sup>3</sup></div><span class="src" id="srcC">geckoterminal · …</span></div>
-          <div class="ns"><div class="ns-num" id="nsNum"><span class="ch">#</span><span class="ch">-</span><span class="ch">-</span><span class="ch">-</span><span class="ch">-</span></div><div class="ns-who" id="nsWho"><b>PATIENT ····</b><i>Dx: pending</i><span>awaiting the next real trade</span></div></div>
-          <div class="ns-log" id="nsLog"><div class="ns-empty">opening the front desk…</div></div>
-          <div class="ns-stats" id="nsStats"></div></div>
-        <div class="pnl pD span-4"><div class="pnl-h"><div class="pnl-t"><s>Customer acquisition</s><em>admissions vs discharges</em><sup>4</sup></div><span class="src" id="srcD">dexscreener · …</span></div>
-          <div class="adm" id="adm"></div><div class="adm-ratio" id="admRatio">—</div></div>
-        <div class="pnl pE span-3"><div class="pnl-h"><div class="pnl-t"><s>Shareholder base</s><em>patient roster</em><sup>5</sup></div><span class="src" id="srcE">geckoterminal · …</span></div>
-          <div class="big-n" id="holdN">—</div><div class="src" style="margin-top:4px">holders of record</div>
-          <div class="dist-bar" id="distBar"></div><div class="dist-k" id="distK"></div><div class="ekg-note" id="distNote" style="position:static;margin-top:10px">counting wallets…</div></div>
-        <div class="pnl pF span-3"><div class="pnl-h"><div class="pnl-t"><s>Liquidity position</s><em>the pill bottle</em><sup>6</sup></div><span class="src" id="srcF">dexscreener · …</span></div>
-          <div class="bottle"><svg viewBox="0 0 64 110" aria-hidden="true"><rect x="18" y="2" width="28" height="12" rx="3" fill="#ffcf6b"/><rect x="8" y="14" width="48" height="94" rx="10" fill="rgba(255,255,255,.06)" stroke="rgba(142,167,193,.5)"/><rect class="liq" id="liq" x="10" y="98" width="44" height="8" rx="6" fill="url(#liqg)"/><defs><linearGradient id="liqg" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#55d8ff"/><stop offset="1" stop-color="#15a7ff"/></linearGradient></defs><rect x="14" y="40" width="36" height="34" rx="3" fill="#f3efe4" opacity=".92"/><text x="32" y="54" text-anchor="middle" font-family="IBM Plex Mono,monospace" font-size="7" font-weight="700" fill="#1d1a15">Rx 0420</text><text x="32" y="65" text-anchor="middle" font-family="IBM Plex Mono,monospace" font-size="5.5" fill="#6b5f4f">DO NOT SHAKE</text></svg><div class="bottle-n" id="liqN">—<small>in the pool · DexScreener</small></div></div></div>
-        <div class="pnl pG span-3"><div class="pnl-h"><div class="pnl-t"><s>Regulatory milestones</s><em>fines progress</em><sup>7</sup></div><span class="src" id="srcG">dexscreener · …</span></div>
-          <div class="fine-n" id="fineN">—<small>%</small></div><div class="fine-bar"><i id="fineBar" style="width:.3%"></i></div>
-          <div class="src" style="margin-bottom:8px">of Pfizer’s 2009 $2.3B Bextra resolution · market cap ÷ fine</div>
-          <div class="fine-ticker" id="fineTicker"><span>loading receipts…</span></div></div>
-        <div class="pnl pH span-6"><div class="pnl-h"><div class="pnl-t"><s>Key accounts</s><em>the ward · 24h</em><sup>8</sup></div><span class="src" id="srcH">geckoterminal · …</span></div>
-          <div class="ward" id="ward"></div><div class="cb-log" id="cbLog"></div></div>
-      </div>
-      <div class="irt-foot">
-        <div>¹ Price and market cap from <a href="https://dexscreener.com/solana/3PffTrmfWe23GTNH6XNERGzzUkLDiPTejJpH9DK3R28u" target="_blank" rel="noopener">DexScreener</a>, every 30s. Odometer only rolls when the price actually changed. — M.P.</div>
-        <div>² 5-minute closes from GeckoTerminal. Grey dashed = nobody traded. We don’t smooth the flatline. The dots are the actual trades.</div>
-        <div>³ Ticket = last four digits of the trade’s Solana block. Diagnoses are jokes, assigned by wallet address. Tap a row for the transaction on Solscan.</div>
-        <div>⁴ Buys and sells per window from DexScreener. “Admitted” is a buy. “Discharged” is a sell. Nobody is actually in hospital.</div>
-        <div>⁵ Holder count and concentration from GeckoTerminal token info, refreshed every 5 minutes. The liquidity pool counts as one “wallet”.</div>
-        <div>⁶ Liquidity = the USD value sitting in the PumpSwap pool. If it fits in a Honda Odyssey, we say so.</div>
-        <div>⁷ The Bextra resolution is the <a href="https://www.justice.gov/archives/opa/pr/justice-department-announces-largest-health-care-fraud-settlement-its-history" target="_blank" rel="noopener">DOJ’s</a> largest health-care fraud settlement at the time. Our market cap, divided by it.</div>
-        <div>⁸ Computed from the last 300 trades only. Trades under $1 are counted as automated refills (bots) and shown faded.</div>
-        <div class="sig">Reviewed by M. Pruitt, Receipts Dept. · nothing simulated · not medical or financial advice</div>
-      </div>
-      <div class="irt-actions"><button class="btn primary" id="printChart">Print today’s patient chart <span class="arr">→</span></button><button class="btn" id="irtSound">Monitor beeps: off</button><a class="btn" data-dex href="#">Full chart on DexScreener</a><span class="src" id="sinceWrap" style="align-self:center">last real trade <b id="sinceN" style="color:var(--ink)">—</b> ago</span></div>
+    <div class="sec-head"><div><div class="kicker">Walk-in clinic</div><h2 class="title rv-words">Nobody reads a wiki. <em>Everybody pulls a lever.</em></h2></div></div>
+    <div class="tiles levers">
+      <a class="tile rv red-edge" href="prescribed.html"><span class="tag x">walk-in</span><h3>Get Prescribed</h3><p>Tell the Pharmussy what’s wrong with you. Leave with a label with your name on it and a fake drug. Post it.</p><span class="more">Step up to the counter →</span><span class="bgword">Rx</span></a>
+      <a class="tile rv" href="dose.html"><span class="tag v">daily ritual</span><h3>Daily Dose <small class="dose-no">#<span id="ctaDose">1</span></small></h3><p>Wordle for corporate crime. One redacted press release a day. Guess the company in six pills.</p><span class="more">Take today’s dose →</span><span class="bgword">Rx</span></a>
+      <a class="tile rv" href="casino.html" style="border-color:rgba(255,184,77,.35)"><span class="tag w">fake gambling</span><h3>PharmaCasino</h3><p>Side Effect Slots. Pull the lever, win a real receipt. You lose your trust every time.</p><span class="more">Pull the lever →</span><span class="bgword">777</span></a>
+      <a class="tile rv" href="arena.html"><span class="tag x">boss raid</span><h3>Boss Raid</h3><p>Every boss is a real fine Big Pharma paid. Our market cap is the damage.</p><span class="more">Join the raid →</span><span class="bgword">HP</span></a>
     </div>
   </div>
 </section>
 
-<!-- THE WARD (holder census) -->
-<section class="sec ward-sec" id="ward-sec">
-  <div class="wrap">
-    <div class="sec-head" style="margin-bottom:22px"><div><div class="kicker">Patient census · on-chain</div><h2 class="title rv-words">Every holder <em>has a bed.</em></h2><p class="lead rv">A full census of every wallet holding $PHARMA, taken from the chain at each deploy. The twenty largest get private rooms. Everyone else gets a vial on the wall. <span class="rl" data-rl="Wallets are public. We show the first and last four characters, link to Solscan, and never attach names." data-st="v">PHARMA Holdings respects patient confidentiality.</span> Paste your address at the desk to find your bed.</p></div></div>
-    <div class="rooms" id="rooms"></div>
-    <button class="btn rooms-more" id="roomsMore">Show rooms 109–120 <span class="arr">↓</span></button>
-    <div class="rooms-foot" id="roomsFoot"></div>
-    <div class="wall"><div class="wall-h"><h3 id="wallH">vials</h3><span id="wallSub"></span></div><canvas id="wallCv" aria-label="One vial per holder, sized by balance"></canvas><div class="wall-tip" id="wallTip"></div><div class="wall-k"><span><i style="background:#ffb84d"></i>the dispensary (pool)</span><span><i style="background:#ffcf6b"></i>private rooms (top 20)</span><span><i style="background:#55d8ff"></i>general ward</span><span><i style="background:#ff3b58"></i>you</span></div></div>
-    <div class="desk">
-      <div class="desk-form"><h3>Check-in desk</h3><p>Paste a Solana wallet address. We find it in the census (and try the public RPC for a live balance) and rank it against every other holder. Read-only. No connect, no signature, no seed phrase, ever.</p>
-        <div class="desk-row"><input id="deskIn" placeholder="Solana wallet address" autocomplete="off" spellcheck="false"><button class="btn primary" id="deskBtn">Check in</button></div>
-        <div class="desk-err" id="deskErr"></div>
-        <div class="desk-note" id="deskNote">rank = wallets with a larger balance + 1 · census refreshed at every deploy · your address stays on your device</div></div>
-      <div class="pchart" id="pchart"></div>
-    </div>
-  </div>
-</section>
-
-<!-- FORMULARY SHELF -->
-<section class="sec" style="padding-top:20px">
+<!-- 3. PHARMUSSY SHELF -->
+<section class="sec" id="pharmussy" style="padding-top:20px">
   <div class="wrap">
     <div class="sec-head"><div><div class="kicker">The product pipeline · the Pharmussy</div><h2 class="title rv-words"><span id="shelfCount">Seven</span> products. <em>Zero approvals.</em></h2><p class="lead rv"><span class="rl" data-rl="They are holder-made memes. Each comes with one real receipt as its clinical history." data-st="v">Every PHARMA Holdings product is the result of rigorous research and development.</span></p></div><a class="btn" href="formulary.html">The full Pharmussy <span class="arr">→</span></a></div>
     <div class="shelf-row" id="homeShelf"></div>
   </div>
 </section>
 
-<!-- SETTLEMENT COUNTER + STACK -->
-<section class="counter-sec" id="counter">
-  <div class="wrap counter-grid">
-    <div class="counter-pin">
+<!-- 4. LIVE ROW: one screen of the terminal -->
+<section class="sec" id="live" style="padding-top:20px">
+  <div class="wrap">
+    <div class="sec-head" style="margin-bottom:18px"><div><div class="kicker">Investor relations · live</div><h2 class="title rv-words">The numbers are small. <em>The receipts are real.</em></h2></div><a class="btn" href="terminal.html">Full IR terminal <span class="arr">→</span></a></div>
+    <div class="live-row" id="liveRow">
+      <div class="lv"><s>Share price</s><b id="lvPrice">—</b><small id="lvChg">one token · DexScreener</small></div>
+      <div class="lv"><s>Enterprise value</s><b id="lvMcap">—</b><small>market cap · roughly one used sedan</small></div>
+      <div class="lv"><s>Liquidity position</s><b id="lvLiq">—</b><small>in the pool · the pill bottle</small></div>
+      <div class="lv"><s>Shareholder base</s><b id="lvHold">—</b><small>holders of record · <a href="ward.html">every one has a bed →</a></small></div>
+      <div class="lv"><s>Shareholder engagement</s><b id="lvTrade">—</b><small id="lvTradeSub">since the last real trade</small></div>
+    </div>
+    <div class="live-note" id="liveNote">connecting to the pharmacy counter…</div>
+  </div>
+</section>
+
+<!-- 5. RECEIPTS: one featured, the total, the archive -->
+<section class="sec" id="receipts" style="padding-top:20px">
+  <div class="wrap featured">
+    <div class="featured-pin">
       <div class="kicker">Peer benchmarking</div>
       <h2 class="title rv-words">What our peers <em>paid.</em></h2>
-      <p class="lead rv"><span class="rl" data-rl="These are fines, pleas and settlements. Scroll and watch them add up." data-st="v">Our industry peers have made significant investments in resolving legacy matters.</span></p>
-      <div class="big-num"><span class="cur" id="runTotal">$0</span></div>
-      <div class="counter-meta"><b id="runCount">0</b> of <b id="allCount">0</b> receipts printed · <span id="runCo">—</span></div>
-      <div class="meter"><i id="runMeter"></i></div>
+      <p class="lead rv"><span class="rl" data-rl="Fines, pleas and settlements, every one linked to a primary source. One prints here each day." data-st="v">Our industry peers have made significant investments in resolving legacy matters.</span></p>
+      <div class="big-num"><span class="cur" id="archTotal">$0</span></div>
+      <div class="counter-meta"><b id="archCount">0</b> receipts in the archive · raw sum, some deals overlap</div>
       <div class="compare" id="compare"></div>
-      <div class="actions" style="margin-top:28px"><a class="btn" href="archive.html">All 132 receipts <span class="arr">→</span></a></div>
+      <div class="actions" style="margin-top:24px"><a class="btn primary" href="archive.html">All receipts <span class="arr">→</span></a><a class="btn" href="pricetag.html">The Price Tag</a></div>
     </div>
-    <div class="stack" id="stack"></div>
+    <div class="featured-card"><div class="kicker" style="margin-bottom:10px">Receipt of the day · <span id="featDay">—</span></div><div id="featured"></div></div>
   </div>
 </section>
 
-<!-- DEPARTMENTS -->
-<section class="sec">
+<!-- 6. DEPARTMENTS -->
+<section class="sec" id="departments" style="padding-top:20px">
   <div class="wrap">
-    <div class="sec-head"><div><div class="kicker">Departments</div><h2 class="title rv-words">Nobody reads a wiki. <em>Everybody pulls a lever.</em></h2></div></div>
-    <div class="tiles">
-      <a class="tile w8 rv" href="casino.html" style="border-color:rgba(255,184,77,.35)"><span class="tag w">fake gambling</span><h3>PharmaCasino</h3><p>Side Effect Slots. Pull the lever, win a real receipt. You don’t wager money. You wager your trust in the healthcare system. You lose every time.</p><span class="more">Pull the lever →</span><span class="bgword">777</span></a>
-      <a class="tile rv" href="archive.html"><span class="tag v">searchable</span><h3>Receipt Archive</h3><p>132 sourced receipts, filterable by crime genre.</p><span class="more">Search →</span><span class="bgword">$$$</span></a>
-      <a class="tile w8 rv" href="congress.html" style="border-color:rgba(212,175,55,.4)"><span class="tag w">new · public record</span><h3>The Floor</h3><p>Every member of Congress, drawn to scale. The scale is drug-company PAC money, from FEC filings. Click anyone for the receipts.</p><span class="more">Enter the chamber →</span><span class="bgword">$$$</span></a>
-      <a class="tile rv" href="arena.html"><span class="tag x">boss raid</span><h3>Fine Flip</h3><p>Every boss is a real fine. Our market cap is the damage.</p><span class="more">Join the raid →</span><span class="bgword">HP</span></a>
-      <a class="tile rv" href="plague.html"><span class="tag x">case file</span><h3>Plague Desk</h3><p>The Irkutsk incident: the official story and the reported one, side by side.</p><span class="more">Open file →</span><span class="bgword">YP</span></a>
-      <a class="tile rv" href="hantavirus.html"><span class="tag w">case file</span><h3>The Annoying Calendar</h3><p>Hantavirus, a Moderna program, and dates standing too close together.</p><span class="more">Open file →</span><span class="bgword">HV</span></a>
-      <a class="tile rv" href="patients.html" style="border-color:rgba(255,184,77,.35)"><span class="tag w">new · clinical records</span><h3>The Patient Files</h3><p>Patient #001 asked for $3,505,450 in 58 days. Received: $0. Charted from his own public posts, every quote linked. Reply “draw me” for a bed.</p><span class="more">Enter the ward →</span><span class="bgword">Dx</span></a>
-      <a class="tile w8 rv" href="prescribed.html" style="border-color:rgba(255,59,88,.45)"><span class="tag x">new · walk-in</span><h3>Get Prescribed</h3><p>Tell the Pharmussy what’s wrong with you. Leave with a prescription label with your name on it, a fake drug, and unlimited refills. Post it. Become a patient.</p><span class="more">Step up to the counter →</span><span class="bgword">Rx</span></a>
-      <a class="tile rv" href="dose.html"><span class="tag v">daily ritual</span><h3>Daily Dose</h3><p>Wordle for corporate crime. One redacted press release a day. Guess the company in six pills, post the grid.</p><span class="more">Take today’s dose →</span><span class="bgword">Rx</span></a>
-      <a class="tile w8 rv" href="fauci.html" style="border-color:rgba(196,18,47,.45)"><span class="tag x">new · public record</span><h3>The Diary</h3><p>Dr. Fauci typed a diary for twenty years. The Senate released 1,606 pages of it plus his prize-money paperwork. We read all of it: the vainest lines, the body count he logged by hand, the press hits he tallied, the $900,000 prize. Every quote cites its page.</p><span class="more">Open the diary →</span><span class="bgword">Dr.</span></a>
-      <a class="tile rv" href="letter.html"><span class="tag d">from the Chairman</span><h3>Shareholder letter &amp; Drug Facts</h3><p>Corporate wrote it. Marjorie redlined it. Plus the label nobody reads.</p><span class="more">Read →</span><span class="bgword">Q4</span></a>
-      <a class="tile w8 rv" href="hq.html"><span class="tag w">beta · 3D</span><h3>PHARMA HQ</h3><p>Walk the building: lobby, dispensary vial wall, boardroom. Desktop only, still under construction.</p><span class="more">Enter →</span><span class="bgword">HQ</span></a>
-      <a class="tile rv" href="methodology.html"><span class="tag d">Marjorie’s rules</span><h3>How we don’t get sued</h3><p>The claim ladder. Make the joke sharp, keep the claim boring.</p><span class="more">Read →</span><span class="bgword">§</span></a>
+    <div class="sec-head"><div><div class="kicker">Departments</div><h2 class="title rv-words">The rest of <em>the building.</em></h2></div></div>
+    <div class="tiles dept6">
+      <a class="tile rv" href="congress.html" style="border-color:rgba(212,175,55,.4)"><span class="tag w">public record</span><h3>The Floor</h3><p>Every member of Congress, drawn to scale. The scale is drug-company PAC money, from FEC filings.</p><span class="more">Enter the chamber →</span><span class="bgword">$$$</span></a>
+      <a class="tile rv" href="pricetag.html"><span class="tag v">receipts dept</span><h3>The Price Tag</h3><p>30 drugs, US price vs the world. Median 13.5× here. Same pill.</p><span class="more">Read the tag →</span><span class="bgword">×13</span></a>
+      <a class="tile rv" href="patients.html" style="border-color:rgba(255,184,77,.35)"><span class="tag w">clinical records</span><h3>The Patient Files</h3><p>Public figures charted from their own public posts, every quote linked. Reply “draw me” for a bed.</p><span class="more">Enter the ward →</span><span class="bgword">Dx</span></a>
+      <a class="tile rv" href="fauci.html" style="border-color:rgba(196,18,47,.45)"><span class="tag x">public record</span><h3>The Diary</h3><p>Dr. Fauci typed a diary for twenty years. The Senate released 1,606 pages. We read all of it. Every quote cites its page.</p><span class="more">Open the diary →</span><span class="bgword">Dr.</span></a>
+      <a class="tile rv" href="ward.html"><span class="tag v">on-chain census</span><h3>The Ward</h3><p>Every holder has a bed. Paste your wallet at the desk, find your room, print your wristband.</p><span class="more">Check in →</span><span class="bgword">#</span></a>
+      <div class="tile rv casefiles"><span class="tag x">case files</span><h3>Case Files</h3><p>The official story and the reported one, side by side.</p><div class="cf-links"><a href="plague.html">Plague Desk →</a><a href="hantavirus.html">The Annoying Calendar →</a><a href="polio.html">Polio Trail →</a></div><span class="bgword">YP</span></div>
     </div>
+    <p class="dept-foot">Also in the building: <a href="hq.html">PHARMA HQ (3D)</a> · <a href="letter.html">Shareholder letter &amp; Drug Facts</a> · <a href="prescribers.html">Top Prescribers</a> · <a href="methodology.html">How we don’t get sued</a></p>
   </div>
 </section>
 
-<!-- BUY -->
+<!-- 7. BUY + FAQ -->
 <section class="sec" id="buy" style="padding-top:20px">
   <div class="wrap buy">
     <div>
@@ -197,32 +133,24 @@
   </div>
 </section>
 
-<!-- FAQ -->
-<section class="sec" style="padding-top:20px">
+<section class="sec" id="faq" style="padding-top:10px">
   <div class="wrap">
     <div class="kicker">Patient questions</div>
     <h2 class="title rv-words">Frequently asked, <em>rarely answered.</em></h2>
-    <div class="faq" style="margin-top:30px">
+    <div class="faq" style="margin-top:26px">
       <details><summary>Is PHARMA Holdings a real company?</summary><p>No. It’s a memecoin playing a pharmaceutical conglomerate, completely straight. The executives are fictional. The products are community memes. The receipts are real, every one linked to a primary source.</p></details>
-      <details><summary>Is this anti-vaccine?</summary><p>No. It’s anti-taking-anyone’s-word-for-it, including ours. Some receipts are about vaccine history (the 1955 Cutter Incident is real and the CDC documents it). Most are about opioids, fraud, pricing and talc. Marjorie stamps the bad claims “do not claim” in red.</p></details>
-      <details><summary>Are the receipts real?</summary><p>Yes. DOJ press releases, FDA notices, state attorney general announcements, court records, peer-reviewed papers and major reporting. If one doesn’t hold up, it gets publicly corrected. That’s the whole brand.</p></details>
-      <details><summary>Is PharmaCasino gambling?</summary><p>No. No wager, nothing to buy, nothing to win except a receipt you can screenshot. Daily Dose is the same: no prize, just a streak and bragging rights.</p></details>
-      <details><summary>Whatever happened to the Boss Fight?</summary><p>It was voluntarily withdrawn from the market. No wrongdoing is admitted. (It lined up real tiny biotechs as “bosses”, which was punching down.) Its replacement, <a href="arena.html" style="color:var(--cyan)">Boss Raid</a>, only fights real fines Big Pharma paid.</p></details>
-      <details><summary>Is The Floor saying members of Congress are corrupt?</summary><p>No. It draws members to scale by direct contributions from drug-company PACs, straight from FEC filings. Those contributions are legal and disclosed. A receipt is not a verdict. Read it, then read the votes.</p></details>
-      <details><summary>Is this medical or financial advice?</summary><p>Absolutely not. Talk to a doctor about your health and a professional about your money. Talk to Marjorie about settlements.</p></details>
+      <details><summary>Are the receipts real?</summary><p>Yes. DOJ press releases, FDA notices, state attorney general announcements, court records, peer-reviewed papers and major reporting. If one doesn’t hold up, it gets publicly corrected. That’s the whole brand. Anti-vaccine? No. Anti-taking-anyone’s-word-for-it, including ours.</p></details>
+      <details><summary>Is this medical or financial advice?</summary><p>Absolutely not. Talk to a doctor about your health and a professional about your money. Talk to Marjorie about settlements. Nothing here is gambling either: no wager, no prize, just a receipt you can screenshot. <a href="letter.html" style="color:var(--cyan)">More questions →</a></p></details>
     </div>
   </div>
 </section>
 
-<div class="irt-mini" id="irtMini" aria-hidden="true"><span>$PHARMA</span><b id="miniP">—</b><span id="miniC"></span><span id="miniT"></span><a href="#terminal">TERMINAL ↑</a></div>
 <script src="js/pharma.js"></script>
 <script src="data/receipts.js"></script>
 <script src="data/formulary.js"></script>
 <script src="js/formulary.js"></script>
 <script src="js/home.js"></script>
 <script src="data/pulse_snapshot.js"></script>
-<script src="data/holders_snapshot.js"></script>
 <script src="js/pulse.js"></script>
-<script src="js/terminal.js"></script>
-<script src="js/ward.js"></script>
+<script src="js/homelive.js"></script>
 </body></html>

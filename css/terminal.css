@@ -5,8 +5,8 @@
 @keyframes cb{50%{box-shadow:0 0 0 3px #fff,0 0 90px rgba(255,59,88,.8)}}
 /* cream header strip */
 .irt-head{display:flex;align-items:center;gap:18px;padding:12px 18px;background:var(--cream);color:#1d1a15;font-family:var(--mono);font-size:.68rem;letter-spacing:.14em;text-transform:uppercase;border-bottom:3px solid #1d1a15}
-.irt-head b{font-family:var(--sans);font-weight:1000;letter-spacing:-.03em;font-size:1rem;text-transform:none}
-.irt-head .sess{display:inline-flex;align-items:center;gap:8px}
+.irt-head b{font-family:var(--sans);font-weight:1000;letter-spacing:-.03em;font-size:1rem;text-transform:none;white-space:nowrap}
+.irt-head .sess{display:inline-flex;align-items:center;gap:8px;flex-shrink:0;white-space:nowrap}
 .irt-head .sess i{width:8px;height:8px;border-radius:50%;background:#1d7a52;box-shadow:0 0 10px #1d7a52;animation:pulse 1.6s infinite}
 .irt-head .sess.slow i{background:#a86500;box-shadow:none;animation:none}
 .irt-head .sess.off i{background:#c4122f;box-shadow:none;animation:none}
@@ -40,7 +40,7 @@
 .ekg-tabs{position:absolute;left:10px;top:6px;display:flex;gap:4px;z-index:2}
 .ekg-tabs button{border:1px solid var(--hair);background:rgba(6,13,28,.8);color:var(--muted);font-family:var(--mono);font-size:.58rem;letter-spacing:.12em;padding:4px 8px;border-radius:6px;cursor:pointer}
 .ekg-tabs button.on{color:var(--ink);border-color:var(--cyan)}
-.ekg-note{position:absolute;left:10px;bottom:6px;font-family:Caveat,cursive;font-size:1rem;color:#ff6b80;z-index:2;pointer-events:none}
+.ekg-note{position:absolute;left:10px;right:78px;bottom:20px;font-family:Caveat,cursive;font-size:1rem;line-height:1.1;color:#ff6b80;z-index:2;pointer-events:none}
 /* C: now serving (compact) */
 .ns{display:grid;grid-template-columns:auto 1fr;gap:16px;align-items:start}
 .ns-num{display:flex;gap:3px;font-family:var(--mono);font-weight:700;font-size:2.2rem;color:#ffcf6b;text-shadow:0 0 20px rgba(255,190,80,.4)}

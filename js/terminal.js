@@ -15,17 +15,19 @@ document.addEventListener('DOMContentLoaded', () => {
   const dx = t => t.bot ? 'automated refill (bot)' : t.kind === 'buy' ? pick(DX_BUY, hash(t.wallet)) : pick(DX_SELL, hash(t.wallet));
   const rx = v => v >= WHALE ? 'CODE BLUE: whale admitted' : v >= 50 ? 'extended release, take daily' : v >= 10 ? 'twice daily with food' : '1 capsule, as needed';
   const ticket = t => '#' + String((t.block || 0) % 10000).padStart(4, '0');
-  const stamp = (el, src, t, snap) => { if (!el) return; if (!t) { el.textContent = `${src} · waiting`; el.classList.add('stale'); return; } const age = (Date.now() - t) / 1000; el.textContent = `${snap ? 'SNAPSHOT' : src} · ${age < 90 ? Math.round(age) + 's' : age < 5400 ? Math.round(age / 60) + 'm' : Math.round(age / 3600) + 'h'}`; el.classList.toggle('stale', age > 180 || !!snap); };
+  const fmtAge = t => { const age = (Date.now() - t) / 1000; return age < 90 ? Math.round(age) + 's' : age < 5400 ? Math.round(age / 60) + 'm' : Math.round(age / 3600) + 'h'; };
+  const stamp = (el, src, t, snap) => { if (!el) return; if (!t) { el.textContent = `${src} · waiting`; el.classList.add('stale'); return; } el.textContent = `${snap ? 'SNAPSHOT' : src} · ${fmtAge(t)}`; el.classList.toggle('stale', (Date.now() - t) / 1000 > 180 || !!snap); };
 
   /* ---------- header: session, clock, market mood ---------- */
   const clock = $('#irtClock'); setInterval(() => { if (clock) clock.textContent = new Date().toISOString().slice(11, 19) + ' UTC'; }, 1000);
   function mood() {
     const last = P.state.trades.find(t => !t.bot); const mins = last ? (Date.now() - last.ts) / 60000 : Infinity;
     const sess = $('#irtSess'), mk = $('#irtMkt'); if (!sess) return;
+    // "last real trade … ago" always carries a value: snapshot trades have real timestamps too. Only a truly empty feed says so.
+    const since = $('#sinceN'); if (since) since.textContent = isFinite(mins) ? (mins < 60 ? `${Math.floor(mins)} min` : mins < 1440 ? `${Math.floor(mins / 60)}h ${Math.floor(mins % 60)}m` : `${Math.floor(mins / 1440)}d ${Math.floor(mins % 1440 / 60)}h`) : 'no trade on record';
     if (!P.state.trades.length) { sess.classList.remove('off'); sess.classList.add('slow'); sess.querySelector('span').textContent = P.state.pair ? 'SESSION OPEN · TRADE FEED RESTING' : 'SESSION OPENING…'; mk.textContent = P.state.pair ? 'GeckoTerminal is rate-limiting this connection. Price, liquidity and buy/sell counts are still live from DexScreener. Nothing here is faked to fill the gap.' : 'connecting to the pharmacy counter'; return; }
-    if (P.state.snapshot) { sess.classList.remove('off'); sess.classList.add('slow'); sess.querySelector('span').textContent = 'SESSION OPEN · SHOWING LAST SNAPSHOT'; mk.textContent = `trade feed resting · showing the last snapshot we took, ${P.ago(P.state.at.trades || 0)} ago · DexScreener numbers are live`; return; }
+    if (P.state.snapshot) { const snapAt = P.state.at.trades || 0; sess.classList.remove('off'); sess.classList.add('slow'); sess.querySelector('span').textContent = `SESSION OPEN · SHOWING LAST SNAPSHOT${snapAt ? ' · ' + fmtAge(snapAt).toUpperCase() : ''}`; mk.textContent = `trade feed resting · showing the last snapshot we took, ${snapAt ? fmtAge(snapAt) : '?'} ago · DexScreener numbers are live`; return; }
     sess.classList.toggle('slow', mins > 20 && mins < 240); sess.classList.toggle('off', mins >= 240 || P.state.status === 'degraded');
-    const since = $('#sinceN'); if (since) since.textContent = isFinite(mins) ? (mins < 60 ? `${Math.floor(mins)} min` : mins < 1440 ? `${Math.floor(mins / 60)}h ${Math.floor(mins % 60)}m` : `${Math.floor(mins / 1440)}d`) : '—';
     sess.querySelector('span').textContent = P.state.resting ? 'SESSION OPEN · FEED RESTING (RATE LIMIT)' : mins < 20 ? 'SESSION OPEN · LIVE' : mins < 240 ? 'SESSION OPEN · SLOW' : 'MARKET CLOSED (BY APATHY)';
     mk.textContent = mins < 20 ? 'market: active' : mins < 240 ? `market: slow · this is what a ${P.fmtUsd(P.state.pair?.mcap || 0)} coin looks like between patients` : 'market: closed · nobody has bought or sold in hours. We don’t fake foot traffic.';
   }
@@ -64,11 +66,21 @@ document.addEventListener('DOMContentLoaded', () => {
   const ekg = $('#ekg'), ectx = ekg.getContext('2d');
   let range = '24h', spike = 0, W = 0, H = 0;
   const fmtP = p => p < 0.001 ? p.toFixed(8).replace(/0+$/, '') : p.toFixed(4);
+  /* Which candles to draw. First choice: the native series for the tab, filtered to now-minus-window.
+     If that leaves <2 candles (the deploy snapshot is older than the window, or the live feed is resting), fall back to the
+     most recent window of the same length from whatever candles exist (candles5 → candlesH → candlesD), measured from the
+     newest candle instead of from now, and say so in the note. The chart must never sit on "acquiring signal…" while data exists. */
   function series() {
-    const now = Date.now();
-    if (range === '24h') return P.state.candles5.filter(c => now - c.t < 864e5);
-    if (range === '7d') return P.state.candlesH.filter(c => now - c.t < 7 * 864e5);
-    return P.state.candlesD;
+    const now = Date.now(), win = range === '24h' ? 864e5 : range === '7d' ? 7 * 864e5 : Infinity;
+    const order = range === '24h' ? ['candles5', 'candlesH', 'candlesD'] : range === '7d' ? ['candlesH', 'candles5', 'candlesD'] : ['candlesD', 'candlesH', 'candles5'];
+    const live = (P.state[order[0]] || []).filter(c => now - c.t < win);
+    if (live.length >= 2) return { c: live, fallback: false };
+    for (const key of order) {
+      const all = P.state[key] || []; if (all.length < 2) continue;
+      const end = all[all.length - 1].t, c = all.filter(k => end - k.t < win);
+      if (c.length >= 2) return { c, fallback: true, key, end };
+    }
+    return { c: [], fallback: false };
   }
   function drawEkg() {
     const dpr = Math.min(devicePixelRatio || 1, 2); W = ekg.clientWidth; H = ekg.clientHeight;
@@ -78,8 +90,8 @@ document.addEventListener('DOMContentLoaded', () => {
     ectx.strokeStyle = 'rgba(85,216,255,.07)'; ectx.lineWidth = 1;
     for (let x = 0; x < W; x += 22) { ectx.beginPath(); ectx.moveTo(x, 0); ectx.lineTo(x, H); ectx.stroke(); }
     for (let y = 0; y < H; y += 22) { ectx.beginPath(); ectx.moveTo(0, y); ectx.lineTo(W, y); ectx.stroke(); }
-    const c = series();
-    if (c.length < 2) { ectx.fillStyle = '#8ea7c1'; ectx.font = '12px "IBM Plex Mono", monospace'; ectx.textAlign = 'center'; ectx.fillText(P.state.resting ? 'chart feed resting (rate limit) · last good data shown when available' : 'acquiring signal…', W / 2, H / 2); return; }
+    const S = series(), c = S.c;
+    if (c.length < 2) { ectx.fillStyle = '#8ea7c1'; ectx.font = '12px "IBM Plex Mono", monospace'; ectx.textAlign = 'center'; ectx.fillText(P.state.resting ? 'chart feed resting (rate limit) · no candles on file yet' : 'acquiring signal…', W / 2, H / 2); $('#ekgNote').textContent = P.state.resting ? 'live feed resting · nothing on file to show yet' : 'acquiring signal…'; return; }
     const padR = 70, padT = 26, padB = 26, x0 = 8, x1 = W - padR, y0 = padT, y1 = H - padB;
     const lo = Math.min(...c.map(k => k.l)), hi = Math.max(...c.map(k => k.h)), span = (hi - lo) || hi * .1 || 1;
     const px = v => y1 - (v - lo) / span * (y1 - y0), cx = i => x0 + i / (c.length - 1) * (x1 - x0);
@@ -105,7 +117,7 @@ document.addEventListener('DOMContentLoaded', () => {
     ectx.textAlign = 'center'; const step = Math.max(1, Math.floor(c.length / (W < 600 ? 3 : 6)));
     for (let i = 0; i < c.length; i += step) { const d = new Date(c[i].t); ectx.fillText(range === '24h' ? d.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) : d.toLocaleDateString([], { month: 'short', day: 'numeric' }), cx(i), H - 8); }
     const quietN = c.filter(k => k.quiet).length;
-    $('#ekgNote').textContent = quietN > c.length * .5 ? 'Flatline is a feature. Nobody traded. Marjorie checked.' : quietN ? `${Math.round(quietN / c.length * 100)}% of this window had zero trades (grey). Not smoothed.` : 'Every dot is a real trade. Every flat bit is real too.';
+    $('#ekgNote').textContent = S.fallback ? `showing the last snapshot we took, ${fmtAge(S.end)} ago · live feed resting` : quietN > c.length * .5 ? 'Flatline is a feature. Nobody traded. Marjorie checked.' : quietN ? `${Math.round(quietN / c.length * 100)}% of this window had zero trades (grey). Not smoothed.` : 'Every dot is a real trade. Every flat bit is real too.';
   }
   const stampB = () => stamp($('#srcB'), 'GECKOTERMINAL · 5-MIN', P.state.at[range === '24h' ? 'candles5' : range === '7d' ? 'candlesH' : 'candlesD'], P.state.snapshot && !P.state.at.pairLiveCandles);
   P.on('candles5', () => { drawEkg(); stampB(); }); P.on('candlesH', () => { drawEkg(); stampB(); }); P.on('candlesD', () => { drawEkg(); stampB(); }); P.on('trades', () => { drawEkg(); ward(); nowServing(); mood(); });

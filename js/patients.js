@@ -281,7 +281,7 @@ document.addEventListener('DOMContentLoaded', () => {
       <div class="wd-step-h"><span class="no">${no}</span><div><span class="k">${kicker}</span><h3>${title}</h3></div></div>${body}</article>`;
     const receipts = c => `<ul class="wd-receipts">${c.receipts.map(r => `<li><span class="d">${fmtD(r.date)}</span><q>${esc(r.text)}</q> ${L(r.id)}</li>`).join('')}</ul>`;
     const media = c => {
-      if (c.video) return `<div class="wd-video"><video controls playsinline preload="metadata" poster="${esc(c.poster)}" width="1200" height="675"><source src="${esc(c.video)}" type="video/mp4">Your browser can’t play this video. <a href="${esc(c.video)}">Download the MP4</a>.</video></div>`;
+      if (c.video) return `<div class="wd-video"><video controls playsinline preload="none" poster="${esc(c.poster)}" width="1200" height="675"><source src="${esc(c.video)}" type="video/mp4">Your browser can’t play this video. <a href="${esc(c.video)}">Download the MP4</a>.</video></div>`;
       const [w, h] = String(c.size).split('x').map(Number); return img(c.file, w, h, c.title, 'wide');
     };
     const cards = p.cards.map((c, i) => st(String(i + 1).padStart(2, '0'), 'card' + c.no, esc(c.kicker), esc(c.title),
@@ -458,7 +458,7 @@ document.addEventListener('DOMContentLoaded', () => {
     ${step('07', 'video', 'The file, 22 seconds', 'Watch the chart',
       `<div class="wd-video">
         <div class="wd-phone"><span class="notch" aria-hidden="true"></span>
-          <video controls playsinline preload="metadata" poster="assets/cards/patient-001-still.png" width="1080" height="1920">
+          <video controls playsinline preload="none" poster="assets/cards/patient-001-still.png" width="1080" height="1920">
             <source src="assets/video/patient-001.mp4" type="video/mp4">
             Your browser can’t play this video. <a href="assets/video/patient-001.mp4">Download the MP4</a>.
           </video></div>

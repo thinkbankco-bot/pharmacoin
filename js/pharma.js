@@ -20,20 +20,23 @@ const PH = (() => {
      standalone top-level link; a group with `items` is a dropdown department.
      Item = [href, label, tag?]  tag: 'new' (amber NEW label) | any short string. */
   const GROUPS = [
-    { label: 'The Floor', href: 'congress.html', cls: 'hot' },
+    { label: 'Play', items: [
+      ['prescribed.html', 'Get Prescribed'], ['dose.html', 'Daily Dose'], ['casino.html', 'PharmaCasino'], ['arena.html', 'Boss Raid'],
+    ] },
+    { label: 'Pharmussy', href: 'formulary.html' },
+    { label: 'Receipts', items: [
+      ['archive.html', 'Receipt Archive'], ['pricetag.html', 'The Price Tag', 'new'], ['congress.html', 'The Floor'], ['revolving.html', 'The Revolving Door'],
+      ['lobbying.html', 'The Access Ledger'], ['fauci.html', 'The Diary'], ['plague.html', 'Plague Desk'], ['hantavirus.html', 'Hanta Calendar'], ['polio.html', 'Polio Trail'],
+    ] },
     { label: 'Hospital', items: [
-      ['patients.html', 'Patient Files', 'new'], ['prescribed.html', 'Get Prescribed'], ['formulary.html', 'The Pharmussy'], ['prescribers.html', 'Top Prescribers'],
+      ['ward.html', 'The Ward', 'new'], ['patients.html', 'Patient Files', 'new'], ['prescribers.html', 'Top Prescribers'],
     ] },
-    { label: 'Receipts Dept', items: [
-      ['archive.html', 'Receipt Archive'], ['pricetag.html', 'The Price Tag', 'new'], ['revolving.html', 'The Revolving Door'], ['lobbying.html', 'The Access Ledger'],
-      ['fauci.html', 'The Diary'], ['plague.html', 'Plague Desk'], ['hantavirus.html', 'Hanta Calendar'], ['polio.html', 'Polio Trail'],
-    ] },
-    { label: 'Games', items: [
-      ['arena.html', 'Boss Raid'], ['dose.html', 'Daily Dose'], ['casino.html', 'PharmaCasino'], ['boss-fight.html', 'Discontinued Products'],
-    ] },
+    { label: 'Terminal', href: 'terminal.html' },
   ];
+  /* Pages that live in the footer only (not in the nav). */
+  const FOOT_ONLY = [['letter.html', 'Investor Relations'], ['methodology.html', "How we don't get sued"], ['hq.html', 'PHARMA HQ'], ['boss-fight.html', 'Boss Fight (recalled)']];
   /* Flat list derived from GROUPS (old shape: [href, label, cls?]) for anything that wants every page. */
-  const PAGES = [['index.html', 'Home'], ...GROUPS.flatMap(g => g.items ? g.items : [[g.href, g.label, g.cls]])];
+  const PAGES = [['index.html', 'Home'], ...GROUPS.flatMap(g => g.items ? g.items : [[g.href, g.label, g.cls]]), ...FOOT_ONLY];
 
   /* One shared scroll scheduler: every scroll-driven effect runs once per frame */
   const scrollFns = []; let queued = false;
@@ -47,13 +50,14 @@ const PH = (() => {
     const here = location.pathname.split('/').pop() || 'index.html';
     const nav = document.createElement('nav');
     nav.className = 'nav';
+    const lastGrp = GROUPS.map(g => !!g.items).lastIndexOf(true);
     nav.innerHTML = `<div class="nav-inner"><a class="brand" href="index.html"><span class="brand-mask">${MASK}</span><span>$PHARMA</span></a>
-      <div class="nav-links">${GROUPS.map((g, gi) => {
+      <div class="nav-links"><div class="nav-mob">${evidenceDesk ? '' : `<a class="btn primary nav-buy" data-buy href="${CONFIG.buy}" target="_blank" rel="noopener">Buy $PHARMA</a>`}<div class="nav-ca"><span class="nav-ca-k">CA</span><code data-ca>${CONFIG.ca}</code><button type="button" data-copy-ca>Copy</button></div></div>${GROUPS.map((g, gi) => {
         if (!g.items) return `<a class="nav-top ${g.cls || ''}" href="${g.href}" ${g.href === here ? 'aria-current="page"' : ''}>${g.label}</a>`;
         const isHere = g.items.some(([h]) => h === here), hasNew = g.items.some(i => i[2] === 'new'), id = `navp${gi}`;
-        return `<div class="nav-grp${gi === GROUPS.length - 1 ? ' end' : ''}">
+        return `<div class="nav-grp${gi === lastGrp ? ' end' : ''}">
           <button type="button" class="nav-btn${isHere ? ' here' : ''}${hasNew ? ' has-new' : ''}" aria-expanded="false" aria-controls="${id}">${g.label}<svg viewBox="0 0 10 6" aria-hidden="true"><path d="M1 1l4 4 4-4" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
-          <div class="nav-panel" id="${id}"><div class="nav-card"><div class="nav-card-h"><span>${g.label}</span><span>${String(g.items.length).padStart(2, '0')} ${g.label === 'Games' ? 'cabinets' : 'files'}</span></div>
+          <div class="nav-panel" id="${id}"><div class="nav-card"><div class="nav-card-h"><span>${g.label}</span><span>${String(g.items.length).padStart(2, '0')} ${g.label === 'Play' ? 'cabinets' : 'files'}</span></div>
           ${g.items.map(([h, t, tag]) => `<a href="${h}" ${h === here ? 'aria-current="page"' : ''}><span>${t}</span>${tag ? `<i class="nav-tag ${tag === 'new' ? 'new' : ''}">${tag === 'new' ? 'NEW' : tag}</i>` : ''}</a>`).join('')}</div></div></div>`;
       }).join('')}</div>
       ${evidenceDesk ? '' : `<a class="mcap-chip" href="${CONFIG.dex}" target="_blank" rel="noopener">MCAP <b data-mcap>—</b></a>`}
@@ -105,9 +109,9 @@ const PH = (() => {
     foot.innerHTML = `<div class="wrap"><div class="foot-grid">
       <div><a class="brand" href="index.html"><span class="brand-mask">${MASK}</span><span>$PHARMA</span></a>
       <p class="fine" style="margin-top:16px">PHARMA Holdings plc is not a real pharmaceutical company, which is the nicest thing anyone has said about it. Satirical evidence desk. Real sources, sarcastic string. Not medical advice. Not investment advice. Not saying the calendar did it. If you are sick, call a doctor, not a memecoin.</p></div>
-      <div><h4>The Lab</h4><a href="dose.html">Daily Dose</a><a href="archive.html">Receipt Archive</a><a href="revolving.html">The Revolving Door</a><a href="lobbying.html">The Access Ledger</a><a href="pricetag.html">The Price Tag</a><a href="plague.html">Plague Desk</a><a href="hantavirus.html">Hanta Calendar</a><a href="polio.html">Polio Trail</a></div>
-      <div><h4>The Company</h4><a href="formulary.html">The Pharmussy</a><a href="prescribed.html">Get Prescribed</a><a href="patients.html">Patient Files</a><a href="arena.html">Boss Raid</a><a href="congress.html">The Floor</a><a href="prescribers.html">Top Prescribers</a><a href="index.html#letter">Investor Relations</a><a href="casino.html">PharmaCasino</a><a href="boss-fight.html">Discontinued Products</a></div>
-      <div><h4>Chart</h4>${evidenceDesk ? '' : `<a href="${CONFIG.buy}" target="_blank" rel="noopener">Buy $PHARMA</a>`}<a href="${CONFIG.dex}" target="_blank" rel="noopener">DexScreener</a><a href="${CONFIG.x}" target="_blank" rel="noopener">X: @PharmaCoinSol</a><a href="methodology.html">How we don't get sued</a></div>
+      <div><h4>Receipts</h4><a href="archive.html">Receipt Archive</a><a href="pricetag.html">The Price Tag</a><a href="congress.html">The Floor</a><a href="revolving.html">The Revolving Door</a><a href="lobbying.html">The Access Ledger</a><a href="fauci.html">The Diary</a><a href="plague.html">Plague Desk</a><a href="hantavirus.html">Hanta Calendar</a><a href="polio.html">Polio Trail</a><a href="methodology.html">How we don't get sued</a></div>
+      <div><h4>The Company</h4><a href="prescribed.html">Get Prescribed</a><a href="dose.html">Daily Dose</a><a href="casino.html">PharmaCasino</a><a href="arena.html">Boss Raid</a><a href="formulary.html">The Pharmussy</a><a href="ward.html">The Ward</a><a href="patients.html">Patient Files</a><a href="prescribers.html">Top Prescribers</a><a href="terminal.html">IR Terminal</a><a href="letter.html">Investor Relations</a><a href="hq.html">PHARMA HQ</a><a href="boss-fight.html">Boss Fight (recalled)</a></div>
+      <div><h4>Chart</h4>${evidenceDesk ? '' : `<a href="${CONFIG.buy}" target="_blank" rel="noopener">Buy $PHARMA</a>`}<a href="${CONFIG.dex}" target="_blank" rel="noopener">DexScreener</a><a href="${CONFIG.x}" target="_blank" rel="noopener">X: @PharmaCoinSol</a></div>
       </div><div class="foot-word" aria-hidden="true">$PHARMA</div></div>`;
     document.body.append(foot);
     const t = document.createElement('div'); t.className = 'toast'; document.body.append(t);

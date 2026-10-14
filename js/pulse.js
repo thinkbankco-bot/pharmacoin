@@ -26,8 +26,9 @@ window.PULSE = (() => {
   const scheduled = {};
   function every(key, ms, fn) {
     const run = async () => {
-      if (!document.hidden) { try { await fn(); state.status = 'live'; state.lastOk = Date.now(); } catch (e) { if (e.message !== '429') state.status = 'degraded'; } emit('status', state); }
-      scheduled[key] = setTimeout(run, ms * backoff);
+      let wait = ms * backoff;
+      if (!document.hidden) { try { await fn(); state.status = 'live'; state.lastOk = Date.now(); } catch (e) { if (e.message === '429') wait = Math.max(wait, 60000); else state.status = 'degraded'; } emit('status', state); }
+      scheduled[key] = setTimeout(run, wait);  // a 429 never retries this key sooner than 60 s, on top of the shared backoff
     };
     run();
   }
@@ -86,11 +87,12 @@ window.PULSE = (() => {
     if (start.done) return; start.done = true;
     seed();
     every('pair', 30000, pair);
+    // GeckoTerminal rate-limits bursts: five request types inside 14 s got 429s (seen as CORS errors). Spread them out.
     setTimeout(() => every('trades', 45000, trades), 1500);
-    setTimeout(() => every('candles5', 60000, () => candles('minute', 'candles5', 288, 55000, 5)), 3500);
-    setTimeout(() => every('candlesH', 180000, () => candles('hour', 'candlesH', 168, 170000)), 9000);
-    setTimeout(() => every('candlesD', 900000, () => candles('day', 'candlesD', 365, 14 * 60000)), 14000);
-    setTimeout(() => every('holders', 300000, holders), 19000);
+    setTimeout(() => every('candles5', 60000, () => candles('minute', 'candles5', 288, 55000, 5)), 8000);
+    setTimeout(() => every('candlesH', 180000, () => candles('hour', 'candlesH', 168, 170000)), 20000);
+    setTimeout(() => every('candlesD', 900000, () => candles('day', 'candlesD', 365, 14 * 60000)), 40000);
+    setTimeout(() => every('holders', 300000, holders), 60000);
     document.addEventListener('visibilitychange', () => { if (!document.hidden) pair().catch(() => {}); });
   }
   /* derived helpers */
