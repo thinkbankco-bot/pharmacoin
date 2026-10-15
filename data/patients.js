@@ -2546,9 +2546,9 @@ window.PATIENTS = [
     name: 'Patient #004',            // display name withheld by the Receipts Dept. (never printed)
     joined: 'on file',
     avatar: null,
-    consent: 'pending',
+    consent: 'public posting record 2026-10-15',
     consentNote: 'Mid-tier account: consent-first. Built, then the patient is asked by DM. Posted on a yes or on his public dare. Comes down on request, no questions.',
-    thread: { handle: 'PharmaCoinSol', id: null, posted: null, posts: 4 },
+    thread: { handle: 'PharmaCoinSol', id: '2110548456678818224', posted: '2026-10-15T01:49Z', posts: 4 },
     attending: 'Dr. H. Fennwick (hon.)',
     lab: 'PHARMA Holdings plc · Receipts Dept. · Rounds, Room 2',
     bio: { text: 'Niche micro internet celebrity, per patient (Aug 24). Occupation: on file. First patient to list one.', source: 'his posts' },
