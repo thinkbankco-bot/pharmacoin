@@ -3,7 +3,9 @@
    Every number comes from data/patients.js (requests[] is the source of truth). Every quote links to its post. */
 document.addEventListener('DOMContentLoaded', () => {
   /* Held files (consent: 'pending') never render on the live page; flip consent in data/patients.js to publish. */
-  const P = (window.PATIENTS || []).filter(p => p.consent && p.consent !== 'pending');
+  /* Local preview of a held file: patients.html?preview=004 on localhost only. Never active on the live host. */
+  const PREVIEW = /^(localhost|127\.0\.0\.1)$/.test(location.hostname) && new URLSearchParams(location.search).get('preview');
+  const P = (window.PATIENTS || []).filter(p => (p.consent && p.consent !== 'pending') || (PREVIEW && p.no === PREVIEW));
   const W = window.WALKINS || [];
   const F = Object.fromEntries((window.FORMULARY || []).map(d => [d.id, d]));
   const $ = s => document.querySelector(s);
@@ -31,12 +33,13 @@ document.addEventListener('DOMContentLoaded', () => {
   const board = $('#wdBoard');
   const p1 = P.find(p => !p.genome);
   const g2 = P.find(p => p.no === '002' && p.genome);   // live only once consent is flipped
-  const c3 = P.find(p => p.kind === 'cards');            // file #003: the cards thread (live once consent is flipped)
+  const c3 = P.find(p => p.kind === 'cards' && p.no === '003'); // file #003: the cards thread (live once consent is flipped)
+  const c4 = P.find(p => p.no === '004');                 // file #004: the delivery (consent-first; held until his yes)
   const beds = [
     p1 && { bed: p1.no, p: p1, status: 'FILE COMPLETE', cls: 'done' },
     g2 ? { bed: '002', p: g2, status: 'DNA REPORT FINAL', cls: 'done' } : { bed: '002', status: 'BLOODWORK IN PROGRESS', cls: 'prog' },
     c3 ? { bed: '003', p: c3, status: 'DISCHARGE PENDING', cls: 'done' } : { bed: '003', status: 'BED AVAILABLE', cls: 'free' },
-    { bed: '004', status: 'BED AVAILABLE', cls: 'free' },
+    c4 ? { bed: '004', p: c4, status: 'OUT FOR DELIVERY', cls: 'done' } : { bed: '004', status: 'BED AVAILABLE', cls: 'free' },
   ].filter(Boolean);
   const occupied = beds.filter(b => b.cls !== 'free').length;
   const row = b => {
@@ -274,7 +277,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const L = (id, txt = 'post ↗') => link(p, id, txt);
     const sec = document.createElement('section');
     sec.className = 'wd-sec wd-file-sec'; sec.id = `file-${p.no}`;
-    const after = document.getElementById('file-002') || document.getElementById('file-001');
+    const after = document.getElementById('file-003') || document.getElementById('file-002') || document.getElementById('file-001');
     (after ? after.after(sec) : $('#method').before(sec));
     const consentDate = (String(p.consent).match(/\d{4}-\d{2}-\d{2}/) || [])[0];
     const st = (no, id, kicker, title, body) => `<article class="wd-step dna" id="p${esc(p.no)}-${id}">
@@ -294,15 +297,22 @@ document.addEventListener('DOMContentLoaded', () => {
         <div class="wd-who"><b>${esc(p.name)}</b><a href="https://x.com/${esc(p.handle)}" target="_blank" rel="noopener">@${esc(p.handle)}</a><span>${esc(p.bio.text)} · On X since ${esc(p.joined)} · Attending: ${esc(p.attending)}</span></div>
         <span class="wd-consent">${p.consent === 'public-figure' ? 'Public account' : 'Consent on file'}<small>${consentDate ? fmtD(consentDate) : (p.thread ? 'File posted ' + fmtD(p.thread.posted) : '')}</small></span>
       </div>
-      <p class="wd-order">${esc(p.lab)} · Specimen: ${n(p.specimen.corpus)} of ${n(p.specimen.archived)} public posts (${p.specimen.pct}%), ${fmtD(p.specimen.from)} – ${fmtD(p.specimen.to)}. Presented in the order the <a href="${xurl(p.thread.handle, p.thread.id)}" target="_blank" rel="noopener">${p.thread.posts}-post thread</a> ran on ${fmtD(p.thread.posted)}. Every quote links to its post. Wallets: not examined.</p>
+      <p class="wd-order">${esc(p.lab)} · Specimen: ${n(p.specimen.corpus)} of ${n(p.specimen.archived)} public posts (${p.specimen.pct}%), ${fmtD(p.specimen.from)} – ${fmtD(p.specimen.to)}. ${p.thread && p.thread.id ? `Presented in the order the <a href="${xurl(p.thread.handle, p.thread.id)}" target="_blank" rel="noopener">${p.thread.posts}-post thread</a> ran on ${fmtD(p.thread.posted)}.` : 'Held for the patient’s consent. Not yet posted.'} Every quote links to its post. Wallets: not examined.</p>
       <div class="wd-paper dna-dx"><div class="pf-dx"><h4><small>DX</small>${esc(p.diagnosis.name)}</h4><p>${esc(p.diagnosis.text)}</p><span class="pf-stamp">ADMITTED<small>${esc(p.diagnosis.tag)}</small></span></div></div>
       ${st('00', 'vitals', 'Vitals', 'The numbers <em>on file</em>', vitals)}
       ${cards}
+      ${p.sides ? st('04', 'sides', 'Rounds, Room 2', 'The Sides', `<div class="wd-paper wd-script">
+        <p class="slug">${esc(p.sides.slug)}</p>
+        ${p.sides.lines.map(l => `<div class="sl ${l.who === 'F' ? 'f' : 'p'}"><span class="c">${l.who === 'F' ? 'Dr. Fennwick' : 'Patient'}</span><span class="t">${l.circle ? esc(l.t).replace(esc(l.circle), `<em class="circ">${esc(l.circle)}</em>`) : esc(l.t)}${l.id ? ` ${L(l.id, `post ↗ ${fmtD(l.date, false)}${l.note ? ' · ' + esc(l.note) : ''}`)}` : ''}</span></div>`).join('')}
+        <p class="margin">${esc(p.sides.margin)}</p>
+        ${p.sides.pages ? `<div class="wd-pages">${p.sides.pages.map((f, i) => img(f, 1080, 1350, `Sides, page ${i + 1}`, 'page')).join('')}</div>` : ''}
+      </div>`) : ''}
       ${p.consult && p.consult.length ? st('04', 'consult', 'After the file', 'Consultation notes', `<ul class="wd-consult">${p.consult.map(c => `<li><span class="d">${esc(c.at)}</span> ${esc(c.kind)} ${c.quote ? `<q>${esc(c.quote)}</q>` : ''} ${link({ handle: c.handle }, c.id)}</li>`).join('')}</ul>`) : ''}
       <p class="wd-order"><small>${esc(p.method)}</small></p>
     </div>`;
   }
   if (c3) renderCards(c3);
+  if (c4) renderCards(c4);
 
   if (!p1) { $('#wdFile').innerHTML = '<p class="empty">The ward is empty. The Attending is on rounds.</p>'; $('#file-001').dataset.empty = '1'; initRouter(); return; }
 

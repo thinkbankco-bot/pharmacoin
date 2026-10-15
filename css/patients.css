@@ -653,3 +653,17 @@ body[data-view=file] .wd-file-sec{padding-top:30px}
 #file-003 .wd-card.wide img{width:100%;height:auto}
 #file-003 .wd-video{width:100%;max-width:960px;margin:0 0 14px}
 #file-003 .wd-video{display:block;grid-template-columns:none;padding-bottom:0}
+
+/* FILE #004 · the Sides (Rounds, Room 2): audition pages in Courier */
+.wd-script{font-family:"Courier Prime","Courier New",ui-monospace,monospace;color:#1d1a15}
+.wd-script .slug{font-style:italic;opacity:.7;margin:0 0 18px;font-size:.92rem}
+.wd-script .sl{margin:0 0 12px}
+.wd-script .sl .c{display:block;text-align:center;font-weight:700;letter-spacing:.14em;text-transform:uppercase;font-size:.8rem}
+.wd-script .sl .t{display:block;padding:0 12%;font-size:.98rem;line-height:1.45}
+.wd-script .sl .t a{font-family:var(--mono);font-size:.62rem;white-space:nowrap;margin-left:6px}
+.wd-script .circ{position:relative;font-style:normal;display:inline-block}
+.wd-script .circ::after{content:"";position:absolute;left:-6px;right:-7px;top:-5px;bottom:-4px;border:2px solid #c81e2e;border-radius:50% 45% 50% 48%/55% 50% 45% 50%;transform:rotate(-3deg)}
+.wd-script .margin{font-family:Caveat,cursive;color:#c81e2e;font-size:1.4rem;text-align:right;margin:10px 0 0;transform:rotate(-2deg)}
+.wd-pages{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-top:22px}
+.wd-pages .wd-card.page img{width:100%;height:auto;border:1px solid rgba(0,0,0,.15)}
+@media (max-width:700px){.wd-script .sl .t{padding:0 4%}.wd-pages{grid-template-columns:1fr}}
